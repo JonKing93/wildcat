@@ -1,0 +1,49 @@
+[build-system]
+requires = ["poetry-core>=1.5.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "wildcat"
+version = "0.1"
+description = "Command line tool to assess and map post-fire debris-flow hazards"
+authors = [
+    "Jonathan King <jking@usgs.gov>"
+]
+readme = "README.md"
+license = "GPL-3.0-only"
+repository = "https://code.usgs.gov/ghsc/lhp/wildcat"
+keywords = ["fire", "debris flow", "hazard", "usgs", "map", "assessment"]
+packages = [
+    { include = "wildcat" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.11, <3.13"
+pfdf = { git = "https://code.usgs.gov/ghsc/lhp/pfdf.git" }
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+black = "*"
+isort = "*"
+pytest-cov = "*"
+coverage = "*"
+safety = "*"
+
+[tool.poetry.scripts]
+wildcat = "wildcat.cli.main:main"
+tests = "scripts.dev:tests"
+format = "scripts.dev:format"
+lint = "scripts.dev:lint"
+pipeline = "scripts.dev:pipeline"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:nptyping.typing_",
+    "ignore::DeprecationWarning:rasterio",
+    "ignore::DeprecationWarning:pysheds.sview",
+    "ignore::DeprecationWarning:pysheds.sgrid",
+    "ignore::DeprecationWarning:numba.core.typing.context",
+]
+
+[tool.isort]
+profile = "black"
