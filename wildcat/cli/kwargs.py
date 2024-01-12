@@ -1,6 +1,6 @@
 "Functions that convert CLI args to a keyword dict for a subcommand"
 
-from math import inf
+from numpy import inf
 
 from wildcat.utils import log
 

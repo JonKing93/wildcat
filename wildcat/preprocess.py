@@ -26,10 +26,10 @@ Sub-steps:
     _save_rasters       - Saves preprocessed rasters to an output folder
 """
 
-from math import inf
 from pathlib import Path
 from typing import Optional
 
+from numpy import inf
 import numpy as np
 from pfdf import severity
 from pfdf.raster import Raster
@@ -115,7 +115,7 @@ def _find_folders(input: Pathlike, output: Pathlike) -> tuple[Path, Path]:
 
 
 def _load_rasters(rasters: dict[str, tuple[PathArg, bool]], folder: Path) -> None:
-    """ "
+    """
     Locates and loads raw raster datasets. If a raster is missing, checks default
     file names. Raises an error if the raster is required, but can't be found.
     """

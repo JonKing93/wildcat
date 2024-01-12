@@ -8,10 +8,11 @@ Functions:
     init    - Runs the initializer
 """
 
+from wildcat.utils.typing import Pathlike
 from pathlib import Path
 
 
-def init(path: str | Path):
+def init(path: Pathlike):
     """
     Initializes a folder with a configuration file for a project
     ----------
@@ -25,6 +26,7 @@ def init(path: str | Path):
 
     # Create the folder. Error if the folder already exists
     path = Path(path).resolve()
+    path.mkdir(parents=True, exist_ok=False)
     if path.exists():
         raise FileExistsError(
             "Cannot initialize the project folder because the folder already exists.\n"
