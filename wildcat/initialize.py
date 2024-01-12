@@ -1,18 +1,18 @@
 """
 Functions that run the initializer
 ----------
-This module contains functions that implement "wildcat init". In brief, this
+This module contains functions that implement "wildcat initialize". In brief, this
 command creates a project folder with a default configuration file.
 ----------
 Functions:
-    init    - Runs the initializer
+    initialize  - Runs the initializer
 """
 
 from wildcat.utils.typing import Pathlike
 from pathlib import Path
 
 
-def init(path: Pathlike):
+def initialize(path: Pathlike):
     """
     Initializes a folder with a configuration file for a project
     ----------

@@ -12,7 +12,7 @@ def main():
 
     # Add subcommands
     subparsers = parser.add_subparsers()
-    subcommands = ["init", "run", "preprocess", "assess", "map"]
+    subcommands = ["initialize", "run", "preprocess", "assess", "map"]
     for command in subcommands:
         module = getattr(parsers, command)
         add_parser = getattr(module, command)

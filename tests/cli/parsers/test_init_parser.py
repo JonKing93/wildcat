@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from wildcat.cli import hooks
-from wildcat.cli.parsers import init
+from wildcat.cli.parsers import initialize
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def parsers():
 class TestInit:
     def test(_, tmp_path, parsers):
         folder = Path(tmp_path).resolve()
-        init.init(parsers[1])
+        initialize.init(parsers[1])
 
         args = parsers[0].parse_args(["init", str(folder)])
         assert args.folder == folder

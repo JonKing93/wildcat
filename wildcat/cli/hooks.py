@@ -10,18 +10,18 @@ A note on imports:
     the top of the module. This allows the CLI to avoid lengthy imports when
     not necessary. Many of the wildcat subcommands rely on the pysheds package,
     which is quite slow to import. However, other subcommands - such as 
-    "wildcat init" or displaying help text - do not require this package. Importing
-    the commands within the functions allows the CLI to skip this lengthy import
-    when not needed, thereby returning help/version information quickly.
+    "wildcat initialize" or displaying help text - do not require this package. 
+    Importing the commands within the functions allows the CLI to skip this 
+    lengthy import when not needed, thereby returning help/version information quickly.
 """
 
 from wildcat.cli import kwargs
 
 
-def init(args):
-    from wildcat.init import init
+def initialize(args):
+    from wildcat.initialize import initialize
 
-    init(args.folder)
+    initialize(args.folder)
 
 
 def preprocess(args):
