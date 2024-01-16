@@ -11,6 +11,6 @@ def test(capfd):
     for message in [
         "wildcat",
         "Assess and map post-fire debris-flow hazards",
-        "init,run,preprocess,assess,map",
+        "initialize,run,preprocess,assess,map",
     ]:
         assert message in help

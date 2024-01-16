@@ -9,5 +9,5 @@ def test(tmp_path):
 
     folder = Path(tmp_path) / "test"
     assert not folder.exists()
-    main.main(["init", str(folder)])
+    main.main(["initialize", str(folder)])
     assert folder.exists()

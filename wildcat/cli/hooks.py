@@ -19,13 +19,13 @@ from wildcat.cli import kwargs
 
 
 def initialize(args):
-    from wildcat.initialize import initialize
+    from wildcat.initialize_ import initialize
 
     initialize(args.folder)
 
 
 def preprocess(args):
-    from wildcat.preprocess import preprocess
+    from wildcat.preprocess_ import preprocess
 
     args = kwargs.preprocess(args)
     preprocess(**args)

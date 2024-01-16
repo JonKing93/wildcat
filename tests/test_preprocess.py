@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from pfdf.raster import CRS, Affine, Raster
 
-from wildcat import preprocess
+import wildcat.preprocess_ as preprocess
 from wildcat.utils import log
 
 log.initialize(2)

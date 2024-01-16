@@ -19,11 +19,11 @@ def parse(*options):
     return parser.parse_args(options)
 
 
-def test_init(tmp_path):
+def test_initialize(tmp_path):
     folder = Path(tmp_path) / "test"
     assert not folder.exists()
-    args = parse("init", str(folder.resolve()))
-    hooks.init(args)
+    args = parse("initialize", str(folder.resolve()))
+    hooks.initialize(args)
     assert folder.exists()
 
 

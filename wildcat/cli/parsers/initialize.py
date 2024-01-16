@@ -20,4 +20,4 @@ def initialize(subparsers):
     )
 
     # Run the initializer when called
-    initialize.set_defaults(run=hooks.init)
+    initialize.set_defaults(run=hooks.initialize)

@@ -1,2 +1,2 @@
-from wildcat.initialize import initialize
-from wildcat.preprocess import preprocess
+from wildcat.initialize_ import initialize
+from wildcat.preprocess_ import preprocess
