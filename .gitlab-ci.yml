@@ -1,0 +1,46 @@
+image: python:3.11
+
+stages:
+  - build
+  - test
+
+before_script:
+  - source env/bin/activate
+
+build:
+  stage: build
+  before_script:
+    - echo "Stops attempt to activate env before env is built..."
+  script:
+    - pip install virtualenv
+    - virtualenv env
+    - source env/bin/activate
+    - pip install poetry
+    - poetry install --with dev
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - env
+
+safety:
+  stage: test
+  script:
+    - poetry run safety check
+
+lint:
+  stage: test
+  script:
+    - poetry run lint
+
+test:
+  stage: test
+  script:
+    - echo "poetry run tests"
+    - echo "This will be added once the new pfdf features are installable."
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    expire_in: 1 hour
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
