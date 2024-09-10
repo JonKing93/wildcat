@@ -1,0 +1,275 @@
+import warnings
+from math import nan
+from pathlib import Path
+
+import fiona
+import numpy as np
+import pytest
+from pfdf.projection import CRS, BoundingBox, Transform
+from pfdf.raster import Raster
+from rasterio.errors import NotGeoreferencedWarning
+
+from wildcat._commands.preprocess import _load
+from wildcat.errors import GeoreferencingError
+
+#####
+# Testing fixtures
+#####
+
+
+@pytest.fixture
+def dem_no_georef():
+    dem = np.ones((10, 10))
+    return Raster.from_array(dem, nodata=-999)
+
+
+@pytest.fixture
+def dem(dem_no_georef):
+    "DEM raster"
+    dem = dem_no_georef
+    dem.crs = 26911
+    dem.bounds = (0, 0, 100, 100)
+    return dem
+
+
+@pytest.fixture
+def pdem(tmp_path, dem):
+    "Path to a DEM file"
+    path = Path(tmp_path) / "dem.tif"
+    dem.save(path)
+    return path
+
+
+@pytest.fixture
+def perimeter():
+    "Perimeter raster"
+    perimeter = np.ones((5, 3), bool)
+    perimeter = Raster.from_array(perimeter, isbool=True)
+    perimeter.crs = 26911
+    perimeter.bounds = (20, 30, 50, 80)
+    return perimeter
+
+
+@pytest.fixture
+def rperimeter(tmp_path, perimeter):
+    "Path to a perimeter raster file"
+    path = Path(tmp_path) / "perimeter.tif"
+    perimeter.save(path)
+    return path
+
+
+@pytest.fixture
+def fperimeter(tmp_path):
+    "Path to a perimeter feature file"
+
+    schema = {"geometry": "Polygon", "properties": {}}
+    geometry = {
+        "type": "Polygon",
+        "coordinates": [[[20, 30], [20, 80], [50, 80], [50, 30], [20, 30]]],
+    }
+    record = {"geometry": geometry, "properties": {}}
+    path = Path(tmp_path) / "perimeter.geojson"
+    with fiona.open(path, "w", crs=CRS(26911), schema=schema) as file:
+        file.write(record)
+    return path
+
+
+@pytest.fixture
+def config():
+    return {"buffer_km": 0.01, "kf_field": "KFFACT", "severity_field": None}
+
+
+@pytest.fixture
+def points(tmp_path, perimeter):
+    crs = CRS(26911)
+    schema = {"geometry": "Point", "properties": {}}
+    records = [
+        {"geometry": {"type": "Point", "coordinates": [0, 100]}, "properties": {}},
+        {"geometry": {"type": "Point", "coordinates": [20, 80]}, "properties": {}},
+        {"geometry": {"type": "Point", "coordinates": [33, 52]}, "properties": {}},
+    ]
+
+    path = Path(tmp_path) / "points.geojson"
+    with fiona.open(path, "w", schema=schema, crs=crs) as file:
+        file.writerecords(records)
+
+    expected = np.array(
+        [
+            [1, 0, 0],
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0],
+            [0, 0, 0],
+        ],
+        dtype=bool,
+    )
+    expected = Raster.from_array(expected, crs=crs, bounds=perimeter)
+
+    return {"path": path, "expected": expected}
+
+
+@pytest.fixture
+def polygons(tmp_path, perimeter):
+    crs = CRS(26911)
+    schema = {"geometry": "Polygon", "properties": {"KFFACT": "float"}}
+    record0 = {
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[10, 100], [39, 100], [39, 61], [10, 61], [10, 100]]],
+        },
+        "properties": {"KFFACT": 2.2},
+    }
+    record1 = {
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+                [[31, 59], [70, 59], [70, 10], [31, 10], [31, 59]],
+                [[41, 49], [60, 49], [60, 20], [41, 20], [41, 49]],
+            ],
+        },
+        "properties": {"KFFACT": 3.3},
+    }
+    records = [record0, record1]
+
+    path = Path(tmp_path) / "polygons.shp"
+    with fiona.open(path, "w", schema=schema, crs=crs) as file:
+        file.writerecords(records)
+
+    mask = np.array(
+        [
+            [1, 1, 0],
+            [1, 1, 0],
+            [0, 1, 1],
+            [0, 1, 0],
+            [0, 1, 0],
+        ],
+        dtype=bool,
+    )
+    mask = Raster.from_array(mask, crs=crs, bounds=perimeter)
+
+    field = np.array(
+        [
+            [2.2, 2.2, nan],
+            [2.2, 2.2, nan],
+            [nan, 3.3, 3.3],
+            [nan, 3.3, nan],
+            [nan, 3.3, nan],
+        ]
+    )
+    field = Raster.from_array(field, crs=crs, bounds=perimeter)
+    return {"path": path, "mask": mask, "field": field}
+
+
+@pytest.fixture
+def paths(fperimeter, pdem, points, polygons):
+    return {
+        "perimeter": fperimeter,
+        "dem": pdem,
+        "missing": None,
+        "retainments": points["path"],
+        "kf": polygons["path"],
+        "excluded": polygons["path"],
+        "dnbr": pdem,
+    }
+
+
+class TestBufferedPerimeter:
+    def test_raster(_, config, rperimeter, logcheck):
+        paths = {"perimeter": rperimeter}
+        perimeter = _load.buffered_perimeter(config, paths, logcheck.log)
+        assert isinstance(perimeter, Raster)
+        assert perimeter.dtype == bool
+        assert perimeter.bounds == BoundingBox(10, 20, 60, 90, 26911)
+        logcheck.check(
+            [
+                ("INFO", "Building buffered burn perimeter"),
+                ("DEBUG", "    Loading perimeter mask"),
+                ("DEBUG", "    Buffering perimeter"),
+            ]
+        )
+
+    def test_polygons(_, config, fperimeter, logcheck):
+        paths = {"perimeter": fperimeter}
+        perimeter = _load.buffered_perimeter(config, paths, logcheck.log)
+        assert isinstance(perimeter, Raster)
+        assert perimeter.dtype == bool
+        assert perimeter.bounds == BoundingBox(10, 20, 60, 90, 26911)
+        assert perimeter.resolution(units="meters") == (10, 10)
+        logcheck.check(
+            [
+                ("INFO", "Building buffered burn perimeter"),
+                ("DEBUG", "    Loading perimeter mask"),
+                ("DEBUG", "    Buffering perimeter"),
+            ]
+        )
+
+
+class TestDEM:
+    def test_valid(_, pdem, perimeter, logcheck):
+        paths = {"dem": pdem}
+        dem = _load.dem(paths, perimeter, logcheck.log)
+        assert isinstance(dem, Raster)
+        assert dem.bounds == perimeter.bounds
+        assert dem.crs is not None
+        assert dem.transform is not None
+        logcheck.check([("INFO", "Loading DEM")])
+
+    def test_no_transform(_, tmp_path, dem_no_georef, perimeter, errcheck, logcheck):
+        dem = dem_no_georef
+        dem.crs = 26911
+        path = Path(tmp_path) / "dem.tif"
+        with warnings.catch_warnings(action="ignore", category=NotGeoreferencedWarning):
+            dem.save(path)
+
+        paths = {"dem": path}
+        with pytest.raises(GeoreferencingError) as error:
+            _load.dem(paths, perimeter, logcheck.log)
+        errcheck(
+            error,
+            "The input DEM does not have an affine transform.",
+            "Please provide a properly georeferenced DEM",
+        )
+
+
+class TestDatasets:
+    def test(_, config, paths, points, polygons, perimeter, dem, logcheck):
+        output = _load.datasets(config, paths, perimeter, dem, logcheck.log)
+        assert isinstance(output, dict)
+        assert list(output.keys()) == [
+            "perimeter",
+            "dem",
+            "retainments",
+            "kf",
+            "excluded",
+            "dnbr",
+        ]
+
+        dnbr = dem.copy()
+        dnbr.clip(bounds=perimeter)
+
+        assert output["perimeter"] == perimeter
+        assert output["dem"] == dem
+        assert output["retainments"] == points["expected"]
+        assert output["kf"] == polygons["field"]
+        assert output["excluded"] == polygons["mask"]
+        assert output["dnbr"] == dnbr
+
+        logcheck.check(
+            [
+                ("INFO", "Loading remaining datasets"),
+                ("DEBUG", "    Loading retainments"),
+                ("DEBUG", "    Loading kf"),
+                ("DEBUG", "    Loading excluded"),
+                ("DEBUG", "    Loading dnbr"),
+            ]
+        )
+
+    def test_missing_field(
+        _, config, paths, polygons, perimeter, dem, errcheck, logcheck
+    ):
+        paths["severity"] = polygons["path"]
+        with pytest.raises(ValueError) as error:
+            _load.datasets(config, paths, perimeter, dem, logcheck.log)
+        errcheck(
+            error, "severity is a vector feature file, so severity_field cannot be None"
+        )

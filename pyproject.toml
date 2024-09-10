@@ -19,7 +19,10 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.11, <3.13"
-pfdf = { git = "https://code.usgs.gov/ghsc/lhp/pfdf.git", branch = "main" }
+pfdf = { git = "https://code.usgs.gov/ghsc/lhp/pfdf.git", tag = "2.0.0" }
+numpy = "*"
+fiona = "*"
+rasterio = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "*"
@@ -30,7 +33,7 @@ coverage = "*"
 safety = "*"
 
 [tool.poetry.scripts]
-wildcat = "wildcat.cli.main:main"
+wildcat = "wildcat._cli:main"
 tests = "scripts.dev:tests"
 format = "scripts.dev:format"
 lint = "scripts.dev:lint"
@@ -43,6 +46,7 @@ filterwarnings = [
     "ignore::DeprecationWarning:pysheds.sview",
     "ignore::DeprecationWarning:pysheds.sgrid",
     "ignore::DeprecationWarning:numba.core.typing.context",
+    "ignore::DeprecationWarning:nptyping.pandas_.dataframe",
 ]
 
 [tool.isort]
