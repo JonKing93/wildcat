@@ -31,17 +31,13 @@ isort = "*"
 pytest-cov = "*"
 coverage = "*"
 safety = "*"
+poethepoet = "*"
 
 [tool.poetry.scripts]
 wildcat = "wildcat._cli:main"
-tests = "scripts.dev:tests"
-format = "scripts.dev:format"
-lint = "scripts.dev:lint"
-pipeline = "scripts.dev:pipeline"
 
 [tool.pytest.ini_options]
 filterwarnings = [
-    "ignore::DeprecationWarning:nptyping.typing_",
     "ignore::DeprecationWarning:rasterio",
     "ignore::DeprecationWarning:pysheds.sview",
     "ignore::DeprecationWarning:pysheds.sgrid",
@@ -51,3 +47,54 @@ filterwarnings = [
 
 [tool.isort]
 profile = "black"
+
+
+#####
+# Developer Scripts
+#####
+
+[tool.poe.tasks.safety]
+help = "Checks package dependencies for security issues"
+cmd = "safety check"
+
+[tool.poe.tasks.tests]
+help = "Runs the tests and requires 100% coverage"
+sequence = [
+  { cmd = "pytest tests --cov=wildcat --cov=tests --cov-fail-under=100 --cov-report xml:coverage.xml" },
+  { ref = "coverage" },
+]
+
+[tool.poe.tasks.coverage]
+help = "Prints the coverage report for the tests"
+cmd = "coverage report"
+
+[tool.poe.tasks._open_htmlcov]
+help = "Opens an HTML coverage report in a browser"
+expr = "webbrowser.open(pathlib.Path.cwd() / 'htmlcov' / 'index.html')"
+imports = ["webbrowser", "pathlib"]
+
+[tool.poe.tasks.htmlcov]
+help = "Builds an HTML coverage report and opens in browser"
+sequence = [
+  { cmd = "coverage html --skip-covered" },
+  { ref = "_open_htmlcov" },
+]
+
+[tool.poe.tasks.format]
+help = "Applies black and isort to wildcat and its tests"
+sequence = ["isort wildcat", "isort tests", "black wildcat", "black tests"]
+default_item_type = "cmd"
+
+[tool.poe.tasks.lint]
+help = "Requires wildcat and its tests to be properly formatted"
+sequence = [
+  "isort wildcat --check", 
+  "isort tests --check", 
+  "black wildcat --check", 
+  "black tests --check",
+]
+default_item_type = "cmd"
+
+[tool.poe.tasks.pipeline]
+help = "Mimics the Gitlab pipeline. Runs safety check, tests, and lint"
+sequence = ["safety", "lint", "tests"]
