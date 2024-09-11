@@ -39,17 +39,17 @@ build:
 safety:
   stage: test
   script:
-    - poetry run safety check
+    - poe safety
 
 lint:
   stage: test
   script:
-    - poetry run lint
+    - poe lint
 
 test:
   stage: test
   script:
-    - poetry run tests
+    - poe tests
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     expire_in: 1 hour
