@@ -52,7 +52,7 @@ class TestValidateProject:
             file.write("a file")
         with pytest.raises(ValueError) as error:
             _initialize._validate_project(path, logcheck.log)
-        errcheck(error, f"The project path is not a directory", f"Project path: {path}")
+        errcheck(error, "The project path is not a directory", f"Project path: {path}")
 
     def test_not_empty(_, project, errcheck, logcheck):
         path = project / "test.txt"

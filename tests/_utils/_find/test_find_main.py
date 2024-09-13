@@ -86,7 +86,7 @@ class TestPaths:
         paths = {"kf": Path("missing")}
         with pytest.raises(FileNotFoundError) as error:
             _main._resolved_paths(paths, folder, ["kf"], [], logcheck.log, "test title")
-        errcheck(error, f"Could not locate the kf file")
+        errcheck(error, "Could not locate the kf file")
 
     def test_missing_optional(_, folder, logcheck):
         paths = {"kf": Path("kf")}
@@ -95,7 +95,7 @@ class TestPaths:
         logcheck.check(
             [
                 ("INFO", "Locating test files"),
-                ("DEBUG", f"    kf:  None"),
+                ("DEBUG", "    kf:  None"),
             ]
         )
 

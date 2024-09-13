@@ -48,7 +48,7 @@ from math import isinf, isnan
 from pathlib import Path
 from typing import Any, Optional
 
-from wildcat.typing import Config, scalar
+from wildcat.typing import Config
 
 #####
 # Utilities
@@ -219,7 +219,7 @@ def positive_integer(config: Config, name: str) -> None:
 #####
 
 
-def _bounded(config: Config, name: str, min: scalar, max: scalar) -> None:
+def _bounded(config: Config, name: str, min: float, max: float) -> None:
     "Checks a field is a scalar between two bounds"
     scalar(config, name)
     if config[name] < min or config[name] > max:

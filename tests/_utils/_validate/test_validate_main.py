@@ -320,7 +320,7 @@ class TestPreprocess:
         with alter(pconfig, "kf_fill", {}):
             with pytest.raises(TypeError) as error:
                 _main.preprocess(pconfig)
-            errcheck(error, f'Could not convert the "kf_fill" setting to a file path')
+            errcheck(error, 'Could not convert the "kf_fill" setting to a file path')
 
         for vector in ["water", "developed", "excluded_evt"]:
             with alter(pconfig, vector, "invalid"):
@@ -434,14 +434,12 @@ class TestAssess:
         with alter(aconfig, "max_confinement", 361):
             with pytest.raises(ValueError) as error:
                 _main.assess(aconfig)
-            errcheck(error, f'The "max_confinement" setting must be between 0 and 360')
+            errcheck(error, 'The "max_confinement" setting must be between 0 and 360')
 
         with alter(aconfig, "confinement_neighborhood", 2.2):
             with pytest.raises(ValueError) as error:
                 _main.assess(aconfig)
-            errcheck(
-                error, f'The "confinement_neighborhood" setting must be an integer'
-            )
+            errcheck(error, 'The "confinement_neighborhood" setting must be an integer')
 
         for boolean in ["flow_continuous", "locate_basins", "parallelize_basins"]:
             with alter(aconfig, boolean, 5):
@@ -452,14 +450,12 @@ class TestAssess:
         with alter(aconfig, "remove_ids", [1, 2, 3, 4.4]):
             with pytest.raises(ValueError) as error:
                 _main.assess(aconfig)
-            errcheck(
-                error, f'The elements of the "remove_ids" setting must be integers'
-            )
+            errcheck(error, 'The elements of the "remove_ids" setting must be integers')
 
         with alter(aconfig, "I15_mm_hr", [1, 2, -3]):
             with pytest.raises(ValueError) as error:
                 _main.assess(aconfig)
-            errcheck(error, f'The elements of the "I15_mm_hr" setting must be positive')
+            errcheck(error, 'The elements of the "I15_mm_hr" setting must be positive')
 
         for ratio in ["volume_CI", "probabilities"]:
             with alter(aconfig, ratio, [0, 0.5, 5]):
@@ -475,7 +471,7 @@ class TestAssess:
                 _main.assess(aconfig)
             errcheck(
                 error,
-                f'The elements of the "durations" setting must be 15, 30, and/or 60',
+                'The elements of the "durations" setting must be 15, 30, and/or 60',
             )
 
     def test_all_validated(_, aconfig, errcheck):

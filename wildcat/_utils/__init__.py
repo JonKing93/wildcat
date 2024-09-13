@@ -13,5 +13,5 @@ Modules:
     _parameters - Functions for working with hazard modeling parameters
     _properties - Functions listing property groups
     _setup      - Function that starts a log, then parses and validates config settings
-    _args       - Function that returns the 
+    _args       - Function that returns the names of an input function's args
 """

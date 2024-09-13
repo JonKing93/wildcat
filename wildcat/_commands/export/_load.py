@@ -38,7 +38,7 @@ def parameters(assessment: Path, log: Logger) -> Config:
         )
     elif not path.is_file():
         raise ConfigRecordError(
-            f"The recorded configuration.txt is not a file. The assessment results "
+            "The recorded configuration.txt is not a file. The assessment results "
             "may have been altered."
         )
 
@@ -98,7 +98,7 @@ def _segments(assessment: Path, log: Logger) -> tuple[CRS, Schema, Records]:
         )
     elif not path.is_file():
         raise TypeError(
-            f"The saved segments.geojson is not a file. The assessment results "
+            "The saved segments.geojson is not a file. The assessment results "
             "may have been altered."
         )
 
@@ -112,7 +112,7 @@ def _segments(assessment: Path, log: Logger) -> tuple[CRS, Schema, Records]:
     # Informative error if failed
     except Exception as error:
         raise RuntimeError(
-            f"Could not load the saved segments.geojson file for the assessment. "
+            "Could not load the saved segments.geojson file for the assessment. "
             "The assessment results may have been altered."
         ) from error
 

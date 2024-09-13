@@ -105,7 +105,7 @@ def load(path: Path) -> dict:
 
     # Informative error if failed
     except SyntaxError as error:
-        message = f"There is a syntax error in your configuration file"
+        message = "There is a syntax error in your configuration file"
         raise ConfigError(message) from error
     except SystemExit as exit:
         message = "The configuration file (or a module it imported) called sys.exit()"

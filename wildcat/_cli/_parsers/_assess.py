@@ -151,7 +151,7 @@ def _filtering(parser: ArgumentParser) -> None:
     thresholds = {
         "max-area-km2": ["Maximum catchment area in square kilometers (km²)", "AREA"],
         "max-exterior-ratio": [
-            "Maximum proportion of catchment outside the fire perimeter before physical filters are implemented",
+            "Maximum proportion of catchment outside the fire perimeter (from 0 to 1)",
             "RATIO",
         ],
         "min-burn-ratio": [
@@ -172,7 +172,7 @@ def _filtering(parser: ArgumentParser) -> None:
 
     # Add pixel neighborhood option for confinement angles
     parser.add_argument(
-        f"--neighborhood",
+        "--neighborhood",
         type=int,
         metavar="N",
         help="Pixel neighborhood used to compute confinement angles",
@@ -192,7 +192,7 @@ def _remove_ids(parser: ArgumentParser) -> None:
 
     parser = parser.add_argument_group("Remove IDs")
     parser.add_argument(
-        f"--remove-ids",
+        "--remove-ids",
         type=int,
         nargs="*",
         metavar="ID",

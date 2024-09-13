@@ -80,12 +80,10 @@ assess = (
     # ----------
     "Runs a postfire debris flow hazard assessment using preprocessed rasters.\n"
     "Estimates debris flow likelihoods and rainfall thresholds using the M1 model\n"
-    "of Staley et al., 2017 (https://doi.org/10.1016/j.geomorph.2016.10.019).\n"
-    "Estimates potential sediment volume using the emergency assessment model of\n"
-    "Gartner et al., 2014 (https://doi.org/10.1016/j.enggeo.2014.04.008).\n"
-    "Classifies relative hazards using the scheme presented in Cannon et al., 2010\n"
-    "(https://doi.org/10.1130/B26459.1).\n"
-    " \n"
+    "of Staley et al., 2017. Estimates potential sediment volume using the emergency \n"
+    "assessment model of Gartner et al., 2014. Classifies relative hazards using the\n"
+    "scheme presented in Cannon et al., 2010. (see below for reference DOIs)\n"
+    "\n"
     "The assessment proceeds as follows: First, the DEM and burn severity\n"
     "are used to characterize watersheds in the region of interest. Next, the analysis\n"
     "delineates an initial stream segment network. The segments approximate the\n"
@@ -105,9 +103,17 @@ assess = (
     " \n"
     'By default, results are saved in the "assessment" subfolder, with separate\n'
     "files holding results for the segments, outlets, and terminal outlet basins.\n"
-    "The output files are GeoJSON, and hold all computed data fields. As a rule,\n"
-    'users should not interact with these files. Instead, use the "wildcat export"\n'
-    "command to obtain assessment results.",
+    "The output files are GeoJSON, and hold all computed data fields. Many users will\n"
+    'want to use the "wildcat export" command to obtain assessment results, rather\n'
+    "than these output files, as the export command can convert results to other GIS\n"
+    "formats (such as shapefiles) and can help format the output data fields. As a\n"
+    "rule, the assessment outputs should be treated as read-only. If they are altered,\n"
+    "then the export command may fail unexpectedly.\n"
+    "\n"
+    "Reference DOIs:\n"
+    "Staley et al., 2017: https://doi.org/10.1016/j.geomorph.2016.10.019\n"
+    "Gartner et al., 2014: https://doi.org/10.1016/j.enggeo.2014.04.008\n"
+    "Cannon et al., 2010: https://doi.org/10.1130/B26459.1\n",
 )
 
 export = (

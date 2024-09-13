@@ -11,7 +11,7 @@ def empty_config():
 @pytest.fixture
 def default_config():
     return (
-        "# Configuration file for wildcat v0.1\n"
+        f"# Configuration file for wildcat v{version()}\n"
         "\n"
         "# Note that this file only lists the most common configuration values.\n"
         "# For the complete list of configuration values, run:\n"
@@ -123,7 +123,7 @@ def default_config():
 @pytest.fixture
 def full_config():
     return (
-        "# Configuration file for wildcat v0.1\n"
+        f"# Configuration file for wildcat v{version()}\n"
         "\n"
         "\n"
         "#####\n"

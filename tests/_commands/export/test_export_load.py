@@ -53,7 +53,7 @@ class TestParameters:
         with pytest.raises(ConfigRecordError) as error:
             _load.parameters(assessment, logcheck.log)
         errcheck(
-            error, f"The recorded configuration.txt file for the assessment is invalid"
+            error, "The recorded configuration.txt file for the assessment is invalid"
         )
 
     def test_valid(_, assessment, config_path, logcheck):
