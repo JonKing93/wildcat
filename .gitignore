@@ -12,3 +12,10 @@ coverage.lcov
 # Poetry package and environment
 .venv
 dist
+
+# Test data
+test-data
+download
+
+# Documentation builds
+public
