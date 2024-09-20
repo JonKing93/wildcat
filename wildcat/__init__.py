@@ -1,5 +1,5 @@
 """
-Commands to assess and map post-fire debris-flow hazards
+Commands to assess and map post-wildfire debris-flow hazards
 ----------
 Wildcat is a command line interface (CLI) and Python package that provides
 routines to assess and map post-fire debris-flow hazards. Key routines in the

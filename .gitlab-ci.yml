@@ -62,6 +62,16 @@ test:
 # Deploy: Packaging
 #####
 
+pages:
+  stage: deploy
+  when: manual
+  script:
+    - poe docs
+  artifacts:
+    paths:
+    - public
+    
+
 release:
   stage: deploy
   rules:

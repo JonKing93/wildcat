@@ -32,6 +32,9 @@ pytest-cov = "*"
 coverage = "*"
 safety = "*"
 poethepoet = "*"
+sphinx = ">=7.2.6"
+furo = "*"
+sphinx_design = ">=0.5"
 
 [tool.poetry.scripts]
 wildcat = "wildcat._cli:main"
@@ -68,16 +71,16 @@ sequence = [
 help = "Prints the coverage report for the tests"
 cmd = "coverage report"
 
-[tool.poe.tasks._open_htmlcov]
-help = "Opens an HTML coverage report in a browser"
-expr = "webbrowser.open(pathlib.Path.cwd() / 'htmlcov' / 'index.html')"
+[tool.poe.tasks._open]
+help = "Opens an HTML index page in a browser"
+expr = "webbrowser.open(pathlib.Path.cwd() / sys.argv[1] / 'index.html')"
 imports = ["webbrowser", "pathlib"]
 
 [tool.poe.tasks.htmlcov]
 help = "Builds an HTML coverage report and opens in browser"
 sequence = [
   { cmd = "coverage html --skip-covered" },
-  { ref = "_open_htmlcov" },
+  { ref = "_open htmlcov" },
 ]
 
 [tool.poe.tasks.format]
@@ -98,3 +101,19 @@ default_item_type = "cmd"
 [tool.poe.tasks.pipeline]
 help = "Mimics the Gitlab pipeline. Runs safety check, tests, and lint"
 sequence = ["safety", "lint", "tests"]
+
+[tool.poe.tasks._delete_docs]
+help = "Deletes the docs if they exist"
+expr = "shutil.rmtree('public') if pathlib.Path('public').exists() else None"
+imports = ["shutil", "pathlib"]
+
+[tool.poe.tasks.docs]
+help = "Deletes and then rebuilds the documentation"
+sequence = [
+  { ref = "_delete_docs" },
+  { cmd = "sphinx-build -qa docs public" },
+]
+
+[tool.poe.tasks.open-docs]
+help = "Opens the docs in a webbrowser"
+ref = "_open public"
