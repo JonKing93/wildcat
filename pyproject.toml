@@ -19,7 +19,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.11, <3.13"
-pfdf = { git = "https://code.usgs.gov/ghsc/lhp/pfdf.git", tag = "2.0.0" }
+pfdf = { git = "https://code.usgs.gov/ghsc/lhp/pfdf.git", tag = "2.0.1" }
 numpy = "*"
 fiona = "*"
 rasterio = "*"
