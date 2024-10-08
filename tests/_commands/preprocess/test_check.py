@@ -35,7 +35,7 @@ def dconfig():
 @pytest.fixture
 def krasters():
     kf = np.arange(100).reshape(10, 10)
-    kf[0,:] = -1
+    kf[0, :] = -1
     kf = Raster.from_array(kf, nodata=-1)
     return {"kf": kf}
 
@@ -43,7 +43,7 @@ def krasters():
 @pytest.fixture
 def kconfig():
     return {
-        "missing_kf_check": "error", 
+        "missing_kf_check": "error",
         "missing_kf_threshold": 0.05,
         "kf_fill": False,
     }
@@ -177,10 +177,12 @@ class TestMissingKF:
         kf = Raster.from_array(kf, nodata=-1)
         krasters = {"kf": kf}
         _check.missing_kf(kconfig, krasters, logcheck.log)
-        logcheck.check([
-            ("INFO", "Checking for missing KF-factor data"),
-            ('DEBUG', '    Proportion of missing data: 0.0')
-        ])
+        logcheck.check(
+            [
+                ("INFO", "Checking for missing KF-factor data"),
+                ("DEBUG", "    Proportion of missing data: 0.0"),
+            ]
+        )
 
     @pytest.mark.parametrize("fill", (True, 2.2, "a/file/path"))
     def test_filling(_, fill, kconfig, krasters, logcheck):
@@ -199,15 +201,14 @@ class TestMissingKF:
         logcheck.check([])
 
     def test_under_threshold(_, kconfig, krasters, logcheck):
-        kconfig['missing_kf_threshold'] = 0.25
+        kconfig["missing_kf_threshold"] = 0.25
         _check.missing_kf(kconfig, krasters, logcheck.log)
         logcheck.check(
             [
-                ('INFO', 'Checking for missing KF-factor data'),
-                ('DEBUG', '    Proportion of missing data: 0.1')
+                ("INFO", "Checking for missing KF-factor data"),
+                ("DEBUG", "    Proportion of missing data: 0.1"),
             ]
         )
-
 
     def test_warn(_, kconfig, krasters, logcheck):
         kconfig["missing_kf_check"] = "warn"
@@ -215,7 +216,7 @@ class TestMissingKF:
         logcheck.check(
             [
                 ("INFO", "Checking for missing KF-factor data"),
-                ('DEBUG', '    Proportion of missing data: 0.1'),
+                ("DEBUG", "    Proportion of missing data: 0.1"),
                 (
                     "WARNING",
                     "\n"

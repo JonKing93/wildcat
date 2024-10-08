@@ -270,15 +270,15 @@ def preprocess(
     Options for preprocessing KF-factors. Use kf_field to specify an attribute
     field holding KF-factor data when the KF-factor dataset is a set of Polygon
     features. The constrain_kf switch indicates whether the preprocessor should
-    constrain KF-factor data to positive values. 
-    
+    constrain KF-factor data to positive values.
+
     The remaining options indicate what should happen when the KF-factor dataset has
     missing data. The missing_kf_check can be used to issue a warning or raise an error
     when the dataset exceeds a certain proportion of missing data. Options are "warn",
     "error", and "none". The missing_kf_threshold is the percentage of the KF-factor
     dataset that must be missing to trigger the missing_kf_check. The threshold should
     be a value on the interval from 0 to 1.
-    
+
     Alternatively, users can provide fill values for missing KF-factor data using the
     kf_fill option. Using fill values will disable the missing_kf_check. Options for the
     kf_fill input are:

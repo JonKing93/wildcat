@@ -110,7 +110,7 @@ Examples::
     
     The burn severity raster is used to :ref:`locate burned areas <severity-masks>`, which are used to :ref:`delineate <delineate>` the stream segment network. Also used to locate areas burned at moderate-or-high severity, which are used to estimate debris flow :ref:`likelihoods <likelihoods>`, :ref:`volumes <volumes>`, and :ref:`rainfall thresholds <thresholds>`. If missing, this dataset will be :ref:`estimated from the dNBR <estimate-severity>` using the values from the :confval:`severity_thresholds` setting.
 
-    Most users will likely want to run wildcat for an active or recent fire, but you can also find links to historical burn severity datasets here: :ref:`severity datasets <data-fires>`
+    You can find links to burn severity datasets here: :ref:`Burn severity datasets <data-sbs>`. Most users will likely want to run wildcat for an active or recent fire, but you can also find links to historical burn severity datasets here: :ref:`historical severity datasets <data-fires>`
 
     *CLI option:* :option:`--severity <preprocess --severity>`
 

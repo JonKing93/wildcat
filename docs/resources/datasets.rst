@@ -14,6 +14,16 @@ DEM
 Use this link to download digital elevation model (DEM) data from the USGS National Map. The 10 meter dataset is most appropriate for wildcat. This is accessed as the "1/3 arcsecond" 3DEP Elevation Product.
 
 
+.. _data-sbs:
+
+Soil Burn Severity
+------------------
+
+`Burn Severity Datasets <https://burnseverity.cr.usgs.gov/baer/baer-imagery-support-data-download>`_
+
+Use this link to download soil burn severity (SBS) datasets from `BAER <https://burnseverity.cr.usgs.gov/baer/>`_ data portal.
+
+
 .. _data-evt:
 
 EVT
