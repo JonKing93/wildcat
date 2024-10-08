@@ -17,9 +17,14 @@ packages = [
     { include = "wildcat" },
 ]
 
+[[tool.poetry.source]]
+name = "usgs/ghsc/lhp"
+url = "https://code.usgs.gov/api/v4/groups/859/-/packages/pypi/simple"
+priority = "explicit"
+
 [tool.poetry.dependencies]
 python = ">=3.11, <3.13"
-pfdf = { git = "https://code.usgs.gov/ghsc/lhp/pfdf.git", tag = "2.0.1" }
+pfdf = { version = "*", source = "usgs/ghsc/lhp" }
 numpy = "*"
 fiona = "*"
 rasterio = "*"
