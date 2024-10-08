@@ -19,15 +19,15 @@ Installation
 ------------
 .. admonition:: Prerequisites
 
-    Wildcat requires `Python 3.11+ <https://www.python.org/downloads/>`_, and these instructions also require `git <https://git-scm.com/downloads>`_.
+    Wildcat requires `Python 3.11+ <https://www.python.org/downloads/>`_.
 
-You can install wildcat using:
+You can install wildcat using::
 
-.. parsed-literal::
+    pip install wildcat -i https://code.usgs.gov/api/v4/groups/859/-/packages/pypi/simple
 
-    pip install git+https://code.usgs.gov/ghsc/lhp/wildcat@\ |release|\
+and see the :doc:`installation page <install>` for additional options. 
 
-and see the :doc:`installation page <install>` for additional installation options.
+The URL in the install command instructs `pip <https://pip.pypa.io/en/stable/>`_ to install wildcat from the official USGS package registry. This ensures that you are installing an official USGS product, and not a similarly named package from a third party. The ``859`` in the URL is the code for packages released by the `Landslide Hazards Program <https://www.usgs.gov/programs/landslide-hazards>`_.
 
 
 Using these docs
