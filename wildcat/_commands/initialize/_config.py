@@ -129,9 +129,11 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
     )
 
     # Datasets
-    record.section(file, "Required Datasets", ["perimeter", "dem"], defaults)
     record.section(
-        file, "Recommended Datasets", ["dnbr", "severity", "kf", "evt"], defaults
+        file,
+        "Datasets",
+        ["perimeter", "dem", "dnbr", "severity", "kf", "evt"],
+        defaults,
     )
     fields = ["retainments", "excluded"]
     if isfull:

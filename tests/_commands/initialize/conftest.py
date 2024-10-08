@@ -39,11 +39,9 @@ def default_config():
         "# These values determine the implementation of the preprocessor.\n"
         "#####\n"
         "\n"
-        "# Required Datasets\n"
+        "# Datasets\n"
         'perimeter = r"perimeter"\n'
         'dem = r"dem"\n'
-        "\n"
-        "# Recommended Datasets\n"
         'dnbr = r"dnbr"\n'
         'severity = r"severity"\n'
         'kf = r"kf"\n'
@@ -147,11 +145,9 @@ def full_config():
         "# These values determine the implementation of the preprocessor.\n"
         "#####\n"
         "\n"
-        "# Required Datasets\n"
+        "# Datasets\n"
         'perimeter = r"perimeter"\n'
         'dem = r"dem"\n'
-        "\n"
-        "# Recommended Datasets\n"
         'dnbr = r"dnbr"\n'
         'severity = r"severity"\n'
         'kf = r"kf"\n'
