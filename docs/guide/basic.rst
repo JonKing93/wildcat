@@ -133,6 +133,7 @@ And wildcat also supports the following optional datasets:
 You can follow the links in the tables to learn more about using each dataset, but we recommend reading this page first for an general introduction.
 
 
+
 Add Data to Project
 -------------------
 
@@ -226,6 +227,12 @@ Continuing the example, our file tree is now::
         └── configuration.txt
 
 where ``configuration.txt`` is the config record for the preprocessor. Most wildcat commands will create similarly named config records. As a rule, you can use the record to exactly reproduce a command's outputs by copying the  record into a ``configuration.py`` file and rerunning the command.
+
+.. tip::
+
+    If you add a dataset to a project *after* running the preprocessor, then you will need to rerun the preprocessor to include the new dataset in the assessment. This most commonly occurs when adding an :ref:`excluded area mask <optional-datasets>` to a project.
+
+
 
 
 Assess
