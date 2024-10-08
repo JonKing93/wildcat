@@ -354,7 +354,7 @@ Settings for preprocessing the :ref:`KF-factor <kf>` dataset.
 
 .. option:: --missing-kf-check <error | warn | none>
 
-    What to do if the KF-factor dataset :ref:`has missing values <missing-kf>`, and there is no fill value. Options are:
+    What to do if the proportion of :ref:`missing KF-factor data <missing-kf>` exceeds the maximum level and there is no fill value. Options are:
 
     * ``error``: Raises an error and stops the preprocessor
     * ``warn``: Logs a warning to the console, but continues preprocessing
@@ -368,6 +368,18 @@ Settings for preprocessing the :ref:`KF-factor <kf>` dataset.
         wildcat preprocess --missing-kf-check none
 
     *Overrides setting:* :confval:`missing_kf_check`
+
+
+.. option:: --missing-kf-threshold THRESHOLD
+
+    A maximum proportion of missing KF-factor data. Exceeding this level will trigger the :confval:`missing_kf_check`. The threshold should be a value from 0 to 1.
+
+    Example::
+
+        # Issue warning if 5% of the KF-factor data is missing
+        wildcat preprocess --missing-kf-threshold 0.05
+
+    *Overrides setting:* :confval:`missing_kf_threshold`
 
 
 .. option:: --kf-fill <False | True | NUMBER | PATH>

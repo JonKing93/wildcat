@@ -532,7 +532,7 @@ Settings for preprocessing the :ref:`KF-factor <kf>` dataset.
     :type: ``"error" | "warn" | "none"``
     :default: ``"warn"``
 
-    What to do if the KF-factor dataset :ref:`has missing values <missing-kf>`, and there is no fill value. Options are:
+    What to do if the proportion of :ref:`missing KF-factor data <missing-kf>` exceeds the maximum level and there is no fill value. Options are:
 
     * ``"error"``: Raises an error and stops the preprocessor
     * ``"warn"``: Logs a warning to the console, but continues preprocessing
@@ -553,6 +553,27 @@ Settings for preprocessing the :ref:`KF-factor <kf>` dataset.
 .. |missing-kf-check kwarg| replace:: ``missing_kf_check``
 
 .. _missing-kf-check kwarg: ./../python.html#python-preprocess
+
+
+.. confval:: missing_kf_threshold
+    :type: ``float``
+    :default: ``0.05``
+
+    A maximum proportion of missing KF-factor data. Exceeding this level will trigger the :confval:`missing_kf_check`. The threshold should be a value from 0 to 1.
+
+    Example::
+
+        # Warn if more than 5% of the KF-factor data is missing
+        missing_kf_check = "warn"
+        missing_kf_threshold = 0.05
+
+    *CLI option:* :option:`--missing-kf-threshold <preprocess --missing-kf-threshold>`
+
+    *Python kwarg:* |missing-kf-threshold kwarg|_
+
+.. |missing-kf-threshold kwarg| replace:: ``missing_kf_threshold``
+
+.. _missing-kf-threshold kwarg: ./../python.html#python-preprocess
 
 
 .. confval:: kf_fill

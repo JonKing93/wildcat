@@ -104,11 +104,15 @@ def missing_kf(config: Config, rasters: RasterDict, log: Logger) -> None:
     filling = not isinstance(kf_fill, bool) or kf_fill == True
     if check == "none" or "kf" not in rasters or filling:
         return
+    
+    # Compute the proportion of missing data
+    log.info('Checking for missing KF-factor data')
+    kf = rasters['kf']
+    proportion = np.sum(kf.nodata_mask) / kf.size
+    log.debug(f'    Proportion of missing data: {proportion}')
 
-    # Check for missing KF-factors. Inform user if check failed.
-    log.info("Checking for missing KF-factor data")
-    kf = rasters["kf"]
-    failed = np.sum(kf.nodata_mask) > 0
+    # Inform the user if the check failed
+    failed = proportion > config['missing_kf_threshold']
     message = (
         "WARNING: The KF-factor raster has missing data. This may indicate that\n"
         "    the KF-factor dataset is incomplete, but can also occur for normal\n"

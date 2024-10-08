@@ -223,7 +223,13 @@ def _kf(parser: ArgumentParser) -> None:
     _check(
         parser,
         "missing-kf",
-        "the KF-factor raster has missing data and there is not a kf-fill value",
+        "the KF-factor exceeds a certain proportion of missing data and there is no fill value",
+    )
+    parser.add_argument(
+        '--missing-kf-threshold',
+        type=float,
+        metavar = 'THRESHOLD',
+        help='The proportion of missing KF-factor data to trigger missing-kf-check'
     )
     parser.add_argument(
         "--kf-fill",

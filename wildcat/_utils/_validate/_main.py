@@ -91,6 +91,7 @@ def preprocess(config: Config) -> None:
         "kf_field": optional_string,
         "constrain_kf": boolean,
         "missing_kf_check": check,
+        "missing_kf_threshold": ratio,
         "kf_fill": kf_fill,
         "kf_fill_field": optional_string,
         # EVT masks

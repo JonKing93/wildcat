@@ -115,7 +115,7 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., <files>)
+            preprocess(..., <files>)
 
         Specifies the path to an input datasets. Specific filenames are detailed in the following syntaxes. Relative paths are parsed relative to the ``inputs`` folder. If a path lacks an extension, scans supported extensions for a file with a matching file stem.
 
@@ -124,8 +124,8 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., perimeter)
-            preprocessed(..., dem)
+            preprocess(..., perimeter)
+            preprocess(..., dem)
 
         Specifies paths to datasets required to run the preprocessor. The preprocessor will raise an error if it cannot locate these datasets. The extent of the buffered perimeter is used to define the spatial domain of the preprocessor, and the DEM is used to set the CRS, resolution, and alignment of the preprocessed rasters.
 
@@ -134,10 +134,10 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., dnbr)
-            preprocessed(..., severity)
-            preprocessed(..., kf)
-            preprocessed(..., evt)
+            preprocess(..., dnbr)
+            preprocess(..., severity)
+            preprocess(..., kf)
+            preprocess(..., evt)
 
         Paths to datasets recommmended for most hazard assessments. The preprocessor will still run if these datasets are missing, but most users will need them later to implement an assessment. Set an input to False to disable the preprocessor for that dataset.
 
@@ -146,11 +146,11 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., retainments)
-            preprocessed(..., excluded)
-            preprocessed(..., included)
-            preprocessed(..., iswater)
-            preprocessed(..., isdeveloped)
+            preprocess(..., retainments)
+            preprocess(..., excluded)
+            preprocess(..., included)
+            preprocess(..., iswater)
+            preprocess(..., isdeveloped)
 
         Paths to optional datasets. Neither the preprocessor nor the assessment requires these datasets. The ``retainments`` dataset indicates the location of debris retainment features, ``excluded`` and ``iswater`` indicate areas that should not be used for network delineation, and ``included`` and ``isdeveloped`` can be used to customize network filtering. Set an input to False to disable the preprocessor for that dataset.
 
@@ -159,7 +159,7 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., buffer_km)
+            preprocess(..., buffer_km)
 
         Specifies the burn perimeter buffer in kilometers.
 
@@ -168,7 +168,7 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., resolution_check)
+            preprocess(..., resolution_check)
 
         Indicate what should happen with the DEM does not have approximately 10 meter resolution. Options are:
 
@@ -181,9 +181,9 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., dnbr_scaling_check)
-            preprocessed(..., constrain_dnbr)
-            preprocessed(..., dnbr_limits)
+            preprocess(..., dnbr_scaling_check)
+            preprocess(..., constrain_dnbr)
+            preprocess(..., dnbr_limits)
         
         Options for preprocessing dNBR. The scaling check indicates what should happen if the dNBR values do not appear to be scaled correctly. Options are:
 
@@ -198,10 +198,10 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., severity_field)
-            preprocessed(..., estimate_severity)
-            preprocessed(..., severity_thresholds)
-            preprocessed(..., contain_severity)
+            preprocess(..., severity_field)
+            preprocess(..., estimate_severity)
+            preprocess(..., severity_thresholds)
+            preprocess(..., contain_severity)
 
         Options for preprocessing burn severity. Use the ``severity_field`` input to specify an attribute field holding severity data when the severity  is a set of Polygon features. Use the ``estimate_severity`` switch to indicate whether the preprocessor should estimate from dNBR when no other severity dataset is detected. The ``severity_thresholds`` input specifies the dNBR thresholds used to estimate severity from dNBR. Finally, use the ``contain_severity`` switch to indicate whether the preprocessor should contain severity data values to the fire perimeter mask.
 
@@ -210,11 +210,11 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., kf_field)
-            preprocessed(..., constrain_kf)
-            preprocessed(..., missing_kf_check)
-            preprocessed(..., kf_fill)
-            preprocessed(..., kf_fill_field)
+            preprocess(..., kf_field)
+            preprocess(..., constrain_kf)
+            preprocess(..., missing_kf_check)
+            preprocess(..., kf_fill)
+            preprocess(..., kf_fill_field)
 
         Options for preprocessing KF-factors. Use ``kf_field`` to specify an attribute field holding KF-factor data when the KF-factor dataset is a set of Polygon features. The ``constrain_kf`` switch indicates whether the preprocessor should constrain KF-factor data to positive values. The ``missing_kf_check`` indicates what should happen when the KF-factor dataset has missing data. Options are:
 
@@ -246,9 +246,9 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
-            preprocessed(..., water)
-            preprocessed(..., developed)
-            preprocessed(..., excluded_evt)
+            preprocess(..., water)
+            preprocess(..., developed)
+            preprocess(..., excluded_evt)
 
         Indicate EVT integer codes that should be used to build processing masks. EVT pixels matching a water code or an excluded_evt code will be excluded from network delineation. EVT pixels matching a developed code will be used to build a human-development mask for network filtering. If you provide a set of EVT codes (``water``, ``developed``, ``excluded_evt``) and the corresponding input datasets (``iswater``, ``isdeveloped``, ``excluded``), then then two masks will be merged.
 

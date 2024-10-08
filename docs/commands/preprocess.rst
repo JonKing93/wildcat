@@ -181,13 +181,13 @@ KF-factors are expected to have positive values, so the preprocessor next conver
 
 Notify Users of Missing KF-factors
 ++++++++++++++++++++++++++++++++++
-*Related settings:* :confval:`missing_kf_check`
+*Related settings:* :confval:`missing_kf_check`, :confval:`missing_kf_threshold`
 
 .. note::
 
     This step only occurs if you do not specify a KF-factor fill value.
 
-Some KF-factor datasets can have large areas of missing data, but NoData values are also reasonable over areas such as water bodies. To address this, the preprocessor checks the KF-factor dataset for missing data. If missing data occurs, the preprocessor notifies the user, advising them to examine the dataset and ensure its validity.
+Some KF-factor datasets can have large areas of missing data, but NoData values are also reasonable over areas such as water bodies. To address this, the preprocessor checks the KF-factor dataset for missing data. If the proportion of missing data exceeds a certain threshold, then the preprocessor notifies the user, advising them to examine the dataset and ensure its validity.
 
 
 

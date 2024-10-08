@@ -40,6 +40,7 @@ severity_thresholds = [125, 250, 500]
 kf_field = None
 constrain_kf = True
 missing_kf_check = "warn"
+missing_kf_threshold = 0.05
 kf_fill = False
 kf_fill_field = None
 

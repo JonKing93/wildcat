@@ -153,6 +153,7 @@ def preprocess(
     kf_field: Optional[str] = None,
     constrain_kf: bool = None,
     missing_kf_check: Check = None,
+    missing_kf_threshold: scalar = None,
     kf_fill: bool | float | Pathlike = None,
     kf_fill_field: Optional[str] = None,
     # EVT masks
@@ -193,34 +194,34 @@ def preprocess(
     folder in which the preprocessor will search for input datasets. The
     "preprocessed" folder is the folder in which preprocessed rasters will be saved.
 
-    preprocessed(..., <files>)
+    preprocess(..., <files>)
     Specifies the path to an input datasets. Specific filenames are detailed in
     the following syntaxes. Relative paths are parsed relative to the "inputs"
     folder. If a path lacks an extension, scans supported extensions for a file
     with a matching file stem.
 
-    preprocessed(..., perimeter)
-    preprocessed(..., dem)
+    preprocess(..., perimeter)
+    preprocess(..., dem)
     Specifies paths to datasets required to run the preprocessor. The preprocessor
     will raise an error if it cannot locate these datasets. The perimeter (after
     being buffered) is used to define the spatial domain of the preprocessor, and
     the DEM is used to set the CRS, resolution, and alignment of the preprocessed
     rasters.
 
-    preprocessed(..., dnbr)
-    preprocessed(..., severity)
-    preprocessed(..., kf)
-    preprocessed(..., evt)
+    preprocess(..., dnbr)
+    preprocess(..., severity)
+    preprocess(..., kf)
+    preprocess(..., evt)
     Paths to datasets recommmended for most hazard assessments. The preprocessor
     will still run if these datasets are missing, but most users will need them
     later to implement an assessment. Set an input to False to disable the
     preprocessor for that dataset.
 
-    preprocessed(..., retainments)
-    preprocessed(..., excluded)
-    preprocessed(..., included)
-    preprocessed(..., iswater)
-    preprocessed(..., isdeveloped)
+    preprocess(..., retainments)
+    preprocess(..., excluded)
+    preprocess(..., included)
+    preprocess(..., iswater)
+    preprocess(..., isdeveloped)
     Paths to optional datasets. Neither the preprocessor nor the assessment
     requires these datasets. The retainments dataset indicates the location of
     debris retainment features, excluded and iswater indicate areas that should
@@ -228,29 +229,29 @@ def preprocess(
     to customize network filtering. Set an input to False to disable the preprocessor
     for that dataset.
 
-    preprocessed(..., buffer_km)
+    preprocess(..., buffer_km)
     Specifies the burn perimeter buffer in kilometers
 
-    preprocessed(..., resolution_check)
+    preprocess(..., resolution_check)
     Indicate what should happen with the DEM does not have approximately 10 meter
     resolution. Options are:
     "warn": Issues a warning
     "error": Raises an error
     "none": Does nothing
 
-    preprocessed(..., dnbr_scaling_check)
-    preprocessed(..., constrain_dnbr)
-    preprocessed(..., dnbr_limits)
+    preprocess(..., dnbr_scaling_check)
+    preprocess(..., constrain_dnbr)
+    preprocess(..., dnbr_limits)
     Options for preprocessing dNBR. The scaling check indicates what should happen
     if the dNBR values do not appear to be scaled correctly. Options are "warn",
     "error", and "none". Use the constrain_dnbr switch to indicate whether the
     preprocessor should constrain dNBR values to a valid range. The dnbr_limits
     input is a 2-element vector specifying the lower and upper bound of the valid range.
 
-    preprocessed(..., severity_field)
-    preprocessed(..., estimate_severity)
-    preprocessed(..., severity_thresholds)
-    preprocessed(..., contain_severity)
+    preprocess(..., severity_field)
+    preprocess(..., estimate_severity)
+    preprocess(..., severity_thresholds)
+    preprocess(..., contain_severity)
     Options for preprocessing burn severity. Use the severity_field input to
     specify an attribute field holding severity data when the severity dataset
     is a set of Polygon features. Use the estimate_severity switch to indicate
@@ -260,30 +261,37 @@ def preprocess(
     to indicate whether the preprocessor should contain severity data values to
     the fire perimeter mask.
 
-    preprocessed(..., kf_field)
-    preprocessed(..., constrain_kf)
-    preprocessed(..., missing_kf_check)
-    preprocessed(..., kf_fill)
-    preprocessed(..., kf_fill_field)
+    preprocess(..., kf_field)
+    preprocess(..., constrain_kf)
+    preprocess(..., missing_kf_check)
+    preprocess(..., missing_kf_threshold)
+    preprocess(..., kf_fill)
+    preprocess(..., kf_fill_field)
     Options for preprocessing KF-factors. Use kf_field to specify an attribute
     field holding KF-factor data when the KF-factor dataset is a set of Polygon
     features. The constrain_kf switch indicates whether the preprocessor should
-    constrain KF-factor data to positive values. The missing_kf_check indicates
-    what should happen when the KF-factor dataset has missing data. Options are
-    "warn", "error", and "none".
-
-    The kf_fill input indicates how the preprocessor should handle missing KF-factor
-    data. Options are:
+    constrain KF-factor data to positive values. 
+    
+    The remaining options indicate what should happen when the KF-factor dataset has
+    missing data. The missing_kf_check can be used to issue a warning or raise an error
+    when the dataset exceeds a certain proportion of missing data. Options are "warn",
+    "error", and "none". The missing_kf_threshold is the percentage of the KF-factor
+    dataset that must be missing to trigger the missing_kf_check. The threshold should
+    be a value on the interval from 0 to 1.
+    
+    Alternatively, users can provide fill values for missing KF-factor data using the
+    kf_fill option. Using fill values will disable the missing_kf_check. Options for the
+    kf_fill input are:
         False: Does not fill missing KF-factor values
         True: Fills missing values with the median value in the buffered perimeter
         int | float: Fills missing values with the indicated value
         File path: Path to a file dataset used to implement spatially-varying fill values
-    If kf_fill is a file path, then use the kf_fill_field input to indicate the
+    If kf_fill is a file path, then you must use the kf_fill_field input to indicate the
     name of fill file field that holds KF-factor fill data.
 
-    preprocessed(..., water)
-    preprocessed(..., developed)
-    preprocessed(..., excluded_evt)
+    preprocess(..., water)
+    preprocess(..., developed)
+    preprocess(..., excluded_evt)
     Indicate EVT integer codes that should be used to build processing masks.
     EVT pixels matching a water code or an excluded_evt code will be excluded
     from network delineation. EVT pixels matching a developed code will be used
@@ -323,8 +331,10 @@ def preprocess(
         kf_field: The data attribute field holding KF-factor data when the KF-factor
             dataset is a set of Polygon features
         constrain_kf: Whether KF-factor data should be constrained to positive values
-        missing_kf_check: What to do when the KF-factor dataset has missing values.
-            Options are "warn", "error", "none"
+        missing_kf_check: What to do when the KF-factor dataset exceeds a threshold
+            level of missing data. Options are "warn", "error", "none"
+        missing_kf_threshold: The percentage of the KF-factor dataset that must be
+            missing to trigger the missing_kf_check. Should be a value from 0 to 1.
         kf_fill: How to fill missing KF-factor values. Options are False,
             True (median value), a scalar value, or a path to a spatially dataset
         kf_fill_field: The data attribute field holding KF-factor fill data when

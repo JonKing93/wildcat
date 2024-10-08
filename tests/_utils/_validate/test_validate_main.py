@@ -45,6 +45,7 @@ def pconfig():
         "kf_field": "KFFACT",
         "constrain_kf": True,
         "missing_kf_check": None,
+        "missing_kf_threshold": 0.25,
         "kf_fill": 2.2,
         "kf_fill_field": None,
         "water": 7292,
@@ -226,6 +227,7 @@ class TestPreprocess:
             "kf_field": "KFFACT",
             "constrain_kf": True,
             "missing_kf_check": "none",
+            "missing_kf_threshold": 0.25,
             "kf_fill": 2.2,
             "kf_fill_field": None,
             # EVT masks
