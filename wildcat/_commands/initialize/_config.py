@@ -162,7 +162,7 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
     # KF-factor
     fields = ["kf_field", "kf_fill", "kf_fill_field"]
     if isfull:
-        fields = fields + ["constrain_kf", "missing_kf_check", "missing_kf_threshold"]
+        fields = fields + ["constrain_kf", "max_missing_kf_ratio", "missing_kf_check"]
     record.section(file, "KF-factors", fields, defaults)
 
     # EVT Masks

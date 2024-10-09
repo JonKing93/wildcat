@@ -227,16 +227,16 @@ def _kf(parser: ArgumentParser) -> None:
     switch(parser, "no-constrain-kf", "Do not constrain KF-factors to positive values")
 
     # Add missing KF options
+    parser.add_argument(
+        "--max-missing-kf-ratio",
+        type=float,
+        metavar="RATIO",
+        help="The maximum allowed proportion of missing KF-factor data (from 0 to 1)",
+    )
     _check(
         parser,
         "missing-kf",
-        "the KF-factor exceeds a certain proportion of missing data and there is no fill value",
-    )
-    parser.add_argument(
-        "--missing-kf-threshold",
-        type=float,
-        metavar="THRESHOLD",
-        help="The proportion of missing KF-factor data to trigger missing-kf-check",
+        "the amount of missing KF-factor data exceeds the maximum allowed level and there is no fill value",
     )
     parser.add_argument(
         "--kf-fill",

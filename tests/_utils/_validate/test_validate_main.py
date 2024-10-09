@@ -45,8 +45,8 @@ def pconfig():
         "contain_severity": False,
         "kf_field": "KFFACT",
         "constrain_kf": True,
+        "max_missing_kf_ratio": 0.25,
         "missing_kf_check": None,
-        "missing_kf_threshold": 0.25,
         "kf_fill": 2.2,
         "kf_fill_field": None,
         "water": 7292,
@@ -228,8 +228,8 @@ class TestPreprocess:
             # KF facotrs
             "kf_field": "KFFACT",
             "constrain_kf": True,
+            "max_missing_kf_ratio": 0.25,
             "missing_kf_check": "none",
-            "missing_kf_threshold": 0.25,
             "kf_fill": 2.2,
             "kf_fill_field": None,
             # EVT masks
@@ -327,11 +327,11 @@ class TestPreprocess:
                 _main.preprocess(pconfig)
             errcheck(error, 'Could not convert the "kf_fill" setting to a file path')
 
-        with alter(pconfig, "missing_kf_threshold", 2):
+        with alter(pconfig, "max_missing_kf_ratio", 2):
             with pytest.raises(ValueError) as error:
                 _main.preprocess(pconfig)
             errcheck(
-                error, f'The "missing_kf_threshold" setting must be between 0 and 1'
+                error, f'The "max_missing_kf_ratio" setting must be between 0 and 1'
             )
 
         for vector in ["water", "developed", "excluded_evt"]:

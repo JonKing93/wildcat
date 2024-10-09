@@ -30,8 +30,8 @@ def config():
         "contain_severity": True,
         "kf_field": None,
         "constrain_kf": True,
+        "max_missing_kf_ratio": 0.05,
         "missing_kf_check": "warn",
-        "missing_kf_threshold": 0.05,
         "kf_fill": 2.2,
         "kf_fill_field": None,
         "water": 7292,
@@ -133,8 +133,8 @@ class TestConfig:
             "# KF-factors\n"
             "kf_field = None\n"
             "constrain_kf = True\n"
+            "max_missing_kf_ratio = 0.05\n"
             'missing_kf_check = "warn"\n'
-            "missing_kf_threshold = 0.05\n"
             "kf_fill = 2.2\n"
             "kf_fill_field = None\n"
             "\n"
@@ -186,8 +186,8 @@ class TestConfig:
             "# KF-factors\n"
             "kf_field = None\n"
             "constrain_kf = True\n"
+            "max_missing_kf_ratio = 0.05\n"
             'missing_kf_check = "warn"\n'
-            "missing_kf_threshold = 0.05\n"
             f'kf_fill = r"{kf_fill}"\n'
             'kf_fill_field = "KFFACT"\n'
             "\n"

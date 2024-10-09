@@ -116,7 +116,7 @@ def missing_kf(config: Config, rasters: RasterDict, log: Logger) -> None:
     log.debug(f"    Proportion of missing data: {proportion}")
 
     # Inform the user if the check failed
-    failed = proportion > config["missing_kf_threshold"]
+    failed = proportion > config["max_missing_kf_ratio"]
     message = (
         "WARNING: The KF-factor raster has missing data. This may indicate that\n"
         "    the KF-factor dataset is incomplete, but can also occur for normal\n"

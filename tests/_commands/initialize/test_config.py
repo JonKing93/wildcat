@@ -35,8 +35,8 @@ def defaults():
         # KF-factors
         "kf_field": None,
         "constrain_kf": True,
+        "max_missing_kf_ratio": 0.05,
         "missing_kf_check": "warn",
-        "missing_kf_threshold": 0.05,
         "kf_fill": False,
         "kf_fill_field": None,
         # EVT masks
@@ -232,8 +232,8 @@ class TestPreprocess:
             "kf_fill = False\n"
             "kf_fill_field = None\n"
             "constrain_kf = True\n"
+            "max_missing_kf_ratio = 0.05\n"
             'missing_kf_check = "warn"\n'
-            "missing_kf_threshold = 0.05\n"
             "\n"
             "# EVT Masks\n"
             "water = [7292]\n"

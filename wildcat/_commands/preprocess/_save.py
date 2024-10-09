@@ -69,8 +69,8 @@ def config(
             [
                 "kf_field",
                 "constrain_kf",
+                "max_missing_kf_ratio",
                 "missing_kf_check",
-                "missing_kf_threshold",
                 "kf_fill",
                 "kf_fill_field",
             ],

@@ -78,8 +78,8 @@ def preprocess(config: Config) -> None:
         # Perimeter
         "buffer_km": positive,
         # DEM
-        "resolution_check": check,
         "resolution_limits_m": positive_limits,
+        "resolution_check": check,
         # dNBR
         "dnbr_scaling_check": check,
         "constrain_dnbr": boolean,
@@ -92,8 +92,8 @@ def preprocess(config: Config) -> None:
         # KF-factors
         "kf_field": optional_string,
         "constrain_kf": boolean,
+        "max_missing_kf_ratio": ratio,
         "missing_kf_check": check,
-        "missing_kf_threshold": ratio,
         "kf_fill": kf_fill,
         "kf_fill_field": optional_string,
         # EVT masks

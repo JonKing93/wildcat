@@ -153,8 +153,8 @@ def preprocess(
     # KF-factors
     kf_field: Optional[str] = None,
     constrain_kf: bool = None,
+    max_missing_kf_ratio: scalar = None,
     missing_kf_check: Check = None,
-    missing_kf_threshold: scalar = None,
     kf_fill: bool | float | Pathlike = None,
     kf_fill_field: Optional[str] = None,
     # EVT masks
@@ -269,8 +269,8 @@ def preprocess(
 
     preprocess(..., kf_field)
     preprocess(..., constrain_kf)
+    preprocess(..., max_missing_kf_ratio)
     preprocess(..., missing_kf_check)
-    preprocess(..., missing_kf_threshold)
     preprocess(..., kf_fill)
     preprocess(..., kf_fill_field)
     Options for preprocessing KF-factors. Use kf_field to specify an attribute
@@ -279,11 +279,10 @@ def preprocess(
     constrain KF-factor data to positive values.
 
     The remaining options indicate what should happen when the KF-factor dataset has
-    missing data. The missing_kf_check can be used to issue a warning or raise an error
-    when the dataset exceeds a certain proportion of missing data. Options are "warn",
-    "error", and "none". The missing_kf_threshold is the proportion of the KF-factor
-    dataset that must be missing to trigger the missing_kf_check. The threshold should
-    be a value on the interval from 0 to 1.
+    missing data. The max_missing_kf_ratio specifies a maximum allowed proportion of
+    missing data in the KF-factor dataset. The ratio should be a value on the interval
+    from 0 to 1. The missing_kf_check option indicates what should happen when the
+    amount of missing data exceeds this ratio. Options are "warn", "error", and "none".
 
     Alternatively, users can provide fill values for missing KF-factor data using the
     kf_fill option. Using fill values will disable the missing_kf_check. Options for the
@@ -338,10 +337,10 @@ def preprocess(
         kf_field: The data attribute field holding KF-factor data when the KF-factor
             dataset is a set of Polygon features
         constrain_kf: Whether KF-factor data should be constrained to positive values
-        missing_kf_check: What to do when the KF-factor dataset exceeds a threshold
-            level of missing data. Options are "warn", "error", "none"
-        missing_kf_threshold: The percentage of the KF-factor dataset that must be
-            missing to trigger the missing_kf_check. Should be a value from 0 to 1.
+        max_missing_kf_ratio: The maximum allowed proportion of missing data in the
+            KF-factor dataset.
+        missing_kf_check: What to do when the amount of missing KF-factor dataset
+            the maximum allowed level. Options are "warn", "error", "none"
         kf_fill: How to fill missing KF-factor values. Options are False,
             True (median value), a scalar value, or a path to a spatially dataset
         kf_fill_field: The data attribute field holding KF-factor fill data when

@@ -46,8 +46,8 @@ def krasters():
 @pytest.fixture
 def kconfig():
     return {
+        "max_missing_kf_ratio": 0.05,
         "missing_kf_check": "error",
-        "missing_kf_threshold": 0.05,
         "kf_fill": False,
     }
 
@@ -205,7 +205,7 @@ class TestMissingKF:
         logcheck.check([])
 
     def test_under_threshold(_, kconfig, krasters, logcheck):
-        kconfig["missing_kf_threshold"] = 0.25
+        kconfig["max_missing_kf_ratio"] = 0.25
         _check.missing_kf(kconfig, krasters, logcheck.log)
         logcheck.check(
             [

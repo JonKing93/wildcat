@@ -181,7 +181,7 @@ KF-factors are expected to have positive values, so the preprocessor next conver
 
 Notify Users of Missing KF-factors
 ++++++++++++++++++++++++++++++++++
-*Related settings:* :confval:`missing_kf_check`, :confval:`missing_kf_threshold`
+*Related settings:* :confval:`max_missing_kf_ratio`, :confval:`missing_kf_check`
 
 .. note::
 

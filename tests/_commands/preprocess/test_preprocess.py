@@ -414,8 +414,8 @@ def check_config(preprocessed, paths):
         "# KF-factors\n"
         'kf_field = "KFFACT"\n'
         "constrain_kf = True\n"
+        "max_missing_kf_ratio = 0.05\n"
         'missing_kf_check = "warn"\n'
-        "missing_kf_threshold = 0.05\n"
         "kf_fill = True\n"
         "kf_fill_field = None\n"
         "\n"
