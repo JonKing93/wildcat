@@ -34,9 +34,9 @@ Using these docs
 ----------------
 These docs contain a variety of resources for wildcat users. The :doc:`User Guide </guide/index>` is designed to introduce new users to the toolbox and is usually the best place to start. After reading the guide, you should be able to implement a basic hazard assessment.
 
-Wildcat commands are complex, multi-step processes. You can use the :doc:`Commands </commands/index>` section to find detailed overviews of the steps and settings for each command.
+Wildcat commands are complex, multi-step processes. You can use the :doc:`Commands </commands/index>` section to find detailed overviews of the steps and settings for each command. Reading this section is not necessary for running wildcat, but users may benefit by understanding how wildcat works under the hood.
 
-The :doc:`API </api/index>` is the complete reference guide to using wildcat. Use it to learn about the configuration settings available via config files, CLI options, and Python kwargs.
+The :doc:`API </api/index>` is the complete reference guide to using wildcat. Use it to learn about the configuration settings available via config files, CLI options, and Python kwargs. Most users will find the :doc:`configuration.py API <api/config/index>` sufficient for their needs. This section provides detailed explanations of all settings available via a configuration file, including tips and best practices. The API can also be useful for troubleshooting error messages, as many wildcat error messages will reference the associated configuration file settings.
 
 Finally, you can find links to:
 
