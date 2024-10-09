@@ -45,7 +45,7 @@ def config(
         record.version(file, "Preprocessor configuration")
         record.paths(file, "Input datasets", paths)
         record.section(file, "Perimeter", ["buffer_km"], config)
-        record.section(file, "DEM", ["resolution_check"], config)
+        record.section(file, "DEM", ["resolution_limits_m", "resolution_check"], config)
         record.section(
             file,
             "dNBR",
@@ -70,6 +70,7 @@ def config(
                 "kf_field",
                 "constrain_kf",
                 "missing_kf_check",
+                "missing_kf_threshold",
                 "kf_fill",
                 "kf_fill_field",
             ],

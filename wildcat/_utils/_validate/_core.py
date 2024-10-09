@@ -343,6 +343,12 @@ def limits(config: Config, name: str) -> None:
     _ascending(config, name, 2)
 
 
+def positive_limits(config: Config, name: str) -> None:
+    "Checks an input represents the bounds of a positive interval"
+    limits(config, name)
+    positives(config, name)
+
+
 def severity_thresholds(config: Config, name: str) -> None:
     "Checks an input is 3 ascending numeric values"
     _ascending(config, name, 3)

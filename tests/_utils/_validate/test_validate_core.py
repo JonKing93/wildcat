@@ -561,6 +561,40 @@ class TestLimits:
         assert config["test"] == [1, 2]
 
 
+class TestPositiveLimits:
+    def test_wrong_length(_, errcheck):
+        with pytest.raises(TypeError) as error:
+            _core.positive_limits({"test": "invalid"}, "test")
+        errcheck(
+            error,
+            'The "test" setting must be one of the following types',
+            "list, tuple",
+        )
+
+    def test_not_ascending(_, errcheck):
+        with pytest.raises(ValueError) as error:
+            _core.positive_limits({"test": [4, 2]}, "test")
+        errcheck(
+            error,
+            'The elements of the "test" setting must be in ascending order',
+            "test[1] (value = 2) is less than test[0] (value = 4)",
+        )
+
+    def test_not_positive(_, errcheck):
+        with pytest.raises(ValueError) as error:
+            _core.positive_limits({"test": [-2, 4]}, "test")
+        errcheck(
+            error,
+            'The elements of the "test" setting must be positive',
+            "test[0] (value = -2) is not",
+        )
+
+    def test_valid(_):
+        config = {"test": [1, 2]}
+        _core.limits(config, "test")
+        assert config["test"] == [1, 2]
+
+
 class TestSeverityThresholds:
     def test_wrong_length(_, errcheck):
         with pytest.raises(TypeError) as error:

@@ -213,9 +213,21 @@ DEM
 +++
 Options for preprocessing the :ref:`DEM <dem>`.
 
+.. option:: --resolution-limits-m MIN MAX
+
+    The allowed range of DEM resolutions in meters. The first value is the minimum allowed resolution, and the second is the maximum resolution. If either the X-axis or the Y-axis of the DEM has a resolution outside of this range, then this will trigger the :confval:`resolution_check`.
+
+    Example::
+
+        # Require resolution between 8 and 12 meters
+        wildcat preprocess --resolution-limits-m 8 12
+
+    *Overrides setting:* :confval:`resolution_limits_m`
+
+
 .. option:: --resolution-check <warn | error | none>
 
-    Specify what should happen when the DEM does not have 10 meter resolution (±3 meters). Options are:
+    Specify what should happen when the DEM does not have an allowed resolution. Options are:
 
     * ``error``: Raises an error and stops the preprocessor
     * ``warn``: Logs a warning to the console, but continues preprocessing

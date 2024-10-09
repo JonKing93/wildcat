@@ -164,6 +164,7 @@ def full_config():
         "buffer_km = 3\n"
         "\n"
         "# DEM\n"
+        "resolution_limits_m = [6.5, 11]\n"
         'resolution_check = "error"\n'
         "\n"
         "# dNBR\n"
@@ -183,6 +184,7 @@ def full_config():
         "kf_fill_field = None\n"
         "constrain_kf = True\n"
         'missing_kf_check = "warn"\n'
+        "missing_kf_threshold = 0.05\n"
         "\n"
         "# EVT Masks\n"
         "water = [7292]\n"

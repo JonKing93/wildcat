@@ -17,6 +17,7 @@ def raster():
 def config():
     return {
         "buffer_km": 3,
+        "resolution_limits_m": [6.5, 11],
         "resolution_check": "error",
         "dem_crs": 26911,
         "dem_transform": Transform(10, 10, 0, 0),
@@ -30,6 +31,7 @@ def config():
         "kf_field": None,
         "constrain_kf": True,
         "missing_kf_check": "warn",
+        "missing_kf_threshold": 0.05,
         "kf_fill": 2.2,
         "kf_fill_field": None,
         "water": 7292,
@@ -114,6 +116,7 @@ class TestConfig:
             "buffer_km = 3\n"
             "\n"
             "# DEM\n"
+            "resolution_limits_m = [6.5, 11]\n"
             'resolution_check = "error"\n'
             "\n"
             "# dNBR\n"
@@ -131,6 +134,7 @@ class TestConfig:
             "kf_field = None\n"
             "constrain_kf = True\n"
             'missing_kf_check = "warn"\n'
+            "missing_kf_threshold = 0.05\n"
             "kf_fill = 2.2\n"
             "kf_fill_field = None\n"
             "\n"
@@ -165,6 +169,7 @@ class TestConfig:
             "buffer_km = 3\n"
             "\n"
             "# DEM\n"
+            "resolution_limits_m = [6.5, 11]\n"
             'resolution_check = "error"\n'
             "\n"
             "# dNBR\n"
@@ -182,6 +187,7 @@ class TestConfig:
             "kf_field = None\n"
             "constrain_kf = True\n"
             'missing_kf_check = "warn"\n'
+            "missing_kf_threshold = 0.05\n"
             f'kf_fill = r"{kf_fill}"\n'
             'kf_fill_field = "KFFACT"\n'
             "\n"

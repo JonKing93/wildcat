@@ -38,7 +38,7 @@ The preprocessor supports the following input datasets. The following table summ
     * - :confval:`perimeter`
       - A fire perimeter mask. The extent of the buffered perimeter defines the preprocessing domain.
     * - :confval:`dem`
-      - Digital elevation model raster. :ref:`Sets the CRS <reproject>`, resolution, and alignment of the preprocessed rasters. Should have approximately 10 meter resolution (±3 meters).
+      - Digital elevation model raster. :ref:`Sets the CRS <reproject>`, resolution, and alignment of the preprocessed rasters. Should have approximately 10 meter resolution.
     * - 
       -
     * - **Recommended**
@@ -108,11 +108,11 @@ The routine next loads the remaining datasets and converts vector features to ra
 
 DEM Resolution
 ++++++++++++++
-*Related settings:* :confval:`resolution_check`
+*Related settings:* :confval:`resolution_limits_m`, :confval:`resolution_check`
 
-The preprocessor next checks that the DEM dataset has a 10 meter resolution (±3 meters). By default, it will raise an error if this criterion is not met.
+The preprocessor next checks that the DEM dataset has an allowed resolution. The allowed resolutions are determined by the :confval:`resolution_limits_m` setting, which defaults to resolutions from 6.5 to 11 meters. This range is selected to allow all DEM tiles from the USGS National Map within the continental US.
 
-This check is implemented because wildcat's assessment models were calibrated using data from a 10-meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
+In general, the DEM should have an approximately 10 meter resolution. This is because wildcat's assessment models were calibrated using data from a 10-meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
 
 
 

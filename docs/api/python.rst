@@ -85,7 +85,7 @@ The complete reference guide for using wildcat within a Python session.
 
 .. _python.preprocess:
 
-.. py:function:: preprocess(project, *, inputs, preprocessed, perimeter, dem, dnbr, severity, kf, evt,retainments, excluded, included, iswater, isdeveloped, buffer_km, resolution_check, dnbr_scaling_check, constrain_dnbr, dnbr_limits, severity_field, estimate_severity, severity_thresholds, contain_severity, kf_field, constrain_kf, missing_kf_check, kf_fill, kf_fill_field, water, developed, excluded_evt)
+.. py:function:: preprocess(project, *, inputs, preprocessed, perimeter, dem, dnbr, severity, kf, evt,retainments, excluded, included, iswater, isdeveloped, buffer_km, resolution_limits_m, resolution_check, dnbr_scaling_check, constrain_dnbr, dnbr_limits, severity_field, estimate_severity, severity_thresholds, contain_severity, kf_field, constrain_kf, missing_kf_check, missing_kf_threshold, kf_fill, kf_fill_field, water, developed, excluded_evt)
 
     Reproject and clean input datasets prior to hazard assessment. Please see the :doc:`preprocess overview </commands/preprocess>` for details.
 
@@ -168,9 +168,10 @@ The complete reference guide for using wildcat within a Python session.
 
         ::
 
+            preprocess(..., resolution_limits_m)
             preprocess(..., resolution_check)
 
-        Indicate what should happen with the DEM does not have approximately 10 meter resolution. Options are:
+        Options to check that the DEM has the expected resolution. In general, the DEM should have approximately 10 meter resolution, as wildcat's assessment models were calibrated using data from a 10 meter DEM. The ``resolution_limits_m`` input specifies a minimum and maximum allowed resolution in meters. The ``resolution_check`` option indicates what should happen when the DEM resolution is outside these limits. Options are:
 
         * ``"warn"``: Issues a warning
         * ``"error"``: Raises an error
@@ -213,17 +214,21 @@ The complete reference guide for using wildcat within a Python session.
             preprocess(..., kf_field)
             preprocess(..., constrain_kf)
             preprocess(..., missing_kf_check)
+            preprocess(..., missing_kf_threshold)
             preprocess(..., kf_fill)
             preprocess(..., kf_fill_field)
 
-        Options for preprocessing KF-factors. Use ``kf_field`` to specify an attribute field holding KF-factor data when the KF-factor dataset is a set of Polygon features. The ``constrain_kf`` switch indicates whether the preprocessor should constrain KF-factor data to positive values. The ``missing_kf_check`` indicates what should happen when the KF-factor dataset has missing data. Options are:
-
+        Options for preprocessing KF-factors. Use ``kf_field`` to specify an attribute field holding KF-factor data when the KF-factor dataset is a set of Polygon features. The ``constrain_kf`` switch indicates whether the preprocessor should constrain KF-factor data to positive values. 
+        
+        The remaining options indicate what should happen when the KF-factor dataset has missing data. The ``missing_kf_check`` can be used to issue a warning or raise an error when the dataset exceeds a certain proportion of missing data. Options are:
+        
         * ``"warn"``: Issues a warning
         * ``"error"``: Raises an error
         * ``"none"``: Does nothing
-
-        The ``kf_fill`` input indicates how the preprocessor should handle missing KF-factor
-        data. Options are:
+        
+        The ``missing_kf_threshold`` is the proportion of the KF-factor dataset that must be missing to trigger ``missing_kf_check``. The threshold should be a value on the interval from 0 to 1.
+        
+        Alternatively, users can provide fill values for missing KF-factor data using the ``kf_fill option``. Using fill values will disable the missing_kf_check. Options are:
 
         .. list-table::
             :header-rows: 1
@@ -269,6 +274,7 @@ The complete reference guide for using wildcat within a Python session.
         * **iswater** *Path | str* -- Areas that are water bodies
         * **isdeveloped** *Path | str* -- Areas that are human development
         * **buffer_km** *float* -- The buffer for the fire perimeter in kilometers
+        * **resolution_limits_m** *[float, float]* -- The minimum and maximum allowed resolution in meters
         * **resolution_check** *str* -- What to do when the DEM does not have approximately 10 meter resolution. Options are "warn", "error", "none"
         * **dnbr_scaling_check** *str* -- What to do when the dNBR does not appear to be scaled properly. Options are "warn", "error", "none"
         * **constrain_dnbr** *bool* -- Whether to constrain dNBR values to a valid data range
@@ -280,6 +286,7 @@ The complete reference guide for using wildcat within a Python session.
         * **kf_field** *str* -- The data attribute field holding KF-factor data when the KF-factor dataset is a set of Polygon features
         * **constrain_kf** *bool* -- Whether KF-factor data should be constrained to positive values
         * **missing_kf_check** *str* -- What to do when the KF-factor dataset has missing values. Options are "warn", "error", "none"
+        * **missing_kf_threshold** *float* -- The maximum allowed proportion of missing KF-factor data. Exceeding this level will trigger the missing_kf_check.
         * **kf_fill** *bool | float | Path | str* -- How to fill missing KF-factor values. Options are False, True (median value), a scalar value, or a path to a spatially dataset
         * **kf_fill_field** *str* -- The data attribute field holding KF-factor fill data when the kf_fill input is a set of Polygon features.
         * **water** *[float, ...]* -- EVT codes that should be classified as water

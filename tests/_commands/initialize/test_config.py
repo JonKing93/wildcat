@@ -21,6 +21,7 @@ def defaults():
         # Perimeter
         "buffer_km": 3,
         # DEM
+        "resolution_limits_m": [6.5, 11],
         "resolution_check": "error",
         # dNBR
         "dnbr_scaling_check": "error",
@@ -35,6 +36,7 @@ def defaults():
         "kf_field": None,
         "constrain_kf": True,
         "missing_kf_check": "warn",
+        "missing_kf_threshold": 0.05,
         "kf_fill": False,
         "kf_fill_field": None,
         # EVT masks
@@ -211,6 +213,7 @@ class TestPreprocess:
             "buffer_km = 3\n"
             "\n"
             "# DEM\n"
+            "resolution_limits_m = [6.5, 11]\n"
             'resolution_check = "error"\n'
             "\n"
             "# dNBR\n"
@@ -230,6 +233,7 @@ class TestPreprocess:
             "kf_fill_field = None\n"
             "constrain_kf = True\n"
             'missing_kf_check = "warn"\n'
+            "missing_kf_threshold = 0.05\n"
             "\n"
             "# EVT Masks\n"
             "water = [7292]\n"

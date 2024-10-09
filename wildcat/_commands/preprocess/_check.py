@@ -29,9 +29,9 @@ def _check(check: Check, failed: bool, message: str, log: Logger) -> None:
         raise ValueError(message)
 
 
-def _isunexpected(resolution: float) -> bool:
+def _isunexpected(resolution: float, limits: tuple[float, float]) -> bool:
     "True if an axis resolution is outside the expected range"
-    return resolution < 7 or resolution > 13
+    return resolution < limits[0] or resolution > limits[1]
 
 
 def resolution(config: Config, dem: Raster, log: Logger) -> None:
@@ -47,18 +47,22 @@ def resolution(config: Config, dem: Raster, log: Logger) -> None:
         return
 
     # Check for 10m resolution, allowing for 3 meter error buffer
-    unexpected = _isunexpected(xres) or _isunexpected(yres)
+    limits = config["resolution_limits_m"]
+    unexpected = _isunexpected(xres, limits) or _isunexpected(yres, limits)
     message = (
-        "WARNING: The DEM does not appear to have a 10 meter resolution.\n"
-        "    The hazard assessment models in wildcat were calibrated using\n"
-        "    a 10 meter DEM, so this resolution is recommended for most\n"
-        "    applications. See also Smith et al., (2019) for a discussion\n"
-        "    of the effects of DEM resolution on topographic analysis:\n"
-        "    https://doi.org/10.5194/esurf-7-475-2019\n"
-        "\n"
-        "    To continue with the current DEM, use either of the following flags:\n"
-        "    --resolution-check warn\n"
-        "    --resolution-check none"
+        f"WARNING: The DEM does not have an allowed resolution.\n"
+        f"    Allowed resolutions: from {limits[0]} to {limits[1]} meters\n"
+        f"    DEM resolution: {xres:.2f} x {yres:.2f} meters\n"
+        f"\n"
+        f"    The hazard assessment models in wildcat were calibrated using\n"
+        f"    a 10 meter DEM, so this resolution is recommended for most\n"
+        f"    applications. See also Smith et al., (2019) for a discussion\n"
+        f"    of the effects of DEM resolution on topographic analysis:\n"
+        f"    https://doi.org/10.5194/esurf-7-475-2019\n"
+        f"\n"
+        f"    To continue with the current DEM, use either of the following flags:\n"
+        f"    --resolution-check warn\n"
+        f"    --resolution-check none"
     )
     _check(check, unexpected, message, log)
 

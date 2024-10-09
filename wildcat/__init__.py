@@ -139,6 +139,7 @@ def preprocess(
     # Perimeter
     buffer_km: scalar = None,
     # DEM
+    resolution_limits_m: tuple[scalar, scalar] = None,
     resolution_check: Check = None,
     # dNBR
     dnbr_scaling_check: Check = None,
@@ -232,12 +233,17 @@ def preprocess(
     preprocess(..., buffer_km)
     Specifies the burn perimeter buffer in kilometers
 
+    preprocess(..., resolution_limits_m)
     preprocess(..., resolution_check)
-    Indicate what should happen with the DEM does not have approximately 10 meter
-    resolution. Options are:
-    "warn": Issues a warning
-    "error": Raises an error
-    "none": Does nothing
+    Options to check that the DEM has the expected resolution. In general, the DEM
+    should have approximately 10 meter resolution, as wildcat's assessment models were
+    calibrated using data from a 10 meter DEM. The "resolution_limits_m" input specifies
+    a minimum and maximum allowed resolution in meters. The "resolution_check" option
+    indicates what should happen when the DEM resolution is outside these limits.
+    Options are:
+        "warn": Issues a warning
+        "error": Raises an error
+        "none": Does nothing
 
     preprocess(..., dnbr_scaling_check)
     preprocess(..., constrain_dnbr)
@@ -275,7 +281,7 @@ def preprocess(
     The remaining options indicate what should happen when the KF-factor dataset has
     missing data. The missing_kf_check can be used to issue a warning or raise an error
     when the dataset exceeds a certain proportion of missing data. Options are "warn",
-    "error", and "none". The missing_kf_threshold is the percentage of the KF-factor
+    "error", and "none". The missing_kf_threshold is the proportion of the KF-factor
     dataset that must be missing to trigger the missing_kf_check. The threshold should
     be a value on the interval from 0 to 1.
 
@@ -316,6 +322,7 @@ def preprocess(
         iswater: Areas that are water bodies
         isdeveloped: Areas that are human development
         buffer_km: The buffer for the fire perimeter in kilometers
+        resolution_limits_m: The minimum and maximum allowed resolution in meters.
         resolution_check: What to do when the DEM does not have approximately
             10 meter resolution. Options are "warn", "error", "none"
         dnbr_scaling_check: What to do when the dNBR does not appear to be scaled

@@ -23,6 +23,7 @@ from wildcat._utils._validate._core import (
     positive,
     positive_integer,
     positive_integers,
+    positive_limits,
     positives,
     ratio,
     ratios,
@@ -78,6 +79,7 @@ def preprocess(config: Config) -> None:
         "buffer_km": positive,
         # DEM
         "resolution_check": check,
+        "resolution_limits_m": positive_limits,
         # dNBR
         "dnbr_scaling_check": check,
         "constrain_dnbr": boolean,

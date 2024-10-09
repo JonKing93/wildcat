@@ -50,7 +50,7 @@ Examples::
 
     The path to the digital elevation model (DEM) raster dataset. This dataset sets the CRS, resolution, and alignment of the preprocessed rasters. Also used to :ref:`characterize the watershed <characterize>`, including determining flow directions.
 
-    The DEM must be georeferenced and we strongly recommend using a DEM with 10 meter resolution (±3 meters). This is because wildcat's hazard assessment models were calibrated using data from a 10 meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
+    The DEM must be georeferenced and we strongly recommend using a DEM with approximately 10 meter resolution. This is because wildcat's hazard assessment models were calibrated using data from a 10 meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
 
     You can find links to 10-meter DEM datasets here: :ref:`DEM datasets <data-dem>`
 
@@ -295,11 +295,33 @@ DEM
 ---
 Settings for preprocessing the :ref:`DEM <dem>`.
 
+.. confval:: resolution_limits_m
+    :type: ``[float, float]``
+    :default: ``[6.5, 11]``
+
+    The allowed range of DEM resolutions in meters. Should be a list of 2 values. The first value is the minimum allowed resolution, and the second is the maximum resolution. If either the X-axis or the Y-axis of the DEM has a resolution outside of this range, then this will trigger the :confval:`resolution_check`.
+
+    The default values are selected to permit all DEM tiles from the USGS National Map within the continental US. In general, the DEM should have approximately 10 meter resolution. This is because wildcat's assessment models were calibrated using data from a 10 meter DEM.
+
+    Example::
+
+        # Require resolution between 8 and 12 meters
+        resolution_limits_m = [8, 12]
+
+    *CLI option:* :option:`--resolution-limits-m <preprocess --resolution-limits-m>`
+
+    *Python kwarg:* |resolution_limits_m kwarg|_
+
+.. |resolution_limits_m kwarg| replace:: ``resolution_limits_m``
+
+.. _resolution_limits_m kwarg: ./../python.html#python-preprocess
+
+
 .. confval:: resolution_check
     :type: ``"error" | "warn" | "none"``
     :default: ``"error"``
 
-    What should happen when the DEM does not have 10 meter resolution (±3 meters). Options are:
+    What should happen when the DEM does not have an allowed resolution. Options are:
 
     * ``"error"``: Raises an error and stops the preprocessor
     * ``"warn"``: Logs a warning to the console, but continues preprocessing

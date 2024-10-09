@@ -152,7 +152,14 @@ def _dem(parser: ArgumentParser) -> None:
     "Adds the DEM group with a resolution check"
 
     parser = parser.add_argument_group("DEM")
-    _check(parser, "resolution", "the DEM does not have 10 meter resolution")
+    parser.add_argument(
+        "--resolution-limits-m",
+        nargs=2,
+        type=float,
+        metavar=("MIN", "MAX"),
+        help="The minimum and maximum allowed resolution in meters",
+    )
+    _check(parser, "resolution", "the DEM resolution is outside the allowed limits")
 
 
 def _dnbr(parser: ArgumentParser) -> None:

@@ -34,6 +34,7 @@ def iconfig():
 def pconfig():
     config = {
         "buffer_km": 3,
+        "resolution_limits_m": [6.5, 11],
         "resolution_check": "error",
         "dnbr_scaling_check": "warn",
         "constrain_dnbr": True,
@@ -213,6 +214,7 @@ class TestPreprocess:
             # Perimeter
             "buffer_km": 3,
             # DEM
+            "resolution_limits_m": [6.5, 11],
             "resolution_check": "error",
             # dNBR
             "dnbr_scaling_check": "warn",
@@ -303,10 +305,11 @@ class TestPreprocess:
                     _main.preprocess(pconfig)
                 errcheck(error, f'The "{boolean}" setting must be a bool')
 
-        with alter(pconfig, "dnbr_limits", [1, 2, 3]):
-            with pytest.raises(ValueError) as error:
-                _main.preprocess(pconfig)
-            errcheck(error, "must have exactly 2 elements")
+        for limits in ["resolution_limits_m", "dnbr_limits"]:
+            with alter(pconfig, limits, [1, 2, 3]):
+                with pytest.raises(ValueError) as error:
+                    _main.preprocess(pconfig)
+                errcheck(error, "must have exactly 2 elements")
 
         for string in ["severity_field", "kf_field", "kf_fill_field"]:
             with alter(pconfig, string, 5):
@@ -323,6 +326,13 @@ class TestPreprocess:
             with pytest.raises(TypeError) as error:
                 _main.preprocess(pconfig)
             errcheck(error, 'Could not convert the "kf_fill" setting to a file path')
+
+        with alter(pconfig, "missing_kf_threshold", 2):
+            with pytest.raises(ValueError) as error:
+                _main.preprocess(pconfig)
+            errcheck(
+                error, f'The "missing_kf_threshold" setting must be between 0 and 1'
+            )
 
         for vector in ["water", "developed", "excluded_evt"]:
             with alter(pconfig, vector, "invalid"):

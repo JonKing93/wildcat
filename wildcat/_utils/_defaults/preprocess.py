@@ -24,6 +24,7 @@ buffer_km = 3
 
 # DEM
 resolution_check = "error"
+resolution_limits_m = [6.5, 11]
 
 # dNBR
 dnbr_scaling_check = "error"

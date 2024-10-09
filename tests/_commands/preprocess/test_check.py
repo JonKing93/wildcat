@@ -7,7 +7,10 @@ from wildcat._commands.preprocess import _check
 
 @pytest.fixture
 def resconfig():
-    return {"resolution_check": "error"}
+    return {
+        "resolution_check": "error",
+        "resolution_limits_m": [6.5, 11],
+    }
 
 
 @pytest.fixture
@@ -66,18 +69,16 @@ class TestCheck:
 
 class TestIsUnexpected:
     @pytest.mark.parametrize(
-        "value, expected",
+        "value, limits, expected",
         (
-            (5, True),
-            (6, True),
-            (7, False),
-            (10, False),
-            (13, False),
-            (13.1, True),
+            (5, [6.5, 11], True),
+            (5, [1, 6], False),
+            (10, [6.5, 11], False),
+            (12, [6.5, 11], True),
         ),
     )
-    def test(_, value, expected):
-        assert _check._isunexpected(value) == expected
+    def test(_, value, limits, expected):
+        assert _check._isunexpected(value, limits) == expected
 
 
 class TestResolution:
@@ -101,7 +102,10 @@ class TestResolution:
                     "WARNING",
                     (
                         "\n"
-                        "WARNING: The DEM does not appear to have a 10 meter resolution.\n"
+                        "WARNING: The DEM does not have an allowed resolution.\n"
+                        "    Allowed resolutions: from 6.5 to 11 meters\n"
+                        "    DEM resolution: 3.33 x 11.11 meters\n"
+                        "\n"
                         "    The hazard assessment models in wildcat were calibrated using\n"
                         "    a 10 meter DEM, so this resolution is recommended for most\n"
                         "    applications. See also Smith et al., (2019) for a discussion\n"
@@ -119,7 +123,7 @@ class TestResolution:
     def test_error(_, resconfig, resdem, errcheck, logcheck):
         with pytest.raises(ValueError) as error:
             _check.resolution(resconfig, resdem, logcheck.log)
-        errcheck(error, "The DEM does not appear to have a 10 meter resolution")
+        errcheck(error, "The DEM does not have an allowed resolution")
 
 
 class TestDnbrScaling:

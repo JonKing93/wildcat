@@ -397,6 +397,7 @@ def check_config(preprocessed, paths):
         "buffer_km = 0.02\n"
         "\n"
         "# DEM\n"
+        "resolution_limits_m = [6.5, 11]\n"
         'resolution_check = "error"\n'
         "\n"
         "# dNBR\n"
@@ -414,6 +415,7 @@ def check_config(preprocessed, paths):
         'kf_field = "KFFACT"\n'
         "constrain_kf = True\n"
         'missing_kf_check = "warn"\n'
+        "missing_kf_threshold = 0.05\n"
         "kf_fill = True\n"
         "kf_fill_field = None\n"
         "\n"

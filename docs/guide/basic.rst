@@ -98,7 +98,7 @@ Next, we'll want to add various input dataset files to the project. Most assessm
     * - :confval:`perimeter`
       - A fire perimeter mask. The mask will be :ref:`buffered <buffer-perimeter>`, and the extent of the buffered perimeter will define the domain of the analysis. Pixels in the perimeter may used used to :ref:`delineate <delineate>` the stream segment network, and segments sufficiently within the perimeter are retained during :ref:`network filtering <filter>`. Usually a Polygon or MultiPolygon feature file, but may also be a raster mask.
     * - :confval:`dem`
-      - Digital elevation model (DEM) raster. Used by the preprocessor to :ref:`set the CRS <reproject>`, resolution, and alignment of the preprocessed rasters. Used by the assessment to :ref:`characterize <characterize>` the watershed (including flow directions). Should have approximately 10 meter resolution (±3 meters).
+      - Digital elevation model (DEM) raster. Used by the preprocessor to :ref:`set the CRS <reproject>`, resolution, and alignment of the preprocessed rasters. Used by the assessment to :ref:`characterize <characterize>` the watershed (including flow directions). Should have approximately 10 meter resolution.
     * - :confval:`dnbr`
       - Differenced normalized burn ratio (dNBR) raster. Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000.
     * - :confval:`severity`

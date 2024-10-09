@@ -143,7 +143,9 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
     # Perimeter and DEM
     record.section(file, "Perimeter", ["buffer_km"], defaults)
     if isfull:
-        record.section(file, "DEM", ["resolution_check"], defaults)
+        record.section(
+            file, "DEM", ["resolution_limits_m", "resolution_check"], defaults
+        )
 
     # dNBR
     fields = ["dnbr_limits"]
@@ -160,7 +162,7 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
     # KF-factor
     fields = ["kf_field", "kf_fill", "kf_fill_field"]
     if isfull:
-        fields = fields + ["constrain_kf", "missing_kf_check"]
+        fields = fields + ["constrain_kf", "missing_kf_check", "missing_kf_threshold"]
     record.section(file, "KF-factors", fields, defaults)
 
     # EVT Masks
