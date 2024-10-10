@@ -139,7 +139,7 @@ The complete reference guide for using wildcat within a Python session.
             preprocess(..., kf)
             preprocess(..., evt)
 
-        Paths to datasets recommmended for most hazard assessments. The preprocessor will still run if these datasets are missing, but most users will need them later to implement an assessment. Set an input to False to disable the preprocessor for that dataset.
+        Paths to datasets recommmended for most hazard assessments. The preprocessor will still run if these datasets are missing, but most users will need them later to implement an assessment. Set an input to False to disable the preprocessor for that dataset. The dnbr, severity, and kf datasets also support using a constant value across the watershed. This can be useful when a spatially complete dataset is not available. To implement a constant value, set the dataset equal to a number instead of a file path.
 
     
     .. dropdown:: Optional Datasets

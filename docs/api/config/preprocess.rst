@@ -84,12 +84,20 @@ Examples::
 .. _dnbr:
 
 .. confval:: dnbr
-    :type: ``str | Path | None``
+    :type: ``str | Path | float | None``
     :default: ``r"dnbr"``
 
-    The path to the differenced normalized burn ratio (dNBR) raster. Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000.
+    The differenced normalized burn ratio (dNBR) dataset. Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000. This is usually a raster dataset, but you can instead use a constant value across the watershed by setting the field equal to a number.
 
     Most users will likely want to run wildcat for an active or recent fire, but you can also find links to historical dNBR datasets here: :ref:`dNBR datasets <data-fires>`
+
+    Examples::
+
+        # From a raster file
+        dnbr = r"path/to/my-dnbr.tif"
+
+        # Using a constant value
+        dnbr = 500
 
     *CLI option:* :option:`--dnbr <preprocess --dnbr>`
 
@@ -103,14 +111,27 @@ Examples::
 .. _severity:
 
 .. confval:: severity
-    :type: ``str | Path | None``
+    :type: ``str | Path | float | None``
     :default: ``r"severity"``
 
-    The path to a `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ soil burn severity dataset. Usually a raster, but may also be a Polygon or MultiPolygon feature file. If a Polygon/MultiPolygon file, then you must provide the :confval:`severity_field` setting.
+    The path to a `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ soil burn severity dataset. Usually a raster, but may also be a Polygon or MultiPolygon feature file. If a Polygon/MultiPolygon file, then you must provide the :confval:`severity_field` setting. Also supports using a constant severity across the watershed. To implement a constant value, set the field equal to a number, rather than a file path.
     
     The burn severity raster is used to :ref:`locate burned areas <severity-masks>`, which are used to :ref:`delineate <delineate>` the stream segment network. Also used to locate areas burned at moderate-or-high severity, which are used to estimate debris flow :ref:`likelihoods <likelihoods>`, :ref:`volumes <volumes>`, and :ref:`rainfall thresholds <thresholds>`. If missing, this dataset will be :ref:`estimated from the dNBR <estimate-severity>` using the values from the :confval:`severity_thresholds` setting.
 
     You can find links to burn severity datasets here: :ref:`Burn severity datasets <data-sbs>`. Most users will likely want to run wildcat for an active or recent fire, but you can also find links to historical burn severity datasets here: :ref:`historical severity datasets <data-fires>`
+
+    Examples::
+
+        # From a raster file
+        severity = r"path/to/my-severity.tif"
+
+        # From a Polygon file
+        severity = r"path/to/my-severity.shp"
+        severity_field = "MY_FIELD"
+
+        # Using a constant value
+        severity = 3
+
 
     *CLI option:* :option:`--severity <preprocess --severity>`
 
@@ -124,14 +145,26 @@ Examples::
 .. _kf:
 
 .. confval:: kf
-    :type: ``str | Path | None``
+    :type: ``str | Path | float | None``
     :default: ``r"kf"``
 
-    The path to a soil KF-factor dataset. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster. If a Polygon/MultiPolygon file, then you must also provide the :confval:`kf_field` setting.
+    The path to a soil KF-factor dataset. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster. If a Polygon/MultiPolygon file, then you must also provide the :confval:`kf_field` setting. Also supports using a constant KF-factor across the watershed. To implement a constant value, set the field equal to a number, rather than a file path.
 
     The KF-factors are used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Values should be positive, and the preprocessor will :ref:`convert non-positive values to NoData <constrain-kf>` by default.
 
     You can find links to KF-factor datasets here: :ref:`KF-factor datasets <data-kf>`
+
+    Examples::
+
+        # From a raster
+        kf = r"path/to/my-kf.tif"
+
+        # From a Polygon file
+        kf = r"path/to/my-kf.shp"
+        kf_field = "MY_FIELD"
+
+        # Using a constant value
+        kf = 0.2
 
     *CLI option:* :option:`--kf <preprocess --kf>`
 

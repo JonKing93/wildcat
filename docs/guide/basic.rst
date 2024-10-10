@@ -100,11 +100,11 @@ Next, we'll want to add various input dataset files to the project. Most assessm
     * - :confval:`dem`
       - Digital elevation model (DEM) raster. Used by the preprocessor to :ref:`set the CRS <reproject>`, resolution, and alignment of the preprocessed rasters. Used by the assessment to :ref:`characterize <characterize>` the watershed (including flow directions). Should have approximately 10 meter resolution.
     * - :confval:`dnbr`
-      - Differenced normalized burn ratio (dNBR) raster. Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000.
+      - Differenced normalized burn ratios (dNBRs). Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000. Usually a raster, but also supports using a constant value throughout the watershed.
     * - :confval:`severity`
-      - `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ burn severity. Used to :ref:`locate burned areas <severity-masks>`, which are used to :ref:`delineate <delineate>` the stream segment network. Also used to locate areas burned at moderate-or-high severity, which are used to estimate debris flow :ref:`likelihoods <likelihoods>`, :ref:`volumes <volumes>`, and :ref:`rainfall thresholds <thresholds>`. If missing, :ref:`estimated <estimate-severity>` from the dNBR dataset. Usually a raster, but may also be a Polygon or MultiPolygon feature file.
+      - `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ burn severity. Used to :ref:`locate burned areas <severity-masks>`, which are used to :ref:`delineate <delineate>` the stream segment network. Also used to locate areas burned at moderate-or-high severity, which are used to estimate debris flow :ref:`likelihoods <likelihoods>`, :ref:`volumes <volumes>`, and :ref:`rainfall thresholds <thresholds>`. If missing, :ref:`estimated <estimate-severity>` from the dNBR dataset. Usually a raster, but may also be a Polygon or MultiPolygon feature file. Also supports using a constant value throughout the watershed.
     * - :confval:`kf`
-      - :ref:`Soil KF-factors <kf-factors>`. Used to estimate :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Values should be positive, and the preprocessor will :ref:`convert non-positive <constrain-kf>` values to NoData by default. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster.
+      - :ref:`Soil KF-factors <kf-factors>`. Used to estimate :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Values should be positive, and the preprocessor will :ref:`convert non-positive <constrain-kf>` values to NoData by default. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster. Also supports using a constant value throughout the watershed.
     * - :confval:`evt`
       - Existing vegetation type raster. Although not required for an assessment, the EVT is used to :ref:`build water, development, and exclusion masks <evt-masks>`, which can improve the design of the stream segment network. Usually a raster of classification code integers.
 
@@ -131,6 +131,12 @@ And wildcat also supports the following optional datasets:
       - Spatially varying :ref:`KF-factor <kf-factors>` fill values. Missing KF-factor values :ref:`will be replaced <fill-kf>` with the co-located fill value. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster.
 
 You can follow the links in the tables to learn more about using each dataset, but we recommend reading this page first for an general introduction.
+
+Constant valued datasets
+++++++++++++++++++++++++
+
+The :confval:`kf`, :confval:`dnbr`, and :confval:`severity` datasets all support using a constant value throughout the watershed. This can be useful when a spatially complete dataset is not available. You can implement a constant value by setting a dataset equal to a number, rather than a file path.
+
 
 
 

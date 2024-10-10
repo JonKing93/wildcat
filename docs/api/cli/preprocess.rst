@@ -107,38 +107,68 @@ Example::
     wildcat preprocess --dnbr None
 
 
-.. option:: --dnbr PATH
+.. option:: --dnbr PATH | VALUE | None
 
-    The path to the differenced normalized burn ratio (dNBR) raster. Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000.
+    The differenced normalized burn ratio (dNBR) dataset. Used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000. This is usually the path to a raster dataset, but you can instead use a constant value across the watershed by setting the field equal to a number.
 
     Most users will likely want to run wildcat for an active or recent fire, but you can also find links to historical dNBR datasets here: :ref:`dNBR datasets <data-fires>`
+
+    Examples::
+
+        # From a raster
+        wildcat preprocess --dnbr path/to/my-dnbr.tif
+
+        # Using a constant value
+        wildcat preprocess --dnbr 500
 
     *Overrides setting:* :confval:`dnbr`
 
 
-.. option:: --severity PATH
+.. option:: --severity PATH | VALUE | None
 
-    The path to a `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ soil burn severity dataset. Usually a raster, but may also be a Polygon or MultiPolygon feature file. If a Polygon/MultiPolygon file, then you must provide the :confval:`severity_field` setting.
+    The path to a `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ soil burn severity dataset. Usually a raster, but may also be a Polygon or MultiPolygon feature file. If a Polygon/MultiPolygon file, then you must provide the :confval:`severity_field` setting. Also supports using a constant severity across the watershed. To implement a constant value, set the field equal to a number, rather than a file path.
     
     The burn severity raster is used to :ref:`locate burned areas <severity-masks>`, which are used to :ref:`delineate <delineate>` the stream segment network. Also used to locate areas burned at moderate-or-high severity, which are used to estimate debris flow :ref:`likelihoods <likelihoods>`, :ref:`volumes <volumes>`, and :ref:`rainfall thresholds <thresholds>`. If missing, this dataset will be :ref:`estimated from the dNBR <estimate-severity>` using the values from the :confval:`severity_thresholds` setting.
 
     Most users will likely want to run wildcat for an active or recent fire, but you can also find links to historical burn severity datasets here: :ref:`severity datasets <data-fires>`
 
+    Examples::
+
+        # From a raster
+        wildcat preprocess --severity path/to/my-severity.tif
+
+        # From Polygon features
+        wildcat preprocess --severity path/to/my-severity.shp --severity-field MY_FIELD
+
+        # Using a constant value
+        wildcat preprocess --severity 3
+
     *Overrides setting:* :confval:`severity`
 
 
-.. option:: --kf PATH
+.. option:: --kf PATH | VALUE | None
 
-    The path to a :ref:`soil KF-factor <kf-factors>` dataset. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster. If a Polygon/MultiPolygon file, then you must also provide the :confval:`kf_field` setting.
+    The path to a :ref:`soil KF-factor <kf-factors>` dataset. Often a Polygon or MultiPolygon feature file, but may also be a numeric raster. If a Polygon/MultiPolygon file, then you must also provide the :confval:`kf_field` setting. Also supports using a constant KF-factor across the watershed. To implement a constant value, set the field equal to a number, rather than a file path.
 
     The KF-factors are used to estimate debris-flow :ref:`likelihoods <likelihoods>` and :ref:`rainfall thresholds <thresholds>`. Values should be positive, and the preprocessor will :ref:`convert non-positive values to NoData <constrain-kf>` by default.
 
     You can find links to KF-factor datasets here: :ref:`KF-factor datasets <data-kf>`
 
+    Examples::
+
+        # From a raster
+        wildcat preprocess --kf path/to/my-kf.tif
+
+        # From Polygon features
+        wildcat preprocess --kf path/to/my-kf.shp --kf-field MY_FIELD
+
+        # Using a constant value
+        wildcat preprocess --kf 0.2
+
     *Overrides setting:* :confval:`kf`
 
 
-.. option:: --evt PATH
+.. option:: --evt PATH | VALUE | None
 
     The path to an existing vegetation type (EVT) raster. This is typically a raster of classification code integers. Although not required for an assessment, the EVT is used to :ref:`build water, development, and exclusion masks <evt-masks>`, which can improve the design of the stream segment network.
 
@@ -158,35 +188,35 @@ Example::
     wildcat preprocess --excluded None
 
 
-.. option:: --retainments PATH
+.. option:: --retainments PATH | None
     
     The path to a dataset indicating the locations of debris retainment features. Usually a Point or MultiPoint feature file, but may also be a raster mask. Pixels downstream of these features will not be used for :ref:`network delineation <delineate>`.
 
     *Overrides setting:* :confval:`retainments`
 
 
-.. option:: --excluded PATH
+.. option:: --excluded PATH | None
 
     The path to a dataset of areas that should be excluded from :ref:`network delineation <delineate>`. Usually a Polygon or MultiPolygon feature file, but may also be a raster mask. Pixels in these areas will not be used to delineate the network. If provided in conjunction with the :confval:`excluded_evt` setting, then the two masks will be combined to produce the final preprocessed exclusion mask.
 
     *Overrides setting:* :confval:`excluded`
 
 
-.. option:: --included PATH
+.. option:: --included PATH | None
 
     The path to a dataset of areas that should be retained when :ref:`filtering <filter>` the network. Usually a Polygon or MultiPolygon feature file, but may also be a raster mask. Any stream segment that intersects one of these areas will automatically be retained in the network - it will not need to pass any other filtering criteria.
 
     *Overrides setting:* :confval:`included`
 
 
-.. option:: --iswater PATH
+.. option:: --iswater PATH | None
 
     The path to a water body mask. Usually a Polygon or MultiPolygon feature file, but may also be a raster mask. Pixels in the mask will not be used for :ref:`network delineation <delineate>`. If provided in conjunction with the :confval:`water` setting, then the two masks will be combined to produce the final preprocessed water mask.
 
     *Overrides setting:* :confval:`iswater`
 
 
-.. option:: --isdeveloped PATH
+.. option:: --isdeveloped PATH | None
 
     The path to a human-development mask. Usually a Polygon or MultiPolygon feature file, but may also be a raster mask. The development mask is used to inform :ref:`network filtering <filter>`. If provided in conjunction with the :confval:`developed` setting, then the two masks will be combined to produce the final preprocessed development raster.
 

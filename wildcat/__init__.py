@@ -126,9 +126,9 @@ def preprocess(
     perimeter: Pathlike = None,
     dem: Pathlike = None,
     # Recommended datasets
-    dnbr: Optional[Pathlike] = None,
-    severity: Optional[Pathlike] = None,
-    kf: Optional[Pathlike] = None,
+    dnbr: Optional[Pathlike | scalar] = None,
+    severity: Optional[Pathlike | scalar] = None,
+    kf: Optional[Pathlike | scalar] = None,
     evt: Optional[Pathlike] = None,
     # Optional datasets
     retainments: Optional[Pathlike] = None,
@@ -216,7 +216,10 @@ def preprocess(
     Paths to datasets recommmended for most hazard assessments. The preprocessor
     will still run if these datasets are missing, but most users will need them
     later to implement an assessment. Set an input to False to disable the
-    preprocessor for that dataset.
+    preprocessor for that dataset. The dnbr, severity, and kf datasets also support
+    using a constant value across the watershed. This can be useful when a spatially
+    complete dataset is not available. To implement a constant value, set the dataset
+    equal to a number instead of a file path.
 
     preprocess(..., retainments)
     preprocess(..., excluded)
@@ -311,9 +314,10 @@ def preprocess(
         preprocessed: The path of the folder in which preprocessed rasters are saved
         perimeter: A fire perimeter dataset
         dem: A digital elevation model dataset, ideally at 10 meter resolution
-        dnbr: A difference normalized burn ratio (dNBR) dataset
-        severity: A BARC4-like burn severity dataset
-        kf: A KF-factor dataset
+        dnbr: A difference normalized burn ratio (dNBR) dataset. Either a file path or
+            a number.
+        severity: A BARC4-like burn severity dataset. Either a file path or a number.
+        kf: A KF-factor dataset. Either a file path or a positive number.
         evt: An existing vegetation type classification dataset
         retainments: Locations of debris retainment features
         excluded: Area that should be excluded from network delineation.

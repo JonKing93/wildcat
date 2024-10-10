@@ -44,7 +44,7 @@ The preprocessor supports the following input datasets. The following table summ
     * - **Recommended**
       - 
     * - :confval:`dnbr`
-      - Differenced normalized burn ratio raster. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000.
+      - Differenced normalized burn ratios. Optionally used to :ref:`estimate burn severity <estimate-severity>`. Should be (raw dNBR * 1000) with values ranging from approximately -1000 to 1000.
     * - :confval:`severity`
       - `BARC4-like <https://burnseverity.cr.usgs.gov/baer/faqs>`_ burn severity. If missing, :ref:`estimated <estimate-severity>` from the dNBR dataset. If a Polygon or MultiPolygon feature file, then you must provide the :confval:`severity_field` setting.
     * - :confval:`kf`
@@ -74,7 +74,6 @@ The **required** datasets are both essential for running the preprocessor, and t
 
     # Disables the KF-factor preprocessor
     kf = None   # (in configuration.py)
-
 
 
 ----
