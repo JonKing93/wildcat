@@ -18,6 +18,7 @@ from wildcat._utils._validate._core import (
     kf_fill,
     limits,
     optional_path,
+    optional_path_or_constant,
     optional_string,
     path,
     positive,
@@ -65,9 +66,9 @@ def preprocess(config: Config) -> None:
         "perimeter": path,
         "dem": path,
         # Recommended
-        "dnbr": optional_path,
-        "severity": optional_path,
-        "kf": optional_path,
+        "dnbr": optional_path_or_constant,
+        "severity": optional_path_or_constant,
+        "kf": optional_path_or_constant,
         "evt": optional_path,
         # Optional
         "retainments": optional_path,

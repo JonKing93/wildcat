@@ -115,6 +115,7 @@ def _folders(file: TextIO, defaults: dict) -> None:
         "IO Folders",
         ["inputs", "preprocessed", "assessment", "exports"],
         defaults,
+        paths=defaults,
     )
 
 
@@ -134,11 +135,14 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
         "Datasets",
         ["perimeter", "dem", "dnbr", "severity", "kf", "evt"],
         defaults,
+        paths=defaults,
     )
+
+    # Optional datasets
     fields = ["retainments", "excluded"]
     if isfull:
         fields += ["included", "iswater", "isdeveloped"]
-    record.section(file, "Optional Datasets", fields, defaults)
+    record.section(file, "Optional Datasets", fields, defaults, defaults)
 
     # Perimeter and DEM
     record.section(file, "Perimeter", ["buffer_km"], defaults)
@@ -185,6 +189,7 @@ def _assess(file: TextIO, defaults: dict, isfull: bool) -> None:
             "Required rasters",
             ["perimeter_p", "dem_p", "dnbr_p", "severity_p", "kf_p"],
             defaults,
+            paths=defaults,
         )
 
         # Optional masks
@@ -193,6 +198,7 @@ def _assess(file: TextIO, defaults: dict, isfull: bool) -> None:
             "Optional raster masks",
             ["retainments_p", "excluded_p", "included_p", "iswater_p", "isdeveloped_p"],
             defaults,
+            paths=defaults,
         )
 
         # Unit conversions

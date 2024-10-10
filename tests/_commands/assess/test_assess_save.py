@@ -18,7 +18,6 @@ def paths(assessment):
     return {
         "perimeter_p": assessment / "perimeter.tif",
         "dem_p": assessment / "dem.tif",
-        "included_p": None,
     }
 
 
@@ -1476,6 +1475,17 @@ class TestResults:
 class TestConfig:
     def test(_, assessment, paths, logcheck):
         config = {
+            # Datasets
+            "perimeter_p": Path("test"),
+            "dem_p": Path("test"),
+            "dnbr_p": None,
+            "severity_p": None,
+            "kf_p": None,
+            "retainments_p": None,
+            "excluded_p": Path("excluded"),
+            "included_p": Path("included"),
+            "iswater_p": None,
+            "isdeveloped_p": None,
             # Units
             "dem_per_m": 1,
             # Delineate
@@ -1520,7 +1530,14 @@ class TestConfig:
             "# Preprocessed rasters\n"
             f'perimeter_p = r"{perimeter}"\n'
             f'dem_p = r"{dem}"\n'
-            f"included_p = None\n"
+            "dnbr_p = None\n"
+            "severity_p = None\n"
+            "kf_p = None\n"
+            "retainments_p = None\n"
+            "excluded_p = None\n"
+            "included_p = None\n"
+            "iswater_p = None\n"
+            "isdeveloped_p = None\n"
             "\n"
             "# Unit conversions\n"
             "dem_per_m = 1\n"

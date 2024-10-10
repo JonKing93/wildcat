@@ -6,6 +6,7 @@ Core:
     standard    - Preprocessing parameters that can only be datasets
     required    - Datasets that are required to run the preprocessor
     raster_only - Datasets that can only be rasters
+    constant    - Datasets that may be a constant value
 
 Features:
     features    - Datasets that can be vector feature files
@@ -52,6 +53,11 @@ def required() -> list[str]:
 def raster_only() -> list[str]:
     "Datasets that can only be rasters"
     return ["dem", "dnbr", "evt"]
+
+
+def constant() -> list[str]:
+    "Datasets that may be a constant value"
+    return ["dnbr", "severity", "kf"]
 
 
 #####

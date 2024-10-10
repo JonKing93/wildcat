@@ -56,6 +56,10 @@ def test_features():
     ]
 
 
+def test_constant():
+    assert preprocess.constant() == ["dnbr", "severity", "kf"]
+
+
 def test_points():
     assert preprocess.points() == ["retainments"]
 

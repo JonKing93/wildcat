@@ -90,18 +90,34 @@ def _required(parser: ArgumentParser) -> None:
 def _recommended(parser: ArgumentParser) -> None:
     "Recommended datasets for the assessment"
 
+    # Create group
+    description = (
+        "Datasets recommended for most hazard assessments. File paths should\n"
+        "either be absolute, or relative to the 'inputs' folder. The dNBR, severity,\n"
+        "and kf datasets also support using a constant value throughout the watershed.\n"
+        "Set a dataset to None to disable the preprocessor for that dataset."
+    )
+    parser = parser.add_argument_group(f"Recommended Datasets", description)
+
+    # Datasets that may also be constant
     datasets = {
         "dnbr": "Differenced normalized burn ratio (raster)",
         "severity": "BARC4-like burn severity (polygons or raster)",
         "kf": "Soil KF-factors (polygons or raster)",
-        "evt": "Existing vegetation type (raster)",
     }
-    description = (
-        "Paths to datasets recommended for most hazard assessments. Paths should\n"
-        "either be absolute, or relative to the 'inputs' folder. Set a path to None\n"
-        "to disable the preprocessor for that dataset."
+    for name, description in datasets.items():
+        parser.add_argument(
+            f"--{name}",
+            metavar=f"PATH | VALUE | None",
+            help=description,
+        )
+
+    # EVT cannot be a constant
+    parser.add_argument(
+        "--evt",
+        metavar="PATH | None",
+        help="Existing vegetation type (raster)",
     )
-    _datasets(parser, "Recommended", description, datasets, extra_metavar=" | None")
 
 
 def _optional(parser: ArgumentParser) -> None:

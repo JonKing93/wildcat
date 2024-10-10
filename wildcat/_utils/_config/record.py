@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, TextIO
 
 import wildcat
+from wildcat.typing import PathDict
 
 #####
 # Main Blocks
@@ -30,21 +31,28 @@ def version(file: TextIO, title: str) -> None:
     file.write(f"# {title} for wildcat v{wildcat.version()}\n\n")
 
 
-def paths(file: TextIO, title: str, paths: dict[str, Path | None]) -> None:
-    "Records a section of config values that can only be paths"
+def section(
+    file: TextIO,
+    title: str,
+    fields: list[str],
+    config: dict,
+    paths: PathDict = {},
+) -> None:
+    "Records a group of related config values"
 
-    _title(file, title)
-    for field, value in paths.items():
-        _parameter(file, field, value)
-    file.write("\n")
-
-
-def section(file: TextIO, title: str, fields: list[str], config: dict) -> None:
-    "Writes a group of configuration values between a section heading and newline"
-
+    # Get the config value for each field
     _title(file, title)
     for field in fields:
         value = config[field]
+
+        # Parse Path inputs
+        if isinstance(value, Path):
+            if field in paths:
+                value = paths[field]
+            else:
+                value = None
+
+        # Add the value to the record
         _parameter(file, field, value)
     file.write("\n")
 

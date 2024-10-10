@@ -77,6 +77,49 @@ class TestOptionalPath:
         errcheck(error, 'Could not convert the "test" setting to a file path')
 
 
+class TestOptionalPathOrConstant:
+    def test_invalid(_, errcheck):
+        config = {"test": [1, 2, 3]}
+        with pytest.raises(TypeError) as error:
+            _core.optional_path_or_constant(config, "test")
+        errcheck(error, 'Could not convert the "test" setting to a file path')
+
+    @pytest.mark.parametrize(
+        "value, message", ((nan, "cannot be nan"), (inf, "must be finite"))
+    )
+    def test_invalid_constant(_, value, message, errcheck):
+        config = {"test": value}
+        with pytest.raises(ValueError) as error:
+            _core.optional_path_or_constant(config, "test")
+        errcheck(error, f'The "test" setting {message}')
+
+    @pytest.mark.parametrize("value", (-9, -9.1, 0, 2.2, 5))
+    def test_constant(_, value):
+        config = {"test": value}
+        _core.optional_path_or_constant(config, "test")
+        assert config["test"] == value
+
+    @pytest.mark.parametrize("value", (None, False))
+    def test_disabled(_, value):
+        config = {"test": value}
+        _core.optional_path_or_constant(config, "test")
+        assert config["test"] is None
+
+    def test_path(_):
+        config = {"test": "a/file/path"}
+        _core.optional_path_or_constant(config, "test")
+        assert config["test"] == Path("a/file/path")
+
+    def test_true(_, errcheck):
+        config = {"test": True}
+        with pytest.raises(TypeError) as error:
+            _core.optional_path_or_constant(config, "test")
+        errcheck(
+            error,
+            'The "test" setting should be a file path, so you cannot set test=True',
+        )
+
+
 class TestStrlist:
     def test_none(_):
         config = {"properties": None}

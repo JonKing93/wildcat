@@ -10,7 +10,9 @@ Functions:
 import warnings
 from logging import Logger
 
+import numpy as np
 from pfdf.raster import Raster
+from pfdf.utils.nodata import default as default_nodata
 from rasterio.errors import NotGeoreferencedWarning
 
 import wildcat._utils._paths.preprocess as _paths
@@ -65,13 +67,15 @@ def datasets(
     """Loads all remaining datasets as rasters. Returns all loaded rasters
     (including the perimeter and DEM) in a dict"""
 
-    # Log step and initialize rasters dict
-    log.info("Loading remaining datasets")
+    # Initialize rasters dict. Exit if there aren't other file datasets. Log step
     rasters = {"perimeter": perimeter, "dem": dem}
+    if len(paths) == 2:
+        return rasters
+    log.info("Loading file-based datasets")
 
-    # Iterate through remaining datasets. Skip missing files
+    # Iterate through remaining file-based datasets.
     for name, path in paths.items():
-        if path is None or name in ["perimeter", "dem"]:
+        if name in ["perimeter", "dem"]:
             continue
         log.debug(f"    Loading {name}")
 
@@ -104,3 +108,27 @@ def datasets(
         raster.name = name
         rasters[name] = raster
     return rasters
+
+
+def constants(config: Config, rasters: RasterDict, log: Logger) -> None:
+    "Builds rasters that are constant values"
+
+    # Iterate through datasets that are constants
+    log_step = True
+    for name in _paths.constant():
+        value = config[name]
+        if not isinstance(value, (int, float)):
+            continue
+
+        # Log the main step once and each individual raster
+        if log_step:
+            log.info("Building constant-valued rasters")
+            log_step = False
+        log.debug(f"    Building {name}")
+
+        # Build the raster. Ensure the NoData value is not the same as the data value
+        values = np.full(rasters["dem"].shape, value)
+        nodata = default_nodata(values.dtype)
+        if nodata == value:
+            nodata = 0
+        rasters[name] = Raster.from_array(values, nodata=nodata, spatial=rasters["dem"])

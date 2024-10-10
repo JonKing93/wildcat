@@ -1,8 +1,10 @@
+from pathlib import Path
+
 import numpy as np
 import pytest
-from pfdf.projection import Transform
 from pfdf.raster import Raster
 
+import wildcat._utils._paths.preprocess as _paths
 from wildcat import version
 from wildcat._commands.preprocess import _save
 
@@ -14,39 +16,48 @@ def raster():
 
 
 @pytest.fixture
-def config():
+def paths(inputs):
     return {
+        "perimeter": inputs / "perimeter.tif",
+        "dem": inputs / "dem.tif",
+    }
+
+
+@pytest.fixture
+def config():
+    datasets = {name: None for name in _paths.standard()}
+    datasets["perimeter"] = Path("perimeter")
+    datasets["dem"] = Path("dem")
+    datasets["kf"] = 5
+
+    config = {
+        # Perimeter
         "buffer_km": 3,
+        # DEM
         "resolution_limits_m": [6.5, 11],
         "resolution_check": "error",
-        "dem_crs": 26911,
-        "dem_transform": Transform(10, 10, 0, 0),
+        # dNBR
         "dnbr_scaling_check": "error",
         "constrain_dnbr": True,
         "dnbr_limits": [-2000, 2000],
+        # Severity
         "severity_field": None,
         "estimate_severity": True,
         "severity_thresholds": [125, 250, 500],
         "contain_severity": True,
+        # KF
         "kf_field": None,
         "constrain_kf": True,
         "max_missing_kf_ratio": 0.05,
         "missing_kf_check": "warn",
         "kf_fill": 2.2,
         "kf_fill_field": None,
+        # EVT
         "water": 7292,
         "developed": [7296, 7297, 7298, 7299],
         "excluded_evt": [],
     }
-
-
-@pytest.fixture
-def paths(inputs):
-    return {
-        "perimeter": inputs / "perimeter.tif",
-        "dem": inputs / "dem.tif",
-        "excluded": None,
-    }
+    return datasets | config
 
 
 class TestRasters:
@@ -110,7 +121,15 @@ class TestConfig:
             "# Input datasets\n"
             f'perimeter = r"{perimeter}"\n'
             f'dem = r"{dem}"\n'
-            f"excluded = None\n"
+            "dnbr = None\n"
+            "severity = None\n"
+            "kf = 5\n"
+            "evt = None\n"
+            "retainments = None\n"
+            "excluded = None\n"
+            "included = None\n"
+            "iswater = None\n"
+            "isdeveloped = None\n"
             "\n"
             "# Perimeter\n"
             "buffer_km = 3\n"
@@ -145,8 +164,11 @@ class TestConfig:
         )
 
     def test_kf_fill_file(_, outputs, config, paths, outtext, logcheck):
-        kf_fill = paths["perimeter"].parent / "kf_fill.shp"
+        filename = "kf_fill.shp"
+        kf_fill = paths["perimeter"].parent / filename
+
         paths["kf_fill"] = kf_fill
+        config["kf_fill"] = Path(filename)
         config["kf_fill_field"] = "KFFACT"
 
         path = outputs / "configuration.txt"
@@ -157,13 +179,22 @@ class TestConfig:
 
         perimeter = paths["perimeter"]
         dem = paths["dem"]
+        print(outtext(path))
         assert outtext(path) == (
             f"# Preprocessor configuration for wildcat v{version()}\n"
             "\n"
             "# Input datasets\n"
             f'perimeter = r"{perimeter}"\n'
             f'dem = r"{dem}"\n'
-            f"excluded = None\n"
+            "dnbr = None\n"
+            "severity = None\n"
+            "kf = 5\n"
+            "evt = None\n"
+            "retainments = None\n"
+            "excluded = None\n"
+            "included = None\n"
+            "iswater = None\n"
+            "isdeveloped = None\n"
             "\n"
             "# Perimeter\n"
             "buffer_km = 3\n"

@@ -69,6 +69,8 @@ def pconfig():
         config[name] = name
     for name in ["included", "iswater", "isdeveloped"]:
         config[name] = None
+
+    config["kf"] = 5
     return config
 
 
@@ -253,6 +255,7 @@ class TestPreprocess:
             expected[name] = Path(name)
         for name in ["included", "iswater", "isdeveloped"]:
             expected[name] = None
+        expected["kf"] = 5
         assert pconfig == expected
 
     def test_invalid(_, pconfig, errcheck):
@@ -263,9 +266,6 @@ class TestPreprocess:
             "preprocessed",
             "perimeter",
             "dem",
-            "dnbr",
-            "severity",
-            "kf",
             "evt",
             "retainments",
             "excluded",
@@ -278,6 +278,14 @@ class TestPreprocess:
                     _main.preprocess(pconfig)
                 errcheck(
                     error, f'Could not convert the "{path}" setting to a file path'
+                )
+
+        for constant in ["dnbr", "severity", "kf"]:
+            with alter(pconfig, constant, [1, 2, 3]):
+                with pytest.raises(TypeError) as error:
+                    _main.preprocess(pconfig)
+                errcheck(
+                    error, f'Could not convert the "{constant}" setting to a file path'
                 )
 
         with alter(pconfig, "buffer_km", -5):

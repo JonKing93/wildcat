@@ -9,6 +9,7 @@ Functions:
 from logging import Logger
 from pathlib import Path
 
+import wildcat._utils._paths.preprocess as _paths
 from wildcat._utils._config import record
 from wildcat.typing import Config, PathDict, RasterDict
 
@@ -35,15 +36,10 @@ def config(
     log.debug("    Saving configuration.txt")
     file = preprocessed / "configuration.txt"
 
-    # Group kf_fill with the KF config block, rather than with paths
-    if "kf_fill" in paths:
-        config["kf_fill"] = paths["kf_fill"]
-        del paths["kf_fill"]
-
     # Write each section
     with open(file, "w") as file:
         record.version(file, "Preprocessor configuration")
-        record.paths(file, "Input datasets", paths)
+        record.section(file, "Input datasets", _paths.standard(), config, paths)
         record.section(file, "Perimeter", ["buffer_km"], config)
         record.section(file, "DEM", ["resolution_limits_m", "resolution_check"], config)
         record.section(
@@ -75,6 +71,7 @@ def config(
                 "kf_fill_field",
             ],
             config,
+            paths,
         )
         record.section(
             file, "EVT masks", ["water", "developed", "excluded_evt"], config

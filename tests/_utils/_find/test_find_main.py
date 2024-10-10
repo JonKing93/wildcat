@@ -61,14 +61,30 @@ class TestIOFolders:
         )
 
 
-class TestPaths:
+class TestCollectPaths:
+    def test(_):
+        config = {
+            "perimeter": Path("perimeter"),
+            "dem": Path("dem"),
+            "severity": None,
+            "evt": Path("evt"),
+            "kf": 5,
+            "other": "some setting",
+            "other path": Path("unused"),
+        }
+        datasets = ["perimeter", "dem", "severity", "evt", "kf"]
+        output = _main._collect_paths(config, datasets)
+        assert output == {key: config[key] for key in ["perimeter", "dem", "evt"]}
+
+
+class TestResolvedPaths:
     def test_basic(_, vector, raster, folder, logcheck):
         paths = {
             "perimeter": Path(vector.name),
             "dem": Path(raster.name),
         }
         paths = _main._resolved_paths(
-            paths, folder, [], ["perimeter"], logcheck.log, "test files"
+            "test files", paths, folder, [], ["perimeter"], logcheck.log
         )
         assert paths == {
             "perimeter": vector,
@@ -85,13 +101,13 @@ class TestPaths:
     def test_missing_required(_, folder, errcheck, logcheck):
         paths = {"kf": Path("missing")}
         with pytest.raises(FileNotFoundError) as error:
-            _main._resolved_paths(paths, folder, ["kf"], [], logcheck.log, "test title")
+            _main._resolved_paths("test title", paths, folder, ["kf"], [], logcheck.log)
         errcheck(error, "Could not locate the kf file")
 
     def test_missing_optional(_, folder, logcheck):
         paths = {"kf": Path("kf")}
-        paths = _main._resolved_paths(paths, folder, [], [], logcheck.log, "test files")
-        assert paths == {"kf": None}
+        paths = _main._resolved_paths("test files", paths, folder, [], [], logcheck.log)
+        assert paths == {}
         logcheck.check(
             [
                 ("INFO", "Locating test files"),
@@ -102,13 +118,13 @@ class TestPaths:
     def test_missing_altered(_, folder, errcheck, logcheck):
         paths = {"kf": Path("missing")}
         with pytest.raises(FileNotFoundError) as error:
-            _main._resolved_paths(paths, folder, [], [], logcheck.log, "test files")
+            _main._resolved_paths("test files", paths, folder, [], [], logcheck.log)
         errcheck(error, "Could not locate the kf file")
 
     def test_features_are_raster(_, folder, raster, logcheck):
         paths = {"kf": Path(raster.stem)}
         paths = _main._resolved_paths(
-            paths, folder, ["kf"], ["kf"], logcheck.log, "test files"
+            "test files", paths, folder, ["kf"], ["kf"], logcheck.log
         )
         assert paths == {"kf": raster}
         logcheck.check(
@@ -167,15 +183,6 @@ class TestInputs:
         assert paths == {
             "perimeter": vector,
             "dem": raster,
-            "dnbr": None,
-            "severity": None,
-            "kf": None,
-            "evt": None,
-            "retainments": None,
-            "excluded": None,
-            "included": None,
-            "iswater": None,
-            "isdeveloped": None,
         }
         logcheck.check(
             [
@@ -260,15 +267,32 @@ class TestInputs:
                 ("DEBUG", f"    dnbr:         {raster}"),
                 ("DEBUG", f"    severity:     {raster}"),
                 ("DEBUG", f"    kf:           {vector}"),
+                ("DEBUG", f"    kf_fill:      {vector}"),
                 ("DEBUG", f"    evt:          {raster}"),
                 ("DEBUG", f"    retainments:  {vector}"),
                 ("DEBUG", f"    excluded:     {vector}"),
                 ("DEBUG", f"    included:     {vector}"),
                 ("DEBUG", f"    iswater:      {vector}"),
                 ("DEBUG", f"    isdeveloped:  {vector}"),
-                ("DEBUG", f"    kf_fill:      {vector}"),
             ]
         )
+
+    def test_constant(_, config, folder, raster, vector, logcheck):
+        constants = ["dnbr", "severity", "kf"]
+        for name in constants:
+            config[name] = 5
+
+        paths = _main.inputs(config, folder, logcheck.log)
+        assert paths == {
+            "perimeter": vector,
+            "dem": raster,
+            "evt": raster,
+            "retainments": vector,
+            "excluded": vector,
+            "included": vector,
+            "iswater": vector,
+            "isdeveloped": vector,
+        }
 
 
 class TestPreprocessed:
@@ -322,11 +346,6 @@ class TestPreprocessed:
             "dnbr_p": raster,
             "severity_p": raster,
             "kf_p": raster,
-            "retainments_p": None,
-            "excluded_p": None,
-            "included_p": None,
-            "iswater_p": None,
-            "isdeveloped_p": None,
         }
         logcheck.check(
             [

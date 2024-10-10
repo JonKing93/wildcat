@@ -38,7 +38,7 @@ class TestTitle:
 
 
 class TestSection:
-    def test(_, file, outtext):
+    def test_no_paths(_, file, outtext):
         config = {
             "string": "here is some text",
             "float": 2.2,
@@ -58,31 +58,40 @@ class TestSection:
             "\n"
         )
 
-
-class TestPaths:
-    def test(_, file, outtext):
-        paths = {
-            "path": Path("a/file/path/to/dem.tif"),
-            "another": Path("another/path/perimeter.shp"),
-            "missing": None,
+    def test_with_path(_, file, outtext):
+        config = {
+            "string": "here is some text",
+            "float": 2.2,
+            "path": Path("test"),
         }
+        absolute = Path("the") / "full" / "file" / "path"
+        paths = {"path": absolute}
         with open(file, "w") as f:
-            record.paths(f, "Test Paths", paths)
-        windows = (
-            "# Test Paths\n"
-            'path = r"a\\file\\path\\to\\dem.tif"\n'
-            'another = r"another\\path\\perimeter.shp"\n'
-            "missing = None\n"
+            record.section(f, "Test Group", config.keys(), config, paths)
+        assert outtext(file) == (
+            "# Test Group\n"
+            'string = "here is some text"\n'
+            "float = 2.2\n"
+            f'path = r"{absolute}"\n'
             "\n"
         )
-        linux = (
-            "# Test Paths\n"
-            'path = r"a/file/path/to/dem.tif"\n'
-            'another = r"another/path/perimeter.shp"\n'
-            "missing = None\n"
+
+    def test_missing_path(_, file, outtext):
+        config = {
+            "string": "here is some text",
+            "float": 2.2,
+            "path": Path("default"),
+        }
+        paths = {}
+        with open(file, "w") as f:
+            record.section(f, "Test Group", config.keys(), config, paths)
+        assert outtext(file) == (
+            "# Test Group\n"
+            'string = "here is some text"\n'
+            "float = 2.2\n"
+            f"path = None\n"
             "\n"
         )
-        assert outtext(file) in [windows, linux]
 
 
 class TestVersion:
