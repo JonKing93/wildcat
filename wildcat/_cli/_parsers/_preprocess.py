@@ -101,9 +101,9 @@ def _recommended(parser: ArgumentParser) -> None:
 
     # Datasets that may also be constant
     datasets = {
-        "dnbr": "Differenced normalized burn ratio (raster)",
-        "severity": "BARC4-like burn severity (polygons or raster)",
-        "kf": "Soil KF-factors (polygons or raster)",
+        "dnbr": "Differenced normalized burn ratio (raster or number)",
+        "severity": "BARC4-like burn severity (polygons, raster, or number)",
+        "kf": "Soil KF-factors (polygons, raster, or number)",
     }
     for name, description in datasets.items():
         parser.add_argument(
