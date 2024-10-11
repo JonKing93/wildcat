@@ -86,9 +86,15 @@ BibTeX::
     :caption: Resources
     :hidden:
 
+    FAQs / Troubleshooting <resources/faqs>
     Datasets <resources/datasets>
     Contributing <resources/contributing>
     Legal <resources/legal>
+
+.. toctree::
+    :caption: Releases
+    :hidden:
+    
     Release Notes <resources/release-notes/index>
     Latest Release <https://code.usgs.gov/ghsc/lhp/wildcat/-/releases/permalink/latest>
 

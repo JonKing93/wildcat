@@ -96,7 +96,7 @@ You can mimic the pipeline using::
 
 Scripts
 -------
-Development scripts are available via the `poethepoet <https://poethepoet.natn.io/index.html>` interface, and are defined in ``pyproject.toml``.
+Development scripts are available via the `poethepoet <https://poethepoet.natn.io/index.html>`_ interface, and are defined in ``pyproject.toml``.
 
 The following table provides a complete list of available scripts:
 
