@@ -24,13 +24,7 @@ Please see the [Developer Guide](https://ghsc.code-pages.usgs.gov/lhp/wildcat/re
 
 ## Suggested Citation
 
-King, J., 2024, wildcat - Software tool to assess and map post-wildfire debris-flow hazards, version 1.0.0: U.S. Geological Survey software release, https://doi.org/10.5066/P14VYAUB
+King, J., 2024, wildcat - Command line tool to assess and map post-wildfire debris-flow hazards, version 1.0.0: U.S. Geological Survey software release, https://doi.org/10.5066/P14VYAUB
 
+Please see the [Citation Page](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/citation.html) for additional citation information, including the DOI and IP number for each release.
 
-## DOI and IPDS Record
-
-The following table provides the DOI and IPDS record associated with each release:
-
-| Release        | DOI                              | IP Number |
-| -------        | ---                              | --------- |
-| 1.0.0 (latest) | https://doi.org/10.5066/P14VYAUB | IP-170896 |

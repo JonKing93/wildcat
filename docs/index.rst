@@ -55,20 +55,12 @@ The name "wildcat" is a loose acronym of post-(wil)dfire (d)ebris-flow hazard (c
 
 Citation
 --------
-If you use wildcat for a publication, please consider citing it::
+If you use wildcat for a publication, please consider citing it. You can cite the latest release using::
 
-    King, J., 2024, wildcat - Command line tool to assess and map post-wildfire debris-flow hazard
-    assessments, version 1.0.0: U.S. Geological Survey software release, https://doi.org/10.5066/P14VYAUB
+    King, J., 2024, wildcat - Command line tool to assess and map post-wildfire debris-flow hazards, 
+    version 1.0.0: U.S. Geological Survey software release, https://doi.org/10.5066/P14VYAUB
 
-BibTeX::
-
-    @misc{king_2024,
-        title = {wildcat - Command line tool to assess and map post-wildfire debris-flow hazard assessments, version 1.0.0},
-        author = {King, Jonathan},
-        url = {https://code.usgs.gov/ghsc/lhp},
-        year = {2024},
-        doi = {10.5066/P14VYAUB}
-    }
+And please see the :doc:`citation page <resources/citation>` for BibTex formatting, citing other releases, release DOIs, and IP numbers.
 
 
 .. toctree::
@@ -89,6 +81,7 @@ BibTeX::
     FAQs / Troubleshooting <resources/faqs>
     Datasets <resources/datasets>
     Contributing <resources/contributing>
+    Citation <resources/citation>
     Legal <resources/legal>
 
 .. toctree::
