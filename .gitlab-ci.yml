@@ -14,7 +14,7 @@ default:
 
 # Latest python release
 variables:
-  LATEST: '13'
+  LATEST: '12'
 
 # Activates latest python build for non-parallel jobs
 .latest-python:
@@ -26,7 +26,7 @@ variables:
 .multiple-python-versions:
   parallel:
     matrix:
-      - VERSION: ['11', '12', '13']
+      - VERSION: ['11', '12']
   image: "python:3.$VERSION"
 
 
