@@ -10,7 +10,10 @@ security: # configuration for the `safety check` command
         # We recommend making use of the optional `reason` and `expires` keys for each vulnerability that you ignore.
         70612:
             reason: We don't use jinja and a fix currently does not exist.
-            expires: '2025-02-01'
+            expires: '2025-08-01'
+        73456:
+            reason: We don't use the affected functionality
+            expires: '2025-08-01'
     continue-on-vulnerability-error: False # Suppress non-zero exit codes when vulnerabilities are found. Enable this in pipelines and CI/CD processes if you want to pass builds that have vulnerabilities. We recommend you set this to False.
 alert: # configuration for the `safety alert` command
     security:

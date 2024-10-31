@@ -1,5 +1,3 @@
-image: python:3.11
-
 stages:
   - build
   - test
@@ -11,26 +9,45 @@ default:
 
 
 #####
+# Python Versions
+#####
+
+# Latest python release
+variables:
+  LATEST: '13'
+
+# Activates latest python build for non-parallel jobs
+.latest-python:
+  image: "python:3.$LATEST"
+  before_script:
+    - source venv-$LATEST/bin/activate
+
+# Run a job on multiple versions of python in parallel
+.multiple-python-versions:
+  parallel:
+    matrix:
+      - VERSION: ['11', '12', '13']
+  image: "python:3.$VERSION"
+
+
+#####
 # Build
 #####
 
-before_script:
-  - source env/bin/activate
-
 build:
   stage: build
-  before_script:
-    - echo "Stops attempt to activate env before env is built..."
+  extends: .multiple-python-versions
   script:
     - pip install virtualenv
-    - virtualenv env
-    - source env/bin/activate
+    - virtualenv "venv-$VERSION"
+    - source "venv-$VERSION/bin/activate"
     - pip install poetry
-    - poetry install --with dev
+    - poetry install --with dev --extras tutorials
   artifacts:
     expire_in: 1 hour
     paths:
-      - env
+      - "venv-$VERSION"
+
 
 #####
 # Tests: Safety, Formatting, Tests
@@ -38,17 +55,21 @@ build:
 
 safety:
   stage: test
+  extends: .latest-python
   script:
     - poe safety
 
-lint:
+format:
   stage: test
+  extends: .latest-python
   script:
     - poe lint
 
 test:
   stage: test
+  extends: .multiple-python-versions
   script:
+    - source "venv-$VERSION/bin/activate"
     - poe tests
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
@@ -65,6 +86,7 @@ test:
 pages:
   stage: deploy
   when: manual
+  extends: .latest-python
   script:
     - poe docs
   artifacts:
@@ -76,8 +98,7 @@ release:
   stage: deploy
   rules:
     - if: $CI_COMMIT_TAG
+  extends: .latest-python
   script:
     - poetry build
-  artifacts:
-    paths:
-      - dist/
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*

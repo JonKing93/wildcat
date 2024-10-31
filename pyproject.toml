@@ -30,13 +30,17 @@ fiona = "*"
 rasterio = "*"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "*"
+# Code
+poethepoet = "*"
+safety = "3.2.7"
 black = "*"
 isort = "*"
+pytest = "*"
 pytest-cov = "*"
 coverage = "*"
-safety = "*"
-poethepoet = "*"
+twine = "*"
+
+# Docs
 sphinx = ">=7.2.6"
 furo = "*"
 sphinx_design = ">=0.5"
