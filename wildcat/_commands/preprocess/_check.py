@@ -60,9 +60,12 @@ def resolution(config: Config, dem: Raster, log: Logger) -> None:
         f"    of the effects of DEM resolution on topographic analysis:\n"
         f"    https://doi.org/10.5194/esurf-7-475-2019\n"
         f"\n"
-        f"    To continue with the current DEM, use either of the following flags:\n"
-        f"    --resolution-check warn\n"
-        f"    --resolution-check none"
+        f"    To continue with the current DEM, add either of the following lines to\n"
+        f"    configuration.py:\n"
+        "\n"
+        '     resolution_check = "warn"\n'
+        "     OR\n"
+        '     resolution_check = "none"'
     )
     _check(check, unexpected, message, log)
 
@@ -92,9 +95,12 @@ def dnbr_scaling(config: Config, rasters: RasterDict, log: Logger) -> None:
         "    raster are between -10 and 10. You may need to multiply your dNBR\n"
         "    values by 1000 to scale them correctly.\n"
         "\n"
-        "    To continue with the current dNBR, use either of the following flags:\n"
-        "    --dnbr-check warn\n"
-        "    --dnbr-check none"
+        "    To continue with the current dNBR, edit configuration.py to include\n"
+        "    one of the following lines:\n"
+        "\n"
+        '    dnbr_check = "warn"\n'
+        "    OR\n"
+        '    dnbr_check = "none"'
     )
     _check(check, failed, message, log)
 
@@ -125,10 +131,10 @@ def missing_kf(config: Config, rasters: RasterDict, log: Logger) -> None:
         "    continuing.\n"
         "    \n"
         "    If the dataset appears satisfactory, you can disable this message\n"
-        "    using the following flag:\n"
-        "    --missing-kf-check none\n"
+        "    by adding the following line to configuration.py:\n"
+        '    missing_kf_check = "none"\n'
         "    \n"
-        "    Alternatively, see the --kf-fill flag for options to fill missing\n"
+        '    Alternatively, see the "kf_fill" config value for options to fill missing\n'
         "    KF-factor data pixels."
     )
     _check(check, failed, message, log)
