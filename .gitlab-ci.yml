@@ -42,7 +42,7 @@ build:
     - virtualenv "venv-$VERSION"
     - source "venv-$VERSION/bin/activate"
     - pip install poetry
-    - poetry install --with dev --extras tutorials
+    - poetry install --with dev
   artifacts:
     expire_in: 1 hour
     paths:
