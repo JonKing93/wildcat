@@ -12,6 +12,7 @@ from pathlib import Path
 
 from pfdf.segments import Segments
 
+import wildcat._utils._paths.assess as _paths
 from wildcat._utils import _parameters
 from wildcat._utils._config import record
 from wildcat.typing._assess import Config, PathDict, PropertyDict
@@ -102,7 +103,7 @@ def config(assessment: Path, config: Config, paths: PathDict, log: Logger) -> No
     # Write each section
     with open(file, "w") as file:
         record.version(file, "Assessment configuration")
-        record.paths(file, "Preprocessed rasters", paths)
+        record.section(file, "Preprocessed rasters", _paths.all(), config, paths)
         record.section(file, "Unit conversions", ["dem_per_m"], config)
         record.section(
             file,

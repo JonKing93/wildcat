@@ -52,11 +52,15 @@ def fill_missing_kf(config: Config, rasters: RasterDict, log: Logger) -> None:
     if disabled or "kf" not in rasters:
         return
 
-    # Get the data array and the locations of missing data
-    log.info("Filling missing KF-factors")
+    # Also exit if there isn't any missing data
     kf = rasters["kf"]
-    values = kf.values.copy()
     missing = kf.nodata_mask
+    if not np.any(missing):
+        return
+
+    # Log step and get data array
+    log.info("Filling missing KF-factors")
+    values = kf.values.copy()
 
     # Fill using median of available data
     if isinstance(kf_fill, bool):

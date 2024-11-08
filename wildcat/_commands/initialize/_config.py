@@ -115,6 +115,7 @@ def _folders(file: TextIO, defaults: dict) -> None:
         "IO Folders",
         ["inputs", "preprocessed", "assessment", "exports"],
         defaults,
+        paths=defaults,
     )
 
 
@@ -129,19 +130,26 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
     )
 
     # Datasets
-    record.section(file, "Required Datasets", ["perimeter", "dem"], defaults)
     record.section(
-        file, "Recommended Datasets", ["dnbr", "severity", "kf", "evt"], defaults
+        file,
+        "Datasets",
+        ["perimeter", "dem", "dnbr", "severity", "kf", "evt"],
+        defaults,
+        paths=defaults,
     )
+
+    # Optional datasets
     fields = ["retainments", "excluded"]
     if isfull:
         fields += ["included", "iswater", "isdeveloped"]
-    record.section(file, "Optional Datasets", fields, defaults)
+    record.section(file, "Optional Datasets", fields, defaults, defaults)
 
     # Perimeter and DEM
     record.section(file, "Perimeter", ["buffer_km"], defaults)
     if isfull:
-        record.section(file, "DEM", ["resolution_check"], defaults)
+        record.section(
+            file, "DEM", ["resolution_limits_m", "resolution_check"], defaults
+        )
 
     # dNBR
     fields = ["dnbr_limits"]
@@ -158,7 +166,7 @@ def _preprocess(file: TextIO, defaults: dict, isfull: bool) -> None:
     # KF-factor
     fields = ["kf_field", "kf_fill", "kf_fill_field"]
     if isfull:
-        fields = fields + ["constrain_kf", "missing_kf_check"]
+        fields = fields + ["constrain_kf", "max_missing_kf_ratio", "missing_kf_check"]
     record.section(file, "KF-factors", fields, defaults)
 
     # EVT Masks
@@ -181,6 +189,7 @@ def _assess(file: TextIO, defaults: dict, isfull: bool) -> None:
             "Required rasters",
             ["perimeter_p", "dem_p", "dnbr_p", "severity_p", "kf_p"],
             defaults,
+            paths=defaults,
         )
 
         # Optional masks
@@ -189,6 +198,7 @@ def _assess(file: TextIO, defaults: dict, isfull: bool) -> None:
             "Optional raster masks",
             ["retainments_p", "excluded_p", "included_p", "iswater_p", "isdeveloped_p"],
             defaults,
+            paths=defaults,
         )
 
         # Unit conversions

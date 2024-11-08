@@ -18,11 +18,13 @@ from wildcat._utils._validate._core import (
     kf_fill,
     limits,
     optional_path,
+    optional_path_or_constant,
     optional_string,
     path,
     positive,
     positive_integer,
     positive_integers,
+    positive_limits,
     positives,
     ratio,
     ratios,
@@ -64,9 +66,9 @@ def preprocess(config: Config) -> None:
         "perimeter": path,
         "dem": path,
         # Recommended
-        "dnbr": optional_path,
-        "severity": optional_path,
-        "kf": optional_path,
+        "dnbr": optional_path_or_constant,
+        "severity": optional_path_or_constant,
+        "kf": optional_path_or_constant,
         "evt": optional_path,
         # Optional
         "retainments": optional_path,
@@ -77,6 +79,7 @@ def preprocess(config: Config) -> None:
         # Perimeter
         "buffer_km": positive,
         # DEM
+        "resolution_limits_m": positive_limits,
         "resolution_check": check,
         # dNBR
         "dnbr_scaling_check": check,
@@ -90,6 +93,7 @@ def preprocess(config: Config) -> None:
         # KF-factors
         "kf_field": optional_string,
         "constrain_kf": boolean,
+        "max_missing_kf_ratio": ratio,
         "missing_kf_check": check,
         "kf_fill": kf_fill,
         "kf_fill_field": optional_string,

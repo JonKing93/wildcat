@@ -29,9 +29,9 @@ def _check(check: Check, failed: bool, message: str, log: Logger) -> None:
         raise ValueError(message)
 
 
-def _isunexpected(resolution: float) -> bool:
+def _isunexpected(resolution: float, limits: tuple[float, float]) -> bool:
     "True if an axis resolution is outside the expected range"
-    return resolution < 7 or resolution > 13
+    return resolution < limits[0] or resolution > limits[1]
 
 
 def resolution(config: Config, dem: Raster, log: Logger) -> None:
@@ -47,18 +47,25 @@ def resolution(config: Config, dem: Raster, log: Logger) -> None:
         return
 
     # Check for 10m resolution, allowing for 3 meter error buffer
-    unexpected = _isunexpected(xres) or _isunexpected(yres)
+    limits = config["resolution_limits_m"]
+    unexpected = _isunexpected(xres, limits) or _isunexpected(yres, limits)
     message = (
-        "WARNING: The DEM does not appear to have a 10 meter resolution.\n"
-        "    The hazard assessment models in wildcat were calibrated using\n"
-        "    a 10 meter DEM, so this resolution is recommended for most\n"
-        "    applications. See also Smith et al., (2019) for a discussion\n"
-        "    of the effects of DEM resolution on topographic analysis:\n"
-        "    https://doi.org/10.5194/esurf-7-475-2019\n"
+        f"WARNING: The DEM does not have an allowed resolution.\n"
+        f"    Allowed resolutions: from {limits[0]} to {limits[1]} meters\n"
+        f"    DEM resolution: {xres:.2f} x {yres:.2f} meters\n"
+        f"\n"
+        f"    The hazard assessment models in wildcat were calibrated using\n"
+        f"    a 10 meter DEM, so this resolution is recommended for most\n"
+        f"    applications. See also Smith et al., (2019) for a discussion\n"
+        f"    of the effects of DEM resolution on topographic analysis:\n"
+        f"    https://doi.org/10.5194/esurf-7-475-2019\n"
+        f"\n"
+        f"    To continue with the current DEM, add either of the following lines to\n"
+        f"    configuration.py:\n"
         "\n"
-        "    To continue with the current DEM, use either of the following flags:\n"
-        "    --resolution-check warn\n"
-        "    --resolution-check none"
+        '     resolution_check = "warn"\n'
+        "     OR\n"
+        '     resolution_check = "none"'
     )
     _check(check, unexpected, message, log)
 
@@ -88,9 +95,12 @@ def dnbr_scaling(config: Config, rasters: RasterDict, log: Logger) -> None:
         "    raster are between -10 and 10. You may need to multiply your dNBR\n"
         "    values by 1000 to scale them correctly.\n"
         "\n"
-        "    To continue with the current dNBR, use either of the following flags:\n"
-        "    --dnbr-check warn\n"
-        "    --dnbr-check none"
+        "    To continue with the current dNBR, edit configuration.py to include\n"
+        "    one of the following lines:\n"
+        "\n"
+        '    dnbr_check = "warn"\n'
+        "    OR\n"
+        '    dnbr_check = "none"'
     )
     _check(check, failed, message, log)
 
@@ -105,10 +115,14 @@ def missing_kf(config: Config, rasters: RasterDict, log: Logger) -> None:
     if check == "none" or "kf" not in rasters or filling:
         return
 
-    # Check for missing KF-factors. Inform user if check failed.
+    # Compute the proportion of missing data
     log.info("Checking for missing KF-factor data")
     kf = rasters["kf"]
-    failed = np.sum(kf.nodata_mask) > 0
+    proportion = np.sum(kf.nodata_mask) / kf.size
+    log.debug(f"    Proportion of missing data: {proportion}")
+
+    # Inform the user if the check failed
+    failed = proportion > config["max_missing_kf_ratio"]
     message = (
         "WARNING: The KF-factor raster has missing data. This may indicate that\n"
         "    the KF-factor dataset is incomplete, but can also occur for normal\n"
@@ -117,10 +131,10 @@ def missing_kf(config: Config, rasters: RasterDict, log: Logger) -> None:
         "    continuing.\n"
         "    \n"
         "    If the dataset appears satisfactory, you can disable this message\n"
-        "    using the following flag:\n"
-        "    --missing-kf-check none\n"
+        "    by adding the following line to configuration.py:\n"
+        '    missing_kf_check = "none"\n'
         "    \n"
-        "    Alternatively, see the --kf-fill flag for options to fill missing\n"
+        '    Alternatively, see the "kf_fill" config value for options to fill missing\n'
         "    KF-factor data pixels."
     )
     _check(check, failed, message, log)

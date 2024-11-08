@@ -38,11 +38,16 @@ def preprocess(locals: Config) -> None:
     reproject(rasters, log)
     clip(rasters, log)
 
-    # Preprocess dNBR, KF-factors, and burn severity. Build EVT masks
+    # Build rasters that are constant values
+    _load.constants(config, rasters, log)
+
+    # Preprocess dNBR and burn severity
     _check.dnbr_scaling(config, rasters, log)
     constrain_dnbr(config, rasters, log)
     estimate_severity(config, rasters, log)
     contain_severity(config, rasters, log)
+
+    # Preprocess KF-factors, and build EVT masks
     constrain_kf(config, rasters, log)
     _check.missing_kf(config, rasters, log)
     fill_missing_kf(config, rasters, log)

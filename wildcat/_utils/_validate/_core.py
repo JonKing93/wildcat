@@ -6,42 +6,46 @@ The commands will also update the config dict as necessary to standardize config
 settings for internal use.
 ----------
 Utilities:
-    aslist          - Converts an input to a list
+    aslist              - Converts an input to a list
 
-File Paths:
-    path            - Checks a field can be converted to a Path
-    optional_path   - Checks a field is either a Path or None
+Paths / Datasets:
+    path                - Checks a field can be converted to a Path
+    optional_path       - Checks a field is either a Path or None
+    optional_path_or_constant   - Checks a field is an int, float, path, or None
 
 String options:
-    strlist         - Checks a field is a list of strings
-    optional_string - Checks a field is a string or None
-    _option         - Checks a field is a recognized string option
-    check           - Checks a field is either 'warn', 'error', or 'none'
-    config_style    - Checks a field is either 'none', 'empty', 'default', or 'full'
+    strlist             - Checks a field is a list of strings
+    optional_string     - Checks a field is a string or None
+    _option             - Checks a field is a recognized string option
+    check               - Checks a field is either 'warn', 'error', or 'none'
+    config_style        - Checks a field is either 'none', 'empty', 'default', or 'full'
 
 Scalars:
-    boolean         - Checks a field is a boolean
-    scalar          - Checks a field is an int or finite float
-    positive        - Checks a field is a positive scalar
+    boolean             - Checks a field is a boolean
+    scalar              - Checks a field is an int or finite float
+    positive            - Checks a field is a positive scalar
     positive_integer    - Checks a field is a positive integer
 
 Bounded Scalars:
-    _bounded        - Checks a field is a scalar between two bounds
-    ratio           - Checks a field is a scalar between 0 and 1
-    angle           - Checks a field is a scalar between 0 and 360
+    _bounded            - Checks a field is a scalar between two bounds
+    ratio               - Checks a field is a scalar between 0 and 1
+    angle               - Checks a field is a scalar between 0 and 360
 
 Vectors:
-    vector          - Checks a field is a vector of ints and/or finite floats
-    ratios          - Checks a field is a vector of values between 0 and 1
-    positives       - Checks a field is a vector of positive values
+    vector              - Checks a field is a vector of ints and/or finite floats
+    ratios              - Checks a field is a vector of values between 0 and 1
+    positives           - Checks a field is a vector of positive values
     positive_integers   - Checks a field is a vector of positive integers
 
-Specific parameters:
-    _ascending      - Checks a field is a vector of specific length with ascending values
-    limits          - Checks a field is the bounds of an interval (ascending 2-vector)
-    severity_threhsolds - Checks a field is a vector of 3 ascending values
-    kf_fill         - Checks a field is a boolean, int, float, Path, or None
-    durations       - Checks a field is a vector of values equal to 15, 30, and/or 60
+Sorted:
+    _ascending          - Checks a field is a vector of specific length with ascending values
+    limits              - Checks a field is the bounds of an interval (ascending 2-vector)
+    positive_limits     - Checks a field is the bounds of a positive interval
+    severity_thresholds - Checks a field is a vector of 3 ascending values
+
+Misc:
+    kf_fill             - Checks a field is a boolean, int, float, Path, or None
+    durations           - Checks a field is a vector of values equal to 15, 30, and/or 60
 """
 
 from math import isinf, isnan
@@ -65,7 +69,7 @@ def aslist(input: Any) -> list:
 
 
 #####
-# File paths
+# Paths / Datasets
 #####
 
 
@@ -101,6 +105,15 @@ def optional_path(config: Config, name: str) -> None:
         config[name] = None
     else:
         path(config, name)
+
+
+def optional_path_or_constant(config: Config, name: str) -> None:
+    "Checks an input is an int, float, or optional path"
+
+    if isinstance(config[name], (int, float)) and not isinstance(config[name], bool):
+        scalar(config, name)
+    else:
+        optional_path(config, name)
 
 
 #####
@@ -321,7 +334,7 @@ def positive_integers(config: Config, name: str) -> None:
 
 
 #####
-# Specific parameters
+# Sorted
 #####
 
 
@@ -343,9 +356,20 @@ def limits(config: Config, name: str) -> None:
     _ascending(config, name, 2)
 
 
+def positive_limits(config: Config, name: str) -> None:
+    "Checks an input represents the bounds of a positive interval"
+    limits(config, name)
+    positives(config, name)
+
+
 def severity_thresholds(config: Config, name: str) -> None:
     "Checks an input is 3 ascending numeric values"
     _ascending(config, name, 3)
+
+
+#####
+# Misc
+#####
 
 
 def kf_fill(config: Config, name: str) -> None:

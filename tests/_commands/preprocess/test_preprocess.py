@@ -209,6 +209,48 @@ class TestPreprocess:
         check_config(preprocessed, paths)
         check_log(logcheck, paths)
 
+    def test_constant(_, project, locals, logcheck):
+        locals["kf"] = 5
+
+        paths = make_datasets(project)
+        preprocessed = project / "preprocessed"
+        paths["preprocessed"] = preprocessed
+        assert not preprocessed.exists()
+
+        logcheck.start("wildcat.preprocess")
+        _preprocess.preprocess(locals)
+
+        assert preprocessed.exists()
+        contents = os.listdir(preprocessed)
+        assert sorted(contents) == sorted(
+            [
+                "configuration.txt",
+                "perimeter.tif",
+                "dem.tif",
+                "dnbr.tif",
+                "severity.tif",
+                "kf.tif",
+                "evt.tif",
+                "retainments.tif",
+                "excluded.tif",
+                "iswater.tif",
+                "isdeveloped.tif",
+            ]
+        )
+
+        check_perimeter(preprocessed)
+        check_dem(preprocessed)
+        check_dnbr(preprocessed)
+        check_severity(preprocessed)
+        check_kf_constant(preprocessed)
+        check_evt(preprocessed)
+        check_retainments(preprocessed)
+        check_excluded(preprocessed)
+        check_iswater(preprocessed)
+        check_isdeveloped(preprocessed)
+        check_config_constant(preprocessed, paths)
+        check_log_constant(logcheck, paths)
+
     def test_cli(_, project, CleanCLI, logcheck):
 
         # Note: The configuration file in "make_datasets" tests the use of config
@@ -319,6 +361,12 @@ def check_kf(preprocessed):
     assert np.array_equal(kf.values, expected)
 
 
+def check_kf_constant(preprocessed):
+    kf = _check_raster(preprocessed, "kf")
+    expected = np.full((9, 8), 5)
+    assert np.array_equal(kf.values, expected)
+
+
 def check_evt(preprocessed):
     evt = _check_raster(preprocessed, "evt")
     expected = np.empty((9, 8))
@@ -397,6 +445,7 @@ def check_config(preprocessed, paths):
         "buffer_km = 0.02\n"
         "\n"
         "# DEM\n"
+        "resolution_limits_m = [6.5, 11]\n"
         'resolution_check = "error"\n'
         "\n"
         "# dNBR\n"
@@ -413,6 +462,68 @@ def check_config(preprocessed, paths):
         "# KF-factors\n"
         'kf_field = "KFFACT"\n'
         "constrain_kf = True\n"
+        "max_missing_kf_ratio = 0.05\n"
+        'missing_kf_check = "warn"\n'
+        "kf_fill = True\n"
+        "kf_fill_field = None\n"
+        "\n"
+        "# EVT masks\n"
+        "water = [7292]\n"
+        "developed = [7296, 7297, 7298, 7299, 7300]\n"
+        "excluded_evt = [5, 7]\n\n"
+    )
+
+
+def check_config_constant(preprocessed, paths):
+    path = preprocessed / "configuration.txt"
+    with open(path) as file:
+        text = file.read()
+
+    perimeter = paths["perimeter"]
+    dem = paths["dem"]
+    dnbr = paths["dnbr"]
+    evt = paths["evt"]
+    retainments = paths["retainments"]
+    excluded = paths["excluded"]
+
+    assert text == (
+        f"# Preprocessor configuration for wildcat v{version()}\n"
+        "\n"
+        "# Input datasets\n"
+        f'perimeter = r"{perimeter}"\n'
+        f'dem = r"{dem}"\n'
+        f'dnbr = r"{dnbr}"\n'
+        f"severity = None\n"
+        f"kf = 5\n"
+        f'evt = r"{evt}"\n'
+        f'retainments = r"{retainments}"\n'
+        f'excluded = r"{excluded}"\n'
+        f"included = None\n"
+        f"iswater = None\n"
+        f"isdeveloped = None\n"
+        "\n"
+        "# Perimeter\n"
+        "buffer_km = 0.02\n"
+        "\n"
+        "# DEM\n"
+        "resolution_limits_m = [6.5, 11]\n"
+        'resolution_check = "error"\n'
+        "\n"
+        "# dNBR\n"
+        'dnbr_scaling_check = "error"\n'
+        "constrain_dnbr = True\n"
+        "dnbr_limits = [-2000, 2000]\n"
+        "\n"
+        "# Burn Severity\n"
+        "severity_field = None\n"
+        "estimate_severity = True\n"
+        "severity_thresholds = [125, 250, 500]\n"
+        "contain_severity = True\n"
+        "\n"
+        "# KF-factors\n"
+        'kf_field = "KFFACT"\n'
+        "constrain_kf = True\n"
+        "max_missing_kf_ratio = 0.05\n"
         'missing_kf_check = "warn"\n'
         "kf_fill = True\n"
         "kf_fill_field = None\n"
@@ -445,14 +556,13 @@ def check_log(logcheck, paths):
             ("DEBUG", f"    retainments:  {paths['retainments']}"),
             ("DEBUG", f"    excluded:     {paths['excluded']}"),
             ("DEBUG", f"    included:     None"),
-            ("DEBUG", f"    iswater:      None"),
             ("DEBUG", f"    isdeveloped:  None"),
             ("INFO", "Building buffered burn perimeter"),
             ("DEBUG", "    Loading perimeter mask"),
             ("DEBUG", "    Buffering perimeter"),
             ("INFO", "Loading DEM"),
             ("DEBUG", "    Resolution: 10.00 x 10.00 meters"),
-            ("INFO", "Loading remaining datasets"),
+            ("INFO", "Loading file-based datasets"),
             ("DEBUG", "    Loading dnbr"),
             ("DEBUG", "    Loading kf"),
             ("DEBUG", "    Loading evt"),
@@ -492,6 +602,77 @@ def check_log(logcheck, paths):
             ("DEBUG", "    Saving evt"),
             ("DEBUG", "    Saving retainments"),
             ("DEBUG", "    Saving excluded"),
+            ("DEBUG", "    Saving severity"),
+            ("DEBUG", "    Saving iswater"),
+            ("DEBUG", "    Saving isdeveloped"),
+            ("DEBUG", "    Saving configuration.txt"),
+        ]
+    )
+
+
+def check_log_constant(logcheck, paths):
+    logcheck.check(
+        [
+            ("INFO", "----- Preprocessing -----"),
+            ("INFO", "Parsing configuration"),
+            ("DEBUG", "    Locating project folder"),
+            ("DEBUG", f"        {paths['project']}"),
+            ("DEBUG", "    Reading configuration file"),
+            ("INFO", "Locating IO folders"),
+            ("DEBUG", f"    inputs: {paths['inputs']}"),
+            ("DEBUG", f"    preprocessed: {paths['preprocessed']}"),
+            ("INFO", "Locating input datasets"),
+            ("DEBUG", f"    perimeter:    {paths['perimeter']}"),
+            ("DEBUG", f"    dem:          {paths['dem']}"),
+            ("DEBUG", f"    dnbr:         {paths['dnbr']}"),
+            ("DEBUG", f"    severity:     None"),
+            ("DEBUG", f"    evt:          {paths['evt']}"),
+            ("DEBUG", f"    retainments:  {paths['retainments']}"),
+            ("DEBUG", f"    excluded:     {paths['excluded']}"),
+            ("DEBUG", f"    included:     None"),
+            ("DEBUG", f"    isdeveloped:  None"),
+            ("INFO", "Building buffered burn perimeter"),
+            ("DEBUG", "    Loading perimeter mask"),
+            ("DEBUG", "    Buffering perimeter"),
+            ("INFO", "Loading DEM"),
+            ("DEBUG", "    Resolution: 10.00 x 10.00 meters"),
+            ("INFO", "Loading file-based datasets"),
+            ("DEBUG", "    Loading dnbr"),
+            ("DEBUG", "    Loading evt"),
+            ("DEBUG", "    Loading retainments"),
+            ("DEBUG", "    Loading excluded"),
+            ("INFO", "Reprojecting rasters to match the DEM"),
+            ("DEBUG", "    Reprojecting perimeter"),
+            ("DEBUG", "    Reprojecting dnbr"),
+            ("DEBUG", "    Reprojecting evt"),
+            ("DEBUG", "    Reprojecting retainments"),
+            ("DEBUG", "    Reprojecting excluded"),
+            ("INFO", "Clipping rasters to the buffered perimeter"),
+            ("DEBUG", "    Clipping dem"),
+            ("DEBUG", "    Clipping dnbr"),
+            ("DEBUG", "    Clipping evt"),
+            ("DEBUG", "    Clipping retainments"),
+            ("DEBUG", "    Clipping excluded"),
+            ("INFO", "Building constant-valued rasters"),
+            ("DEBUG", "    Building kf"),
+            ("INFO", "Checking dNBR scaling"),
+            ("INFO", "Constraining dNBR data range"),
+            ("INFO", "Estimating severity from dNBR"),
+            ("INFO", "Containing severity data to the perimeter"),
+            ("INFO", "Constraining KF-factors to positive values"),
+            ("INFO", "Building EVT masks"),
+            ("DEBUG", "    Locating water pixels"),
+            ("DEBUG", "    Locating developed pixels"),
+            ("DEBUG", "    Locating excluded_evt pixels"),
+            ("DEBUG", '    Merging excluded_evt mask with "excluded" file'),
+            ("INFO", "Saving preprocessed rasters"),
+            ("DEBUG", "    Saving perimeter"),
+            ("DEBUG", "    Saving dem"),
+            ("DEBUG", "    Saving dnbr"),
+            ("DEBUG", "    Saving evt"),
+            ("DEBUG", "    Saving retainments"),
+            ("DEBUG", "    Saving excluded"),
+            ("DEBUG", "    Saving kf"),
             ("DEBUG", "    Saving severity"),
             ("DEBUG", "    Saving iswater"),
             ("DEBUG", "    Saving isdeveloped"),

@@ -39,11 +39,9 @@ def default_config():
         "# These values determine the implementation of the preprocessor.\n"
         "#####\n"
         "\n"
-        "# Required Datasets\n"
+        "# Datasets\n"
         'perimeter = r"perimeter"\n'
         'dem = r"dem"\n'
-        "\n"
-        "# Recommended Datasets\n"
         'dnbr = r"dnbr"\n'
         'severity = r"severity"\n'
         'kf = r"kf"\n'
@@ -147,11 +145,9 @@ def full_config():
         "# These values determine the implementation of the preprocessor.\n"
         "#####\n"
         "\n"
-        "# Required Datasets\n"
+        "# Datasets\n"
         'perimeter = r"perimeter"\n'
         'dem = r"dem"\n'
-        "\n"
-        "# Recommended Datasets\n"
         'dnbr = r"dnbr"\n'
         'severity = r"severity"\n'
         'kf = r"kf"\n'
@@ -168,6 +164,7 @@ def full_config():
         "buffer_km = 3\n"
         "\n"
         "# DEM\n"
+        "resolution_limits_m = [6.5, 11]\n"
         'resolution_check = "error"\n'
         "\n"
         "# dNBR\n"
@@ -186,6 +183,7 @@ def full_config():
         "kf_fill = False\n"
         "kf_fill_field = None\n"
         "constrain_kf = True\n"
+        "max_missing_kf_ratio = 0.05\n"
         'missing_kf_check = "warn"\n'
         "\n"
         "# EVT Masks\n"

@@ -90,18 +90,34 @@ def _required(parser: ArgumentParser) -> None:
 def _recommended(parser: ArgumentParser) -> None:
     "Recommended datasets for the assessment"
 
-    datasets = {
-        "dnbr": "Differenced normalized burn ratio (raster)",
-        "severity": "BARC4-like burn severity (polygons or raster)",
-        "kf": "Soil KF-factors (polygons or raster)",
-        "evt": "Existing vegetation type (raster)",
-    }
+    # Create group
     description = (
-        "Paths to datasets recommended for most hazard assessments. Paths should\n"
-        "either be absolute, or relative to the 'inputs' folder. Set a path to None\n"
-        "to disable the preprocessor for that dataset."
+        "Datasets recommended for most hazard assessments. File paths should\n"
+        "either be absolute, or relative to the 'inputs' folder. The dNBR, severity,\n"
+        "and kf datasets also support using a constant value throughout the watershed.\n"
+        "Set a dataset to None to disable the preprocessor for that dataset."
     )
-    _datasets(parser, "Recommended", description, datasets, extra_metavar=" | None")
+    parser = parser.add_argument_group(f"Recommended Datasets", description)
+
+    # Datasets that may also be constant
+    datasets = {
+        "dnbr": "Differenced normalized burn ratio (raster or number)",
+        "severity": "BARC4-like burn severity (polygons, raster, or number)",
+        "kf": "Soil KF-factors (polygons, raster, or number)",
+    }
+    for name, description in datasets.items():
+        parser.add_argument(
+            f"--{name}",
+            metavar=f"PATH | VALUE | None",
+            help=description,
+        )
+
+    # EVT cannot be a constant
+    parser.add_argument(
+        "--evt",
+        metavar="PATH | None",
+        help="Existing vegetation type (raster)",
+    )
 
 
 def _optional(parser: ArgumentParser) -> None:
@@ -152,7 +168,14 @@ def _dem(parser: ArgumentParser) -> None:
     "Adds the DEM group with a resolution check"
 
     parser = parser.add_argument_group("DEM")
-    _check(parser, "resolution", "the DEM does not have 10 meter resolution")
+    parser.add_argument(
+        "--resolution-limits-m",
+        nargs=2,
+        type=float,
+        metavar=("MIN", "MAX"),
+        help="The minimum and maximum allowed resolution in meters",
+    )
+    _check(parser, "resolution", "the DEM resolution is outside the allowed limits")
 
 
 def _dnbr(parser: ArgumentParser) -> None:
@@ -220,10 +243,16 @@ def _kf(parser: ArgumentParser) -> None:
     switch(parser, "no-constrain-kf", "Do not constrain KF-factors to positive values")
 
     # Add missing KF options
+    parser.add_argument(
+        "--max-missing-kf-ratio",
+        type=float,
+        metavar="RATIO",
+        help="The maximum allowed proportion of missing KF-factor data (from 0 to 1)",
+    )
     _check(
         parser,
         "missing-kf",
-        "the KF-factor raster has missing data and there is not a kf-fill value",
+        "the amount of missing KF-factor data exceeds the maximum allowed level and there is no fill value",
     )
     parser.add_argument(
         "--kf-fill",

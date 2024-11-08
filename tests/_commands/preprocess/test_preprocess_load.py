@@ -165,7 +165,6 @@ def paths(fperimeter, pdem, points, polygons):
     return {
         "perimeter": fperimeter,
         "dem": pdem,
-        "missing": None,
         "retainments": points["path"],
         "kf": polygons["path"],
         "excluded": polygons["path"],
@@ -256,7 +255,7 @@ class TestDatasets:
 
         logcheck.check(
             [
-                ("INFO", "Loading remaining datasets"),
+                ("INFO", "Loading file-based datasets"),
                 ("DEBUG", "    Loading retainments"),
                 ("DEBUG", "    Loading kf"),
                 ("DEBUG", "    Loading excluded"),
@@ -272,4 +271,69 @@ class TestDatasets:
             _load.datasets(config, paths, perimeter, dem, logcheck.log)
         errcheck(
             error, "severity is a vector feature file, so severity_field cannot be None"
+        )
+
+    def test_no_datasets(_, config, paths, perimeter, dem, logcheck):
+        paths = {paths[name] for name in ["perimeter", "dem"]}
+        output = _load.datasets(config, paths, perimeter, dem, logcheck.log)
+        assert output == {"perimeter": perimeter, "dem": dem}
+        logcheck.check([])
+
+
+class TestConstants:
+    def test_none(_, config, logcheck):
+        for name in ["kf", "dnbr", "severity"]:
+            config[name] = Path("test")
+        rasters = {}
+        _load.constants(config, rasters, logcheck.log)
+        assert rasters == {}
+        logcheck.check([])
+
+    def test_standard(_, config, dem, logcheck):
+        config["kf"] = 5
+        config["dnbr"] = Path("test")
+        config["severity"] = 2.2
+        rasters = {"dem": dem}
+        _load.constants(config, rasters, logcheck.log)
+
+        kf = np.full((10, 10), 5)
+        nodata = np.iinfo(kf.dtype).min
+        expected_kf = Raster.from_array(kf, nodata=nodata, spatial=dem)
+
+        severity = np.full((10, 10), 2.2)
+        expected_severity = Raster.from_array(severity, nodata=nan, spatial=dem)
+
+        assert rasters == {
+            "dem": dem,
+            "severity": expected_severity,
+            "kf": expected_kf,
+        }
+        logcheck.check(
+            [
+                ("INFO", "Building constant-valued rasters"),
+                ("DEBUG", "    Building severity"),
+                ("DEBUG", "    Building kf"),
+            ]
+        )
+
+    def test_0_nodata(_, config, dem, logcheck):
+        for name in ["kf", "dnbr", "severity"]:
+            config[name] = Path("test")
+
+        dtype = np.array(0).dtype
+        kf = np.iinfo(dtype).min
+        config["kf"] = kf
+
+        rasters = {"dem": dem}
+        _load.constants(config, rasters, logcheck.log)
+
+        kf = np.full((10, 10), kf)
+        expected_kf = Raster.from_array(kf, nodata=0, spatial=dem)
+
+        assert rasters == {
+            "dem": dem,
+            "kf": expected_kf,
+        }
+        logcheck.check(
+            [("INFO", "Building constant-valued rasters"), ("DEBUG", "    Building kf")]
         )

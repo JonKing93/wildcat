@@ -5,6 +5,7 @@ Functions:
     io_folders      - Locates IO folders and logs the paths
     inputs          - Locates input datasets for the preprocessor
     preprocessed    - Locates preprocessed rasters for the assessment
+    _collect_paths  - Initializes path dict with datasets that are Paths
     _resolved_paths - Resolves config paths and logs the locations
 """
 
@@ -32,43 +33,48 @@ def io_folders(config: Config, inputs: str, outputs: str, log: Logger) -> IOFold
 def inputs(config: Config, folder: Path, log: Logger) -> PathDict:
     "Locate the paths to input datasets for the preprocessor"
 
-    # Initialize path dict with config settings. Optionally include kf_fill
-    paths = {name: config[name] for name in _paths.preprocess.standard()}
-    if not isinstance(config["kf_fill"], (bool, float, int)):
-        paths["kf_fill"] = config["kf_fill"]
-
-    # Locate each path
+    paths = _collect_paths(config, _paths.preprocess.all())
     return _resolved_paths(
+        "input datasets",
         paths,
         folder,
         required=_paths.preprocess.required(),
         features=_paths.preprocess.features(),
         log=log,
-        title="input datasets",
     )
 
 
 def preprocessed(config: Config, folder: Path, log: Logger) -> PathDict:
     "Locate the paths to preprocessed rasters for the assessment"
 
-    paths = {name: config[name] for name in _paths.assess.all()}
+    paths = _collect_paths(config, _paths.assess.all())
     return _resolved_paths(
+        "preprocessed rasters",
         paths,
         folder,
         required=_paths.assess.required(),
         features=[],
         log=log,
-        title="preprocessed rasters",
     )
 
 
+def _collect_paths(config: Config, datasets: list[str]) -> PathDict:
+    "Initialize a Path dict with all datasets that are Paths"
+
+    paths = {}
+    for name in datasets:
+        if isinstance(config[name], Path):
+            paths[name] = config[name]
+    return paths
+
+
 def _resolved_paths(
+    title: str,
     paths: PathDict,
     folder: Path,
     required: list[str],
     features: list[str],
     log: Logger,
-    title: str,
 ) -> PathDict:
     "Resolves config paths and logs the locations"
 
@@ -85,4 +91,6 @@ def _resolved_paths(
         # Log each path
         heading = f"{name}: ".ljust(padding, " ")
         log.debug(f"    {heading}{paths[name]}")
-    return paths
+
+    # Remove any keys whose path could not be located
+    return {name: path for name, path in paths.items() if path is not None}

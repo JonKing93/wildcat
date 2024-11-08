@@ -39,15 +39,6 @@ class TestResolvePath:
 
 
 class TestFile:
-    def test_none_optional(_, inputs):
-        output = _file.file(inputs, None, "iswater", False, False)
-        assert output is None
-
-    def test_none_required(_, inputs, errcheck):
-        with pytest.raises(FileNotFoundError) as error:
-            _file.file(inputs, None, "dem", True, False)
-        errcheck(error, "Could not locate the dem file")
-
     def test_missing_optional(_, missing):
         output = _file.file(missing.parent, Path("dem"), "dem", False, False)
         assert output is None

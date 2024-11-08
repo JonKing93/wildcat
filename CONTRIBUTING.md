@@ -26,13 +26,13 @@ All commands described on this page assume a development installation.
 ## Formatting
 This project uses `isort` and `black` to format the code. You can apply these formatters using:
 ```
-poetry run format
+poe format
 ```
 This should format the code within the `wildcat` and `tests` directories. We also note that many IDEs include tools to automatically apply these formats. 
 
 Note that you can also use:
 ```
-poetry run lint
+poe lint
 ```
 to verify that all code is formatted correctly. The Gitlab pipeline requires that this check passes before code can be merged.
 
@@ -43,5 +43,5 @@ Within a test module, multiple tests for the same function should be grouped int
 
 Note that you can check the status of the tests using:
 ```
-poetry run tests
+poe tests
 ```

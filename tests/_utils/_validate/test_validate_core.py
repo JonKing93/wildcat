@@ -77,6 +77,49 @@ class TestOptionalPath:
         errcheck(error, 'Could not convert the "test" setting to a file path')
 
 
+class TestOptionalPathOrConstant:
+    def test_invalid(_, errcheck):
+        config = {"test": [1, 2, 3]}
+        with pytest.raises(TypeError) as error:
+            _core.optional_path_or_constant(config, "test")
+        errcheck(error, 'Could not convert the "test" setting to a file path')
+
+    @pytest.mark.parametrize(
+        "value, message", ((nan, "cannot be nan"), (inf, "must be finite"))
+    )
+    def test_invalid_constant(_, value, message, errcheck):
+        config = {"test": value}
+        with pytest.raises(ValueError) as error:
+            _core.optional_path_or_constant(config, "test")
+        errcheck(error, f'The "test" setting {message}')
+
+    @pytest.mark.parametrize("value", (-9, -9.1, 0, 2.2, 5))
+    def test_constant(_, value):
+        config = {"test": value}
+        _core.optional_path_or_constant(config, "test")
+        assert config["test"] == value
+
+    @pytest.mark.parametrize("value", (None, False))
+    def test_disabled(_, value):
+        config = {"test": value}
+        _core.optional_path_or_constant(config, "test")
+        assert config["test"] is None
+
+    def test_path(_):
+        config = {"test": "a/file/path"}
+        _core.optional_path_or_constant(config, "test")
+        assert config["test"] == Path("a/file/path")
+
+    def test_true(_, errcheck):
+        config = {"test": True}
+        with pytest.raises(TypeError) as error:
+            _core.optional_path_or_constant(config, "test")
+        errcheck(
+            error,
+            'The "test" setting should be a file path, so you cannot set test=True',
+        )
+
+
 class TestStrlist:
     def test_none(_):
         config = {"properties": None}
@@ -553,6 +596,40 @@ class TestLimits:
             error,
             'The elements of the "test" setting must be in ascending order',
             "test[1] (value = 2) is less than test[0] (value = 4)",
+        )
+
+    def test_valid(_):
+        config = {"test": [1, 2]}
+        _core.limits(config, "test")
+        assert config["test"] == [1, 2]
+
+
+class TestPositiveLimits:
+    def test_wrong_length(_, errcheck):
+        with pytest.raises(TypeError) as error:
+            _core.positive_limits({"test": "invalid"}, "test")
+        errcheck(
+            error,
+            'The "test" setting must be one of the following types',
+            "list, tuple",
+        )
+
+    def test_not_ascending(_, errcheck):
+        with pytest.raises(ValueError) as error:
+            _core.positive_limits({"test": [4, 2]}, "test")
+        errcheck(
+            error,
+            'The elements of the "test" setting must be in ascending order',
+            "test[1] (value = 2) is less than test[0] (value = 4)",
+        )
+
+    def test_not_positive(_, errcheck):
+        with pytest.raises(ValueError) as error:
+            _core.positive_limits({"test": [-2, 4]}, "test")
+        errcheck(
+            error,
+            'The elements of the "test" setting must be positive',
+            "test[0] (value = -2) is not",
         )
 
     def test_valid(_):

@@ -21,14 +21,12 @@ from wildcat._utils._defaults import defaults
 
 
 def file(
-    folder: Path, input: Path | None, name: str, required: bool, supports_features: bool
+    folder: Path, input: Path, name: str, required: bool, supports_features: bool
 ) -> Path | None:
     "Determines the path to an input dataset"
 
-    # Get existing absolute path to non-None inputs
-    path = input
-    if path is not None:
-        path = _resolve_path(folder, path, supports_features)
+    # Locate the path. Path will be None if it does not exist
+    path = _resolve_path(folder, input, supports_features)
 
     # Error if a required or non-default file is missing
     if path is None:

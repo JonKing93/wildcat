@@ -7,7 +7,10 @@ from wildcat._commands.preprocess import _check
 
 @pytest.fixture
 def resconfig():
-    return {"resolution_check": "error"}
+    return {
+        "resolution_check": "error",
+        "resolution_limits_m": [6.5, 11],
+    }
 
 
 @pytest.fixture
@@ -34,14 +37,19 @@ def dconfig():
 
 @pytest.fixture
 def krasters():
-    kf = np.arange(100).reshape(20, 5)
-    kf = Raster.from_array(kf, nodata=10)
+    kf = np.arange(100).reshape(10, 10)
+    kf[0, :] = -1
+    kf = Raster.from_array(kf, nodata=-1)
     return {"kf": kf}
 
 
 @pytest.fixture
 def kconfig():
-    return {"missing_kf_check": "error", "kf_fill": False}
+    return {
+        "max_missing_kf_ratio": 0.05,
+        "missing_kf_check": "error",
+        "kf_fill": False,
+    }
 
 
 class TestCheck:
@@ -61,18 +69,16 @@ class TestCheck:
 
 class TestIsUnexpected:
     @pytest.mark.parametrize(
-        "value, expected",
+        "value, limits, expected",
         (
-            (5, True),
-            (6, True),
-            (7, False),
-            (10, False),
-            (13, False),
-            (13.1, True),
+            (5, [6.5, 11], True),
+            (5, [1, 6], False),
+            (10, [6.5, 11], False),
+            (12, [6.5, 11], True),
         ),
     )
-    def test(_, value, expected):
-        assert _check._isunexpected(value) == expected
+    def test(_, value, limits, expected):
+        assert _check._isunexpected(value, limits) == expected
 
 
 class TestResolution:
@@ -96,16 +102,22 @@ class TestResolution:
                     "WARNING",
                     (
                         "\n"
-                        "WARNING: The DEM does not appear to have a 10 meter resolution.\n"
+                        "WARNING: The DEM does not have an allowed resolution.\n"
+                        "    Allowed resolutions: from 6.5 to 11 meters\n"
+                        "    DEM resolution: 3.33 x 11.11 meters\n"
+                        "\n"
                         "    The hazard assessment models in wildcat were calibrated using\n"
                         "    a 10 meter DEM, so this resolution is recommended for most\n"
                         "    applications. See also Smith et al., (2019) for a discussion\n"
                         "    of the effects of DEM resolution on topographic analysis:\n"
                         "    https://doi.org/10.5194/esurf-7-475-2019\n"
                         "\n"
-                        "    To continue with the current DEM, use either of the following flags:\n"
-                        "    --resolution-check warn\n"
-                        "    --resolution-check none\n"
+                        "    To continue with the current DEM, add either of the following lines to\n"
+                        "    configuration.py:\n"
+                        "\n"
+                        '     resolution_check = "warn"\n'
+                        "     OR\n"
+                        '     resolution_check = "none"\n'
                     ),
                 ),
             ]
@@ -114,11 +126,10 @@ class TestResolution:
     def test_error(_, resconfig, resdem, errcheck, logcheck):
         with pytest.raises(ValueError) as error:
             _check.resolution(resconfig, resdem, logcheck.log)
-        errcheck(error, "The DEM does not appear to have a 10 meter resolution")
+        errcheck(error, "The DEM does not have an allowed resolution")
 
 
 class TestDnbrScaling:
-
     @pytest.mark.parametrize("value", (-11, 11))
     def test_valid(_, dconfig, value, drasters, logcheck):
         dnbr = np.zeros((20, 5))
@@ -153,9 +164,12 @@ class TestDnbrScaling:
                         "    raster are between -10 and 10. You may need to multiply your dNBR\n"
                         "    values by 1000 to scale them correctly.\n"
                         "\n"
-                        "    To continue with the current dNBR, use either of the following flags:\n"
-                        "    --dnbr-check warn\n"
-                        "    --dnbr-check none\n"
+                        "    To continue with the current dNBR, edit configuration.py to include\n"
+                        "    one of the following lines:\n"
+                        "\n"
+                        '    dnbr_check = "warn"\n'
+                        "    OR\n"
+                        '    dnbr_check = "none"\n'
                     ),
                 ),
             ]
@@ -170,10 +184,15 @@ class TestDnbrScaling:
 class TestMissingKF:
     def test_valid(_, kconfig, logcheck):
         kf = np.ones((20, 5))
-        kf = Raster.from_array(kf, nodata=-9)
+        kf = Raster.from_array(kf, nodata=-1)
         krasters = {"kf": kf}
         _check.missing_kf(kconfig, krasters, logcheck.log)
-        logcheck.check([("INFO", "Checking for missing KF-factor data")])
+        logcheck.check(
+            [
+                ("INFO", "Checking for missing KF-factor data"),
+                ("DEBUG", "    Proportion of missing data: 0.0"),
+            ]
+        )
 
     @pytest.mark.parametrize("fill", (True, 2.2, "a/file/path"))
     def test_filling(_, fill, kconfig, krasters, logcheck):
@@ -185,12 +204,21 @@ class TestMissingKF:
         del krasters["kf"]
         _check.missing_kf(kconfig, krasters, logcheck.log)
         logcheck.check([])
-        _
 
     def test_none(_, kconfig, krasters, logcheck):
         kconfig["missing_kf_check"] = "none"
         _check.missing_kf(kconfig, krasters, logcheck.log)
         logcheck.check([])
+
+    def test_under_threshold(_, kconfig, krasters, logcheck):
+        kconfig["max_missing_kf_ratio"] = 0.25
+        _check.missing_kf(kconfig, krasters, logcheck.log)
+        logcheck.check(
+            [
+                ("INFO", "Checking for missing KF-factor data"),
+                ("DEBUG", "    Proportion of missing data: 0.1"),
+            ]
+        )
 
     def test_warn(_, kconfig, krasters, logcheck):
         kconfig["missing_kf_check"] = "warn"
@@ -198,6 +226,7 @@ class TestMissingKF:
         logcheck.check(
             [
                 ("INFO", "Checking for missing KF-factor data"),
+                ("DEBUG", "    Proportion of missing data: 0.1"),
                 (
                     "WARNING",
                     "\n"
@@ -208,10 +237,10 @@ class TestMissingKF:
                     "    continuing.\n"
                     "    \n"
                     "    If the dataset appears satisfactory, you can disable this message\n"
-                    "    using the following flag:\n"
-                    "    --missing-kf-check none\n"
+                    "    by adding the following line to configuration.py:\n"
+                    '    missing_kf_check = "none"\n'
                     "    \n"
-                    "    Alternatively, see the --kf-fill flag for options to fill missing\n"
+                    '    Alternatively, see the "kf_fill" config value for options to fill missing\n'
                     "    KF-factor data pixels.\n",
                 ),
             ]
