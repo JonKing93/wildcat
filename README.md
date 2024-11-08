@@ -13,8 +13,8 @@ The wildcat package provides routines to assess and map post-wildfire debris-flo
 
 Wildcat can be run from the command line, or within a Python session. The package is intended for users who are interested in conducting and communicating hazard assessments. By default, wildcat implements assessments in the USGS style, but users can also configure the tool to run with modified settings.
 
+## User Guide
 Please see the [User Guide](https://ghsc.code-pages.usgs.gov/lhp/wildcat/) for detailed usage instructions.
-
 
 ## Installation
 Please see the [Installation Page](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/installation.html) for installation instructions.
