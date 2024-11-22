@@ -7,7 +7,7 @@ Install Wildcat
 
 .. admonition:: Prerequisites
 
-    Wildcat requires `Python 3.11+ <https://www.python.org/downloads/>`_.
+    Wildcat requires `Python 3.11 or 3.12 <https://www.python.org/downloads/>`_.
 
 
 Quick Install

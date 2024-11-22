@@ -60,7 +60,7 @@ The exported files will be named:
 * ``basins``, and 
 * ``outlets`` 
 
-followed by the appropriate extension for the export format. You can also use the :confval:`prefix` and :confval:`suffix` settings to add text to the beginning and end of the file names. As these are file names, only ASCII letters, numbers, hyphens (``-``), and underscores (``_``) in the prefix and suffix. For example, you could use the following configuration:
+followed by the appropriate extension for the export format. You can also use the :confval:`prefix` and :confval:`suffix` settings to add text to the beginning and end of the file names. As these are file names, only ASCII letters, numbers, hyphens (``-``), and underscores (``_``) are permitted in the prefix and suffix. For example, you could use the following configuration:
 
 .. code:: python
 
