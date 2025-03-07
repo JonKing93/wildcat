@@ -47,7 +47,7 @@ If you use wildcat for a publication, please consider citing it. Consult the :do
 
 
 .. toctree::
-    :caption: Docs
+    :caption: Documentation
     :hidden:
 
     Introduction <self>
