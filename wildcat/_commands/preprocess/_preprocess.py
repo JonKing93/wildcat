@@ -5,6 +5,10 @@ Functions:
     preprocess  - Implements the preprocessor
 """
 
+from __future__ import annotations
+
+import typing
+
 from wildcat._commands.preprocess import _check, _load, _save
 from wildcat._commands.preprocess._numeric import (
     build_evt_masks,
@@ -16,7 +20,9 @@ from wildcat._commands.preprocess._numeric import (
 )
 from wildcat._commands.preprocess._spatial import clip, reproject
 from wildcat._utils import _find, _setup
-from wildcat.typing import Config
+
+if typing.TYPE_CHECKING:
+    from wildcat.typing import Config
 
 
 def preprocess(locals: Config) -> None:

@@ -15,10 +15,11 @@ def namespace(module):
 @pytest.mark.parametrize("command", (preprocess, assess, export))
 def test_command_has_defaults(command):
 
-    # First arg is the project folder
+    # First and second args are the project folder and config file
     parameters = _args.collect(command)
     assert parameters[0] == "project"
-    parameters = parameters[1:]
+    assert parameters[1] == "config"
+    parameters = parameters[2:]
 
     # Check the remaining args have defaults
     defaults = namespace(command.__name__)

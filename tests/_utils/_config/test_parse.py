@@ -18,6 +18,7 @@ def cvals():
         "buffer_km": 2.2,
         "water": [1, 2, 3.3],
         "constrain_dnbr": False,
+        "config": None,
     }
 
 
@@ -39,8 +40,9 @@ def config(cpath, cvals):
 
 def check(output, expected):
     for name, value in expected.items():
-        assert name in output
-        assert output[name] == value
+        if name != "config":
+            assert name in output
+            assert output[name] == value
 
 
 #####
@@ -52,7 +54,8 @@ class TestParse:
     def test_cli(_, config, cvals, logcheck):
         locals = cvals.copy()
         for name in locals:
-            locals[name] = "override"
+            if name != "config":
+                locals[name] = "override"
         locals["project"] = config.parent
         output = _parse.parse(locals, logcheck.log)
         check(output, locals)
@@ -62,10 +65,11 @@ class TestParse:
                 ("DEBUG", "    Locating project folder"),
                 ("DEBUG", f"        {config.parent}"),
                 ("DEBUG", "    Reading configuration file"),
+                ("DEBUG", f"        {config}"),
             ]
         )
 
-    def test_file(_, config, cvals, logcheck):
+    def test_default_file(_, config, cvals, logcheck):
         locals = {name: None for name in cvals}
         locals["project"] = config.parent
         output = _parse.parse(locals, logcheck.log)
@@ -76,14 +80,35 @@ class TestParse:
                 ("DEBUG", "    Locating project folder"),
                 ("DEBUG", f"        {config.parent}"),
                 ("DEBUG", "    Reading configuration file"),
+                ("DEBUG", f"        {config}"),
             ]
         )
 
-    def test_defaults(_, cpath, cvals, logcheck):
+    def test_alternate_file(_, config, cvals, logcheck):
+        locals = {name: None for name in cvals}
+        locals["project"] = config.parent
+
+        alternate = config.parent / "alternate.py"
+        alternate.write_text(config.read_text())
+        locals["config"] = alternate
+
+        output = _parse.parse(locals, logcheck.log)
+        check(output, cvals)
+        logcheck.check(
+            [
+                ("INFO", "Parsing configuration"),
+                ("DEBUG", "    Locating project folder"),
+                ("DEBUG", f"        {config.parent}"),
+                ("DEBUG", "    Reading configuration file"),
+                ("DEBUG", f"        {alternate}"),
+            ]
+        )
+
+    def test_no_file(_, cpath, cvals, logcheck):
         locals = {name: None for name in cvals}
         locals["project"] = cpath.parent
         output = _parse.parse(locals, logcheck.log)
-        expected = {name: getattr(defaults, name) for name in cvals}
+        expected = {name: getattr(defaults, name) for name in cvals if name != "config"}
         check(output, expected)
         logcheck.check(
             [
@@ -137,14 +162,48 @@ class TestLocateProject:
         errcheck(error, "The project path is not a folder")
 
 
+class TestLocateConfig:
+    def test_none(_, tmp_path):
+        output = _parse._locate_config(tmp_path, None)
+        assert output == tmp_path / "configuration.py"
+
+    def test_invalid(_, tmp_path, errcheck):
+        with pytest.raises(TypeError) as error:
+            _parse._locate_config(tmp_path, 5)
+        errcheck(error, "Could not convert the `config` input to a file path.")
+
+    def test_absolute(_, tmp_path, config):
+        path = config.resolve()
+        output = _parse._locate_config(tmp_path, path)
+        assert output == path
+
+    def test_relative(_, config):
+        output = _parse._locate_config(config.parent, config.name)
+        assert output == config.parent / config.name
+
+    def test_not_exist(_, cpath, errcheck):
+        with pytest.raises(FileNotFoundError) as error:
+            _parse._locate_config(cpath.parent, cpath.name)
+        errcheck(error, "The configuration file is missing")
+
+    def test_not_file(_, cpath, errcheck):
+        with pytest.raises(ValueError) as error:
+            _parse._locate_config(cpath.parents[1], cpath.parent)
+        errcheck(error, "The configuration path is not a file")
+
+
 class TestParseConfigFile:
     def test_exists(_, config, cvals, logcheck):
-        output = _parse._parse_config_file(config.parent, logcheck.log)
+        path = config.parent / "configuration.py"
+        output = _parse._parse_config_file(path, logcheck.log)
         check(output, cvals)
-        logcheck.check([("DEBUG", "    Reading configuration file")])
+        logcheck.check(
+            [("DEBUG", "    Reading configuration file"), ("DEBUG", f"        {path}")]
+        )
 
     def test_missing(_, cpath, logcheck):
-        output = _parse._parse_config_file(cpath.parent, logcheck.log)
+        path = cpath.parent / "configuration.py"
+        output = _parse._parse_config_file(path, logcheck.log)
         assert output == {}
         logcheck.check([("DEBUG", "    No configuration file detected")])
 

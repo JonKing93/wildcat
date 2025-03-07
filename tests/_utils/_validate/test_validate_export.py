@@ -1,4 +1,5 @@
 import pytest
+from pyproj import CRS
 
 from wildcat._utils._validate import _export
 
@@ -128,3 +129,23 @@ class TestRename:
         config = {"rename": {"H": "hazard", "volume_CI": ["90%", "95%"]}}
         _export.rename(config, "rename")
         assert config["rename"] == {"H": "hazard", "volume_CI": ["90%", "95%"]}
+
+
+class TestCrs:
+    @pytest.mark.parametrize("crs", ("WGS84", 26911, "26911"))
+    def test_valid(_, crs):
+        config = {"export_crs": crs}
+        _export.crs(config, "export_crs")
+        assert isinstance(config["export_crs"], CRS)
+        assert config["export_crs"] == CRS(crs)
+
+    def test_invalid(_, errcheck):
+        config = {"export_crs": "invalid"}
+        with pytest.raises(TypeError) as error:
+            _export.crs(config, "export_crs")
+        errcheck(error, "Could not convert export_crs to a CRS")
+
+    def test_none(_):
+        config = {"export_crs": None}
+        _export.crs(config, "export_crs")
+        assert config["export_crs"] is None

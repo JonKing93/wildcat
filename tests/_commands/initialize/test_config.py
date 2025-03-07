@@ -70,6 +70,7 @@ def defaults():
         "parallelize_basins": False,
         # Output files
         "format": "Shapefile",
+        "export_crs": "WGS 84",
         "prefix": "",
         "suffix": "",
         # Properties
@@ -352,6 +353,7 @@ class TestExport:
             "\n"
             "# Output files\n"
             'format = "Shapefile"\n'
+            'export_crs = "WGS 84"\n'
             'prefix = ""\n'
             'suffix = ""\n'
             "\n"
@@ -375,6 +377,7 @@ class TestExport:
             "\n"
             "# Output files\n"
             'format = "Shapefile"\n'
+            'export_crs = "WGS 84"\n'
             'prefix = ""\n'
             'suffix = ""\n'
             "\n"

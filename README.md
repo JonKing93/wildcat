@@ -13,18 +13,21 @@ The wildcat package provides routines to assess and map post-wildfire debris-flo
 
 Wildcat can be run from the command line, or within a Python session. The package is intended for users who are interested in conducting and communicating hazard assessments. By default, wildcat implements assessments in the USGS style, but users can also configure the tool to run with modified settings.
 
-## User Guide
-Please see the [User Guide](https://ghsc.code-pages.usgs.gov/lhp/wildcat/) for detailed usage instructions.
+## Documentation
+
+Please read the [Documentation](https://ghsc.code-pages.usgs.gov/lhp/wildcat/) for detailed usage instructions, including a [User Guide](https://ghsc.code-pages.usgs.gov/lhp/wildcat/guide/index.html) and a complete reference [API](https://ghsc.code-pages.usgs.gov/lhp/wildcat/api/index.html).
+
 
 ## Installation
-Please see the [Installation Page](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/installation.html) for installation instructions.
 
-## Developer Guide
-Please see the [Developer Guide](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/dev-guide.html) if you plan on contributing code.
+Please read the [Installation Page](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/installation.html) for installation instructions.
 
-## Suggested Citation
 
-King, J., 2024, wildcat - Command line tool to assess and map post-wildfire debris-flow hazards, version 1.0.0: U.S. Geological Survey software release, https://doi.org/10.5066/P14VYAUB
+## Contributing
 
-Please see the [Citation Page](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/citation.html) for additional citation information, including the DOI and IP number for each release.
+Please read the [Contribution Guidelines](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/contributing.html) if you would like to contribute to wildcat.
 
+
+## Citation, DOI, IP number
+
+Please read the [Citation Page](https://ghsc.code-pages.usgs.gov/lhp/wildcat/resources/citation.html) for a suggested citation, as well as the DOI and IP number associated with each release.

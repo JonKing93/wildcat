@@ -5,8 +5,13 @@ Function:
     collect - Returns a list of function arg names
 """
 
+from __future__ import annotations
+
 import inspect
-from typing import Callable
+import typing
+
+if typing.TYPE_CHECKING:
+    from typing import Callable
 
 
 def collect(command: Callable) -> list[str]:

@@ -15,21 +15,6 @@ Wildcat can be run from the command line, or within a Python session. The packag
     Wildcat is designed to implement a USGS hazard assessment framework. If you want to modify wildcat routines or develop new assessment frameworks, you may be interested in the `pfdf library <https://ghsc.code-pages.usgs.gov/lhp/pfdf/>`_ instead.
 
 
-Installation
-------------
-.. admonition:: Prerequisites
-
-    Wildcat requires `Python 3.11 or 3.12 <https://www.python.org/downloads/>`_.
-
-You can install wildcat using::
-
-    pip install wildcat -i https://code.usgs.gov/api/v4/groups/859/-/packages/pypi/simple
-
-and see the :doc:`installation page <install>` for additional options. 
-
-The URL in the install command instructs `pip <https://pip.pypa.io/en/stable/>`_ to install wildcat from the official USGS package registry. This ensures that you are installing an official USGS product, and not a similarly named package from a third party. The ``859`` in the URL is the code for packages released by the `Landslide Hazards Program <https://www.usgs.gov/programs/landslide-hazards>`_.
-
-
 Using these docs
 ----------------
 These docs contain a variety of resources for wildcat users. The :doc:`User Guide </guide/index>` is designed to introduce new users to the toolbox and is usually the best place to start. After reading the guide, you should be able to implement a basic hazard assessment.
@@ -40,10 +25,13 @@ The :doc:`API </api/index>` is the complete reference guide to using wildcat. Us
 
 Finally, you can find links to:
 
+* :doc:`FAQs and troubleshooting tips <resources/faqs>`,
 * :doc:`Commonly used datasets <resources/datasets>`, 
-* `The latest release <https://code.usgs.gov/ghsc/lhp/wildcat/-/releases/permalink/latest>`_, 
-* :doc:`Contribution guidelines </resources/contributing>`, and 
+* :doc:`Contribution guidelines <resources/contributing>`,
+* :doc:`Citation guidelines <resources/citation>`
 * :doc:`Legal documents </resources/legal>`
+* :doc:`Release notes <resources/release-notes/index>`, and
+* `The latest release <https://code.usgs.gov/ghsc/lhp/wildcat/-/releases/permalink/latest>`_
 
 under the *Resources* section of the navigation sidebar.
 
@@ -55,18 +43,14 @@ The name "wildcat" is a loose acronym of post-(wil)dfire (d)ebris-flow hazard (c
 
 Citation
 --------
-If you use wildcat for a publication, please consider citing it. You can cite the latest release using::
-
-    King, J., 2024, wildcat - Command line tool to assess and map post-wildfire debris-flow hazards, 
-    version 1.0.0: U.S. Geological Survey software release, https://doi.org/10.5066/P14VYAUB
-
-And please see the :doc:`citation page <resources/citation>` for BibTex formatting, citing other releases, release DOIs, and IP numbers.
+If you use wildcat for a publication, please consider citing it. Consult the :doc:`Citation Guide <resources/citation>` for more details.
 
 
 .. toctree::
     :caption: Docs
     :hidden:
 
+    Introduction <self>
     Installation <install>
     User Guide <guide/index>
     Commands <commands/index>

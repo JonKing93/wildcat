@@ -7,15 +7,21 @@ Functions:
     config      - Saves the configuration settings
 """
 
-from logging import Logger
-from pathlib import Path
+from __future__ import annotations
 
-from pfdf.segments import Segments
+import typing
 
 import wildcat._utils._paths.assess as _paths
 from wildcat._utils import _parameters
 from wildcat._utils._config import record
-from wildcat.typing._assess import Config, PathDict, PropertyDict
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from pathlib import Path
+
+    from pfdf.segments import Segments
+
+    from wildcat.typing._assess import Config, PathDict, PropertyDict
 
 
 def _finalize(config: Config, properties: PropertyDict) -> None:
@@ -25,21 +31,21 @@ def _finalize(config: Config, properties: PropertyDict) -> None:
     nI15, nCI, nDurations, nProb = _parameters.count(config)
     if "hazard" in properties:
         for i in range(nI15):
-            properties[f"H_{i}"] = properties["hazard"][:, i]
-            properties[f"P_{i}"] = properties["likelihood"][:, i]
-            properties[f"V_{i}"] = properties["V"][:, i]
+            properties[f"H_{i}"] = properties["hazard"][:, i, 0]
+            properties[f"P_{i}"] = properties["likelihood"][:, i, 0]
+            properties[f"V_{i}"] = properties["V"][:, i, 0]
 
             # Volume confidence intervals
             for c in range(nCI):
-                properties[f"Vmin_{i}_{c}"] = properties["Vmin"][:, i, c]
-                properties[f"Vmax_{i}_{c}"] = properties["Vmax"][:, i, c]
+                properties[f"Vmin_{i}_{c}"] = properties["Vmin"][:, i, 0, c]
+                properties[f"Vmax_{i}_{c}"] = properties["Vmax"][:, i, 0, c]
 
     # Rainfall thresholds
     if "accumulations" in properties:
         for d in range(nDurations):
             for p in range(nProb):
-                properties[f"I_{d}_{p}"] = properties["intensities"][:, d, p]
-                properties[f"R_{d}_{p}"] = properties["accumulations"][:, d, p]
+                properties[f"I_{d}_{p}"] = properties["intensities"][:, p, d]
+                properties[f"R_{d}_{p}"] = properties["accumulations"][:, p, d]
 
     # Remove arrays
     for field in [

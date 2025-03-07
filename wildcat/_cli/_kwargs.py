@@ -2,7 +2,7 @@
 Functions that convert CLI inputs to function kwarg dicts
 ----------
 The CLI options for a command are not identical to the function kwargs for the
-command. As such, CLI inputs must be parsed converted to a kwarg dict before a 
+command. As such, CLI inputs must be parsed converted to a kwarg dict before a
 command function can be run. The functions in this module implement these conversions.
 ----------
 Functions:
@@ -17,15 +17,19 @@ Utilities:
     _copy_remaining - Copies all remaining kwargs directly from args
 """
 
-from argparse import Namespace
-from typing import Any
+from __future__ import annotations
+
+import typing
 
 import wildcat
 from wildcat._utils import _args, _paths
 from wildcat._utils._defaults import defaults
 
-# Type hint
-kwargs = dict[str, Any]
+if typing.TYPE_CHECKING:
+    from argparse import Namespace
+    from typing import Any
+
+    kwargs = dict[str, Any]
 
 
 #####
@@ -118,6 +122,12 @@ def export(args: Namespace) -> kwargs:
     kwargs = {}
     _invert(args, ["order_properties", "clean_names"], kwargs)
 
+    # Parse CRS
+    crs = args.crs
+    if crs == "None":
+        crs = None
+    kwargs["export_crs"] = crs
+
     # Initialize renaming dict if appropriate
     if args.rename is not None or args.rename_parameter is not None:
         kwargs["rename"] = {}
@@ -134,7 +144,7 @@ def export(args: Namespace) -> kwargs:
             names = renaming[1:]
             kwargs["rename"][parameter] = names
 
-    # Parse renaming options directly
+    # Copy remainining args directly
     _copy_remaining(args, kwargs)
     return kwargs
 

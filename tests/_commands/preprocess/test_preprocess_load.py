@@ -5,7 +5,8 @@ from pathlib import Path
 import fiona
 import numpy as np
 import pytest
-from pfdf.projection import CRS, BoundingBox, Transform
+from pfdf.errors import NoOverlapError, NoOverlappingFeaturesError
+from pfdf.projection import CRS, BoundingBox
 from pfdf.raster import Raster
 from rasterio.errors import NotGeoreferencedWarning
 
@@ -172,6 +173,11 @@ def paths(fperimeter, pdem, points, polygons):
     }
 
 
+#####
+# Special Datasets
+#####
+
+
 class TestBufferedPerimeter:
     def test_raster(_, config, rperimeter, logcheck):
         paths = {"perimeter": rperimeter}
@@ -228,56 +234,6 @@ class TestDEM:
             "The input DEM does not have an affine transform.",
             "Please provide a properly georeferenced DEM",
         )
-
-
-class TestDatasets:
-    def test(_, config, paths, points, polygons, perimeter, dem, logcheck):
-        output = _load.datasets(config, paths, perimeter, dem, logcheck.log)
-        assert isinstance(output, dict)
-        assert list(output.keys()) == [
-            "perimeter",
-            "dem",
-            "retainments",
-            "kf",
-            "excluded",
-            "dnbr",
-        ]
-
-        dnbr = dem.copy()
-        dnbr.clip(bounds=perimeter)
-
-        assert output["perimeter"] == perimeter
-        assert output["dem"] == dem
-        assert output["retainments"] == points["expected"]
-        assert output["kf"] == polygons["field"]
-        assert output["excluded"] == polygons["mask"]
-        assert output["dnbr"] == dnbr
-
-        logcheck.check(
-            [
-                ("INFO", "Loading file-based datasets"),
-                ("DEBUG", "    Loading retainments"),
-                ("DEBUG", "    Loading kf"),
-                ("DEBUG", "    Loading excluded"),
-                ("DEBUG", "    Loading dnbr"),
-            ]
-        )
-
-    def test_missing_field(
-        _, config, paths, polygons, perimeter, dem, errcheck, logcheck
-    ):
-        paths["severity"] = polygons["path"]
-        with pytest.raises(ValueError) as error:
-            _load.datasets(config, paths, perimeter, dem, logcheck.log)
-        errcheck(
-            error, "severity is a vector feature file, so severity_field cannot be None"
-        )
-
-    def test_no_datasets(_, config, paths, perimeter, dem, logcheck):
-        paths = {paths[name] for name in ["perimeter", "dem"]}
-        output = _load.datasets(config, paths, perimeter, dem, logcheck.log)
-        assert output == {"perimeter": perimeter, "dem": dem}
-        logcheck.check([])
 
 
 class TestConstants:
@@ -337,3 +293,120 @@ class TestConstants:
         logcheck.check(
             [("INFO", "Building constant-valued rasters"), ("DEBUG", "    Building kf")]
         )
+
+
+#####
+# General Loading
+#####
+
+
+class TestDatasets:
+    def test(_, config, paths, points, polygons, perimeter, dem, logcheck):
+        output = _load.datasets(config, paths, perimeter, dem, logcheck.log)
+        assert isinstance(output, dict)
+        assert list(output.keys()) == [
+            "perimeter",
+            "dem",
+            "retainments",
+            "kf",
+            "excluded",
+            "dnbr",
+        ]
+
+        dnbr = dem.copy()
+        dnbr.clip(bounds=perimeter)
+
+        assert output["perimeter"] == perimeter
+        assert output["dem"] == dem
+        assert output["retainments"] == points["expected"]
+        assert output["kf"] == polygons["field"]
+        assert output["excluded"] == polygons["mask"]
+        assert output["dnbr"] == dnbr
+
+        logcheck.check(
+            [
+                ("INFO", "Loading file-based datasets"),
+                ("DEBUG", "    Loading retainments"),
+                ("DEBUG", "    Loading kf"),
+                ("DEBUG", "    Loading excluded"),
+                ("DEBUG", "    Loading dnbr"),
+            ]
+        )
+
+    def test_missing_field(
+        _, config, paths, polygons, perimeter, dem, errcheck, logcheck
+    ):
+        paths["severity"] = polygons["path"]
+        with pytest.raises(ValueError) as error:
+            _load.datasets(config, paths, perimeter, dem, logcheck.log)
+        errcheck(
+            error, "severity is a vector feature file, so severity_field cannot be None"
+        )
+
+    def test_no_datasets(_, config, paths, perimeter, dem, logcheck):
+        paths = {paths[name] for name in ["perimeter", "dem"]}
+        output = _load.datasets(config, paths, perimeter, dem, logcheck.log)
+        assert output == {"perimeter": perimeter, "dem": dem}
+        logcheck.check([])
+
+
+class TestLoadFeatures:
+    def test_retainments(_, paths, perimeter, dem, config, points):
+        output = _load._load_features(
+            "retainments", paths["retainments"], perimeter, dem, config
+        )
+        assert output == points["expected"]
+        assert output.name == "retainments"
+
+    def test_kf(_, paths, perimeter, dem, config, polygons):
+        output = _load._load_features("kf", paths["kf"], perimeter, dem, config)
+        assert output == polygons["field"]
+        assert output.name == "kf"
+
+    def test_kf_missing_field(_, paths, perimeter, dem, config, polygons, errcheck):
+        paths["severity"] = polygons["path"]
+        with pytest.raises(ValueError) as error:
+            _load._load_features("severity", paths["severity"], perimeter, dem, config)
+        errcheck(
+            error, "severity is a vector feature file, so severity_field cannot be None"
+        )
+
+    def test_mask(_, paths, perimeter, dem, config, polygons):
+        output = _load._load_features(
+            "excluded", paths["excluded"], perimeter, dem, config
+        )
+        assert output == polygons["mask"]
+        assert output.name == "excluded"
+
+
+class TestRasterize:
+    def test_valid(_, paths, perimeter, dem, config, polygons):
+        kwargs = {
+            "path": paths["kf"],
+            "bounds": perimeter,
+            "resolution": dem,
+            "field": config["kf_field"],
+        }
+        output = _load._rasterize("", Raster.from_polygons, kwargs)
+        assert output == polygons["field"]
+
+    def test_no_overlap(_, paths, perimeter, dem, errcheck):
+        perimeter = BoundingBox(120, 55, 121, 56, 4326)
+        kwargs = {"path": paths["retainments"], "bounds": perimeter, "resolution": dem}
+        with pytest.raises(NoOverlappingFeaturesError) as error:
+            _load._rasterize("test", Raster.from_points, kwargs)
+        errcheck(error, "The test dataset does not overlap the buffered fire perimeter")
+
+
+class TestLoadRaster:
+    def test_valid(_, paths, perimeter, dem):
+        output = _load._load_raster("dnbr", paths["dnbr"], perimeter)
+        expected = dem.copy()
+        expected.clip(bounds=perimeter)
+        assert output == expected
+
+    def test_no_overlap(_, paths, errcheck):
+        perimeter = BoundingBox(120, 55, 121, 56, 4326)
+        with pytest.raises(NoOverlapError) as error:
+            _load._load_raster("test", paths["dnbr"], perimeter)
+        errcheck(error, "The test dataset does not overlap the buffered fire perimeter")

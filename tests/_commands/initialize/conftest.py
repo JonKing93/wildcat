@@ -107,6 +107,7 @@ def default_config():
         "\n"
         "# Output files\n"
         'format = "Shapefile"\n'
+        'export_crs = "WGS 84"\n'
         'prefix = ""\n'
         'suffix = ""\n'
         "\n"
@@ -252,6 +253,7 @@ def full_config():
         "\n"
         "# Output files\n"
         'format = "Shapefile"\n'
+        'export_crs = "WGS 84"\n'
         'prefix = ""\n'
         'suffix = ""\n'
         "\n"

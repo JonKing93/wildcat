@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pytest
+from pyproj import CRS
 
 from wildcat import assess, export, initialize, preprocess
 from wildcat._utils import _args
@@ -55,6 +56,7 @@ def pconfig():
     }
     for name in [
         "project",
+        "config",
         "inputs",
         "preprocessed",
         "perimeter",
@@ -103,7 +105,7 @@ def aconfig():
         "locate_basins": True,
         "parallelize_basins": False,
     }
-    for name in ["project", "preprocessed", "assessment"]:
+    for name in ["project", "config", "preprocessed", "assessment"]:
         config[name] = name
     for name in [
         "perimeter",
@@ -127,12 +129,14 @@ def econfig():
     return {
         # Folders
         "project": "project",
+        "config": "config",
         "assessment": "assessment",
         "exports": "exports",
         # Output files
+        "format": "shapefile",
+        "export_crs": "WGS 84",
         "prefix": "fire-id-",
         "suffix": "-date",
-        "format": "shapefile",
         # Properties
         "properties": ["default", "IsSteep"],
         "exclude_properties": "Segment_ID",
@@ -241,6 +245,7 @@ class TestPreprocess:
         }
         for name in [
             "project",
+            "config",
             "inputs",
             "preprocessed",
             "perimeter",
@@ -385,7 +390,7 @@ class TestAssess:
             "locate_basins": True,
             "parallelize_basins": False,
         }
-        for name in ["project", "preprocessed", "assessment"]:
+        for name in ["project", "config", "preprocessed", "assessment"]:
             expected[name] = Path(name)
         for name in [
             "perimeter",
@@ -504,12 +509,14 @@ class TestExport:
         assert econfig == {
             # Folders
             "project": Path("project"),
+            "config": Path("config"),
             "assessment": Path("assessment"),
             "exports": Path("exports"),
             # Output files
+            "format": "Shapefile",
+            "export_crs": CRS("WGS 84"),
             "prefix": "fire-id-",
             "suffix": "-date",
-            "format": "Shapefile",
             # Properties
             "properties": ["default", "IsSteep"],
             "exclude_properties": ["Segment_ID"],
@@ -541,6 +548,11 @@ class TestExport:
             errcheck(
                 error, 'The "format" setting must be a recognized vector file format'
             )
+
+        with alter(econfig, "export_crs", "invalid"):
+            with pytest.raises(TypeError) as error:
+                _main.export(econfig)
+            errcheck(error, "Could not convert export_crs to a CRS")
 
         for strlist in ["properties", "exclude_properties", "include_properties"]:
             with alter(econfig, strlist, 5):

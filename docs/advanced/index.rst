@@ -11,9 +11,13 @@ This section provides advanced usage information for running wildcat. The topics
 :doc:`CLI vs Python <cli-vs-python>`
     Differences between the CLI and Python interfaces, and which to use for development.
 
+:doc:`Alternate Config Files <alt-config>`
+    Specify an alternate configuration file, instead of ``configuration.py``.
+
 
 .. toctree::
     :hidden:
 
     Logging <logging>
     CLI vs Python <cli-vs-python>
+    Alternate Config Files <alt-config>

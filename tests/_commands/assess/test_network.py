@@ -13,7 +13,7 @@ from wildcat._commands.assess import _network
 class TestMask:
     def test_missing(_, logcheck):
         output = _network._mask({}, "test", logcheck.log, "test description")
-        assert isinstance(output, bool)
+        assert isinstance(output, np.bool)
         assert output == False
         logcheck.check([])
 

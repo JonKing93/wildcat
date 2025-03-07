@@ -9,16 +9,24 @@ Options:
     _inputs - Adds options for the 'inputs' subfolder
 """
 
-from argparse import ArgumentParser
+from __future__ import annotations
+
+import typing
 
 from wildcat._cli._parsers._utils import create_subcommand, logging, switch
+
+if typing.TYPE_CHECKING:
+    from argparse import ArgumentParser
 
 
 def parser(subparsers) -> None:
     "Builds the parser for the initialize command"
 
     parser = create_subcommand(
-        subparsers, "initialize", project_help="The path for the project folder"
+        subparsers,
+        "initialize",
+        project_help="The path for the project folder",
+        alternate_config=False,
     )
     _config(parser)
     _inputs(parser)

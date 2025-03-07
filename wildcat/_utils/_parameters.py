@@ -13,7 +13,12 @@ Functions:
     count   - Counts the number of elements for each hazard modeling parameter
 """
 
-from wildcat.typing import Config, Parameters
+from __future__ import annotations
+
+import typing
+
+if typing.TYPE_CHECKING:
+    from wildcat.typing import Config, Parameters
 
 
 def names() -> tuple[str, str, str, str]:

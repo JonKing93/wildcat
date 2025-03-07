@@ -3,9 +3,10 @@ Default settings for file export
 """
 
 # Output files
+format = "Shapefile"
+export_crs = "WGS 84"
 prefix = ""
 suffix = ""
-format = "Shapefile"
 
 # Properties
 properties = "default"

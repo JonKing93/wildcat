@@ -11,12 +11,17 @@ Functions:
     _configure_log  - Configures the log for a wildcat command
 """
 
+from __future__ import annotations
+
 import logging
 import sys
-from argparse import Namespace
+import typing
 
 import wildcat
 from wildcat._cli import _kwargs, _parsers
+
+if typing.TYPE_CHECKING:
+    from argparse import Namespace
 
 
 def main(args: list[str] = None) -> None:

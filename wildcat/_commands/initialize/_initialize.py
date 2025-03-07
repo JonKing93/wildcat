@@ -9,14 +9,21 @@ Substeps:
     _inputs_folder      - Optionally creates an inputs subfolder
 """
 
+from __future__ import annotations
+
 import os
-from logging import Logger, getLogger
+import typing
+from logging import getLogger
 from pathlib import Path
-from typing import Optional
 
 from wildcat._commands.initialize import _config
 from wildcat._utils import _defaults, _validate
-from wildcat.typing import ConfigType, Pathlike
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from typing import Optional
+
+    from wildcat.typing import ConfigType, Pathlike
 
 
 def initialize(

@@ -293,9 +293,10 @@ class TestConfig:
             f"# Export configuration for wildcat v{version()}\n"
             "\n"
             "# Output files\n"
+            'format = "GeoJSON"\n'
+            'export_crs = "WGS 84"\n'
             'prefix = "fire-id-"\n'
             'suffix = "-date"\n'
-            'format = "GeoJSON"\n'
             "\n"
             "# Properties\n"
             "properties = ['default']\n"

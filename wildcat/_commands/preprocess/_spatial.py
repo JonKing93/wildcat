@@ -6,9 +6,14 @@ Functions:
     clip        - Clips rasters to the bounds of the buffered perimeter
 """
 
-from logging import Logger
+from __future__ import annotations
 
-from wildcat.typing import RasterDict
+import typing
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing import RasterDict
 
 
 def reproject(rasters: RasterDict, log: Logger) -> None:

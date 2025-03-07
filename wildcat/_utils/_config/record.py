@@ -15,11 +15,17 @@ Internal:
     _parameter  - Writes a 'name = value' line
 """
 
+from __future__ import annotations
+
+import typing
 from pathlib import Path
-from typing import Any, TextIO
 
 import wildcat
-from wildcat.typing import PathDict
+
+if typing.TYPE_CHECKING:
+    from typing import Any, TextIO
+
+    from wildcat.typing import PathDict
 
 #####
 # Main Blocks

@@ -558,7 +558,7 @@ Options for locating :ref:`outlet basins <basins>`.
     :type: ``bool``
     :default: ``False``
 
-    Whether to use multiple CPUs to locate outlet basins. Using this option creates restrictions for running wildcat within Python. See the following for details: :ref:`Parallelizing Basins <basins>`
+    Whether to use multiple CPUs to locate outlet basins. Using this option creates restrictions for running wildcat within Python. Consult the following for details: :ref:`Parallelizing Basins <basins>`
     
     Example::
 

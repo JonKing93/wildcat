@@ -165,6 +165,13 @@ class TestExport:
             {"order_properties": False, "clean_names": False},
         )
 
+    def test_crs(self):
+        expected = {"export_crs": "4326"}
+        self.run(["--crs", "4326"], expected)
+
+        expected = {"export_crs": None}
+        self.run(["--crs", "None"], expected)
+
     def test_single_rename(self):
         self.run(
             ["--rename", "H", "hazard"],

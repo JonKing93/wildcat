@@ -85,21 +85,22 @@ The complete reference guide for using wildcat within a Python session.
 
 .. _python.preprocess:
 
-.. py:function:: preprocess(project, *, inputs, preprocessed, perimeter, dem, dnbr, severity, kf, evt,retainments, excluded, included, iswater, isdeveloped, buffer_km, resolution_limits_m, resolution_check, dnbr_scaling_check, constrain_dnbr, dnbr_limits, severity_field, estimate_severity, severity_thresholds, contain_severity, kf_field, constrain_kf, max_missing_kf_ratio, missing_kf_check, kf_fill, kf_fill_field, water, developed, excluded_evt)
+.. py:function:: preprocess(project, *, config, inputs, preprocessed, perimeter, dem, dnbr, severity, kf, evt,retainments, excluded, included, iswater, isdeveloped, buffer_km, resolution_limits_m, resolution_check, dnbr_scaling_check, constrain_dnbr, dnbr_limits, severity_field, estimate_severity, severity_thresholds, contain_severity, kf_field, constrain_kf, max_missing_kf_ratio, missing_kf_check, kf_fill, kf_fill_field, water, developed, excluded_evt)
 
-    Reproject and clean input datasets prior to hazard assessment. Please see the :doc:`preprocess overview </commands/preprocess>` for details.
+    Reproject and clean input datasets prior to hazard assessment. Please read the :doc:`preprocess overview </commands/preprocess>` for details.
 
     .. dropdown:: Preprocess Project
 
         ::
 
             preprocess(project, ...)
+            preprocess(..., config)
 
         Runs the preprocessor for the indicated project folder. If project=None, interprets the current folder as the project folder. Preprocessor settings are determined by keyword inputs, configuration file values, and default wildcat settings. Settings are prioritized via the following hierachy:
 
             Keyword Args > Config File > Defaults
 
-        Essentially, settings are first initialized to the wildcat defaults. These settings are then overridden by any settings defined in the configuration file. Finally, the settings are overridden by any values provided as keyword arguments.
+        Essentially, settings are first initialized to the wildcat defaults. These settings are then overridden by any settings defined in the configuration file. Finally, the settings are overridden by any values provided as keyword arguments. By default, searches for a configuration file named ``configuration.py`` at the root of the project. Use the ``config`` option to specify a different configuration file path.
 
     
     .. dropdown:: IO Folders
@@ -260,6 +261,7 @@ The complete reference guide for using wildcat within a Python session.
 
     :Inputs:
         * **project** *Path | str* -- The path to the project folder
+        * **config** *Path | str* -- The path to the configuration file. Defaults to ``configuration.py`` in the project folder
         * **inputs** *Path | str* -- The path of the default folder used to locate input datasets
         * **preprocessed** *Path | str* -- The path of the folder in which preprocessed rasters are saved
         * **perimeter** *Path | str* -- A fire perimeter dataset
@@ -300,9 +302,9 @@ The complete reference guide for using wildcat within a Python session.
 
 .. _python.assess:
 
-.. py:function:: assess(project, *, preprocessed, assessment, perimeter_p, dem_p, dnbr_p, severity_p, kf_p, retainments_p, excluded_p, included_p, iswater_p, isdeveloped_p, dem_per_m, min_area_km2, min_burned_area_km2, max_length_m, max_area_km2, max_exterior_ratio, min_burn_ratio, min_slope, max_developed_area_km2, max_confinement, confinement_neighborhood, flow_continuous, remove_ids, I15_mm_hr, volume_CI, durations, probabilities, locate_basins, parallelize_basins)
+.. py:function:: assess(project, *, config, preprocessed, assessment, perimeter_p, dem_p, dnbr_p, severity_p, kf_p, retainments_p, excluded_p, included_p, iswater_p, isdeveloped_p, dem_per_m, min_area_km2, min_burned_area_km2, max_length_m, max_area_km2, max_exterior_ratio, min_burn_ratio, min_slope, max_developed_area_km2, max_confinement, confinement_neighborhood, flow_continuous, remove_ids, I15_mm_hr, volume_CI, durations, probabilities, locate_basins, parallelize_basins)
 
-    Implements a hazard assessment using preprocessed datasets. Please see the :doc:`assess overview </commands/assess>` for details.
+    Implements a hazard assessment using preprocessed datasets. Please read the :doc:`assess overview </commands/assess>` for details.
 
     
     .. dropdown:: Hazard Assessment
@@ -310,12 +312,13 @@ The complete reference guide for using wildcat within a Python session.
         ::
 
             assess(project, ...)
+            assess(..., config)
 
         Runs an assessment for the indicated project folder. If ``project=None``, interprets the current folder as the project folder. Assessment settings are determined by keyword inputs, configuration file values, and default wildcat settings. Settings are prioritized via the following hierachy:
 
             Keyword Args > Config File > Defaults
 
-        Essentially, settings are first initialized to the wildcat defaults. These settings are then overridden by any settings defined in the configuration file. Finally, the settings are overridden by any values provided as keyword arguments.
+        Essentially, settings are first initialized to the wildcat defaults. These settings are then overridden by any settings defined in the configuration file. Finally, the settings are overridden by any values provided as keyword arguments. By default, searches for a configuration file named ``configuration.py`` at the root of the project. Use the ``config`` option to specify a different configuration file path.
 
     
     .. dropdown:: IO Folders
@@ -422,6 +425,7 @@ The complete reference guide for using wildcat within a Python session.
 
     :Inputs:
         * **project** *str | Path* -- The path to the project folder
+        * **config** *str | Path* -- The path to the configuration file. Defaults to ``configuration.py`` in the project folder
         * **preprocessed** *str | Path* -- The path to the folder holding preprocessed rasters
         * **assessment** *str | Path* -- The path to the folder where assessment results will be saved
         * **perimeter_p** *str | Path* -- Path to the preprocessed perimeter
@@ -461,7 +465,7 @@ The complete reference guide for using wildcat within a Python session.
 
 .. _python.export:
 
-.. py:function:: export(project, *, assessment, exports, prefix, suffix, format, properties, exclude_properties, include_properties, order_properties, clean_names, rename)
+.. py:function:: export(project, *, config, assessment, exports, format, export_crs, prefix, suffix, properties, exclude_properties, include_properties, order_properties, clean_names, rename)
 
     Export saved assessment results to GIS file formats.
     
@@ -470,6 +474,7 @@ The complete reference guide for using wildcat within a Python session.
         ::
 
             export(project, ...)
+            export(..., config)
 
         Exports assessment results for the indicated project. If ``project=None``, interprets the current folder as the project folder.
 
@@ -479,7 +484,7 @@ The complete reference guide for using wildcat within a Python session.
 
             Keyword Args > Config File > Defaults
 
-        Essentially, settings are first initialized to the wildcat defaults. These settings are then overridden by any settings defined in the configuration file. Finally, the settings are overridden by any values provided as keyword arguments.
+        Essentially, settings are first initialized to the wildcat defaults. These settings are then overridden by any settings defined in the configuration file. Finally, the settings are overridden by any values provided as keyword arguments. By default, searches for a configuration file named ``configuration.py`` at the root of the project. Use the ``config`` option to specify a different configuration file path.
 
     
     .. dropdown:: IO Folders
@@ -498,7 +503,18 @@ The complete reference guide for using wildcat within a Python session.
 
             export(..., format)
 
-        Specifies the file format of the exported files. Exports results for the segments, basins, and outlets to this file format. Commonly used formats include "Shapefile" and "GeoJSON". See the documentation for a complete list of :ref:`supported file formats <vector-formats>`.
+        Specifies the file format of the exported files. Exports results for the segments, basins, and outlets to this file format. Commonly used formats include "Shapefile" and "GeoJSON". Consult the documentation for a complete list of :ref:`supported file formats <vector-formats>`.
+
+
+    .. dropdown:: Coordinate Reference System (CRS)
+
+        ::
+
+            export(..., export_crs)
+
+        Specifies the coordinate reference system (CRS) that the exported segment, basin, and outlet geometries should use. The base geometries from the assessment results will be reprojected into this CRS prior to export. Accepts a variety of CRS indicators, including: EPSG codes, CRS names, well-known text, and PROJ4 parameter strings. Consult the pyproj documentation details on supported inputs.
+
+        Alternatively, set this option to "base" to leave the geometries in the base assessment CRS. In practice, this is the CRS of the preprocessed DEM used to derive the stream segment network.
 
     
     .. dropdown:: File Names
@@ -519,7 +535,7 @@ The complete reference guide for using wildcat within a Python session.
             export(..., exclude_properties)
             export(..., include_properties)
 
-        Specify the properties that should be included in the exported files. These inputs should be lists of strings and may include any combination of property names, result prefixes, and property groups. See the :ref:`Property Guide <select-props>` for more details.
+        Specify the properties that should be included in the exported files. These inputs should be lists of strings and may include any combination of property names, result prefixes, and property groups. Read the :ref:`Property Guide <select-props>` for more details.
 
         The ``properties`` input specifies a base set of properties for export. The ``exclude_properties`` indicates properties that should be removed from this base group. This can be used to exclude specific properties when the ``properties`` input contains one or more property groups. Finally, the ``include_properties`` input indicates properties that should be added to the export, after ``exclude_properties`` has been implemented. This is typically used at the temporarily used at the command line to temporarily restore excluded properties.
 
@@ -548,7 +564,7 @@ The complete reference guide for using wildcat within a Python session.
 
             export(..., rename)
 
-        A dict specifying new names for exported properties. This input should be a dict with string keys. Keys may be property names, result prefixes, or hazard modeling parameters. Please see the :ref:`Renaming Guide <rename>` for more details. Keys that are property names or result prefixes should have a string value. If a property name, the string is the name of the property in the exported files. If a result prefix, the prefixes of exported results are updated, but any hazard modeling parameters in the name are retained. If the key is a hazard modeling parameter, then the value should be a list with one element per parameter. Each element should be a string, which will replace the parameter index or value in any associated property names.
+        A dict specifying new names for exported properties. This input should be a dict with string keys. Keys may be property names, result prefixes, or hazard modeling parameters. Please read the :ref:`Renaming Guide <rename>` for more details. Keys that are property names or result prefixes should have a string value. If a property name, the string is the name of the property in the exported files. If a result prefix, the prefixes of exported results are updated, but any hazard modeling parameters in the name are retained. If the key is a hazard modeling parameter, then the value should be a list with one element per parameter. Each element should be a string, which will replace the parameter index or value in any associated property names.
 
         Complete property names have highest priority. So if a renaming dict contains a complete result property name, then its renaming value will override any result prefix or modeling parameter renaming options. 
         
@@ -557,10 +573,12 @@ The complete reference guide for using wildcat within a Python session.
             You may use any string as a renaming option, but not all file formats will support all names. For example, Shapefiles do not support property names with more than 10 characters. As a rule, wildcat will not check that renaming options are valid for a given export format. Verifying that new names are valid is left to the user.
 
     :Inputs:
-        * **project** *Path | str* -- The path to the project folder holding the configuration file for the export
+        * **project** *Path | str* -- The path to the project folder
+        * **config** *Path | str* -- The path to the configuration file. Defaults to ``configuration.py`` in the project folder
         * **assessment** *Path | str* -- The path to the folder holding saved assessment results
         * **exports** *Path | str* -- The path to the folder in which to save exported files
         * **format** *str* -- A string indicating the format of the exported files
+        * **export_crs** *str | int | "base"* -- The CRS for the exported feature geometries
         * **prefix** *str* -- A string prepended to the beginning of exported file names
         * **suffix** *str* -- A string appended to the end of exported file names
         * **properties** *[str, ...]* -- A base list of properties that should be included in the exported files.

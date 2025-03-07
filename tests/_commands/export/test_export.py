@@ -859,6 +859,7 @@ def check_outlets(project):
 def check_log(project, logcheck):
     assessment = project / "assessment"
     exports = project / "exports"
+    config_path = project / "configuration.py"
     logcheck.check(
         [
             ("INFO", "----- Exporting Results -----"),
@@ -866,6 +867,7 @@ def check_log(project, logcheck):
             ("DEBUG", "    Locating project folder"),
             ("DEBUG", f"        {project}"),
             ("DEBUG", "    Reading configuration file"),
+            ("DEBUG", f"        {config_path}"),
             ("INFO", "Locating IO folders"),
             ("DEBUG", f"    assessment: {assessment}"),
             ("DEBUG", f"    exports: {exports}"),

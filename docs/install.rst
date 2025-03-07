@@ -5,9 +5,33 @@ Install Wildcat
 
     These instructions are for wildcat users. If you plan to develop wildcat, you should do a :ref:`developer installation <dev-install>` instead.
 
-.. admonition:: Prerequisites
 
-    Wildcat requires `Python 3.11 or 3.12 <https://www.python.org/downloads/>`_.
+Prerequisites
+-------------
+
+Python
+++++++
+Wildcat requires `Python 3.11 or 3.12 <https://www.python.org/downloads/>`_.
+
+
+.. _install-environment:
+
+Virtual Environment
++++++++++++++++++++
+We **strongly recommend** installing wildcat in a clean virtual environment. This is because other geospatial software can sometimes interfere with wildcat's backend. There are many tools for managing virtual environments including `miniforge`_, `conda`_, `venv`_, and `virtualenv`_. If you are not familiar with virtual environments, then `miniforge`_ may be a good starting point.
+
+For example, after installing miniforge, you can create a new python environment using::
+
+    mamba create -n pfdf python=3.12 --yes
+
+and then activate the environment with::
+
+    mamba activate pfdf
+
+.. _miniforge: https://github.com/conda-forge/miniforge
+.. _conda: https://anaconda.org/anaconda/conda
+.. _venv: https://docs.python.org/3/library/venv.html
+.. _virtualenv: https://virtualenv.pypa.io/en/latest
 
 
 Quick Install
@@ -20,29 +44,19 @@ You can install the latest release using::
 The URL in this command instructs `pip <https://pip.pypa.io/en/stable/>`_ to install wildcat from the official USGS package registry. This ensures that you are installing an official USGS product, and not a similarly named package from a third party. The ``859`` in the URL is the code for packages released by the `Landslide Hazards Program <https://www.usgs.gov/programs/landslide-hazards>`_.
 
 
-Advanced Install
-----------------
+.. _install-lock:
 
-You can use standard `pip <https://pip.pypa.io/en/stable/>`_ notation to install wildcat releases. For example, to install a specific release use::
+Building from Lock
+------------------
+In rare cases, wildcat may break due to changes in a dependency library. For example, when a dependency releases a new version that breaks backwards compatibility. If this is the case, you can use `poetry <https://python-poetry.org/>`_ to install wildcat from known working dependencies. This method requires you `install poetry <https://python-poetry.org/docs/#installation>`_ in addition to the usual prerequisites.
 
-    pip install wildcat==X.Y.Z -i https://code.usgs.gov/api/v4/groups/859/-/packages/pypi/simple
+To use this method, you should first clone the pfdf repository at the desired release. For example, if you have `git <https://git-scm.com/>`_ installed, then you can clone the 1.1.0 release to the current directory using::
 
-where ``X.Y.Z`` is the release tag.
+    git clone https://code.usgs.gov/ghsc/lhp/pfdf.git --branch 1.1.0
 
-----
+Next, use poetry to install pfdf from the ``poetry.lock`` file::
 
-You can also install the most recent development from the main branch using::
+    poetry install
 
-    pip install git+https://code.usgs.gov/ghsc/lhp/wildcat@main
-
-However, be warned that active development is not stable, so may change at any time without warning. 
-
-.. note::
-    
-    This option also requires `git <https://git-scm.com/downloads>`_ as a prerequisite.
-
-
-
-
-
+The ``poetry.lock`` file records the dependencies used to test pfdf, so represents a collection of known-working dependencies.
 

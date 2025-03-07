@@ -10,13 +10,18 @@ Functions:
     build_evt_masks     - Builds raster masks of water, developed, and excluded EVT pixels
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 
 import numpy as np
 from pfdf import severity
 from pfdf.raster import Raster
 
-from wildcat.typing import Config, RasterDict
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing import Config, RasterDict
 
 
 def constrain_dnbr(config: Config, rasters: RasterDict, log: Logger) -> None:

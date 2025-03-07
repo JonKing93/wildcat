@@ -1,6 +1,7 @@
 import fiona
 import pytest
-from fiona.crs import CRS
+from fiona.crs import CRS as fCRS
+from pyproj import CRS
 
 
 @pytest.fixture
@@ -39,6 +40,7 @@ def config():
         "prefix": "",
         "suffix": "",
         "format": "GeoJSON",
+        "export_crs": CRS(4326),
         # Properties
         "properties": [],
         "include_properties": [],
@@ -165,7 +167,7 @@ def basins():
 
 
 def save(assessment, records):
-    crs = CRS.from_epsg(4326)
+    crs = fCRS.from_epsg(4326)
     features = {
         "Point": "outlets",
         "LineString": "segments",

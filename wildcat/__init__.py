@@ -39,24 +39,26 @@ Internal subpackages:
     _utils      - Subpackage of utilities used to implement wildcat commands
 """
 
-"""
-Note: The following functions make the wildcat commands directly importable from
-the wildcat namespace. The imports are inside the functions (rather than at the
-top of this file) because many wildcat commands rely on numba (via pysheds), which 
-takes a long time to import. Placing the imports inside the functions only runs 
-the long import when necessary, so tasks that don't require pysheds can still run 
-quickly. Most importantly, this allows users to query the command-line help text:
+# Note: The following functions make the wildcat commands directly importable from
+# the wildcat namespace. The imports are inside the functions (rather than at the
+# top of this file) because many wildcat commands rely on numba (via pysheds), which
+# takes a long time to import. Placing the imports inside the functions only runs
+# the long import when necessary, so tasks that don't require pysheds can still run
+# quickly. Most importantly, this allows users to query the command-line help text:
+#
+#    $ wildcat -h
+#    $ wildcat <command> -h
+#
+# without waiting a long time.
 
-    $ wildcat -h
-    $ wildcat <command> -h
+from __future__ import annotations
 
-without waiting a long time.
-"""
+import typing
 
+if typing.TYPE_CHECKING:
+    from typing import Optional
 
-from typing import Optional
-
-from wildcat.typing import Check, ConfigType, Pathlike, scalar, strs, vector
+    from wildcat.typing import CRS, Check, ConfigType, Pathlike, scalar, strs, vector
 
 
 def version():
@@ -117,9 +119,10 @@ def initialize(
 
 
 def preprocess(
-    # Folders
+    # Paths
     project: Pathlike = None,
     *,
+    config: Pathlike = None,
     inputs: Pathlike = None,
     preprocessed: Pathlike = None,
     # Required datasets
@@ -166,6 +169,7 @@ def preprocess(
     Cleans datasets prior to hazard assessment
     ----------
     preprocess(project, ...)
+    preprocess(..., config)
     Runs the preprocessor for the indicated project folder. If project=None,
     interprets the current folder as the project folder.
 
@@ -188,7 +192,9 @@ def preprocess(
     Essentially, settings are first initialized to the wildcat defaults. These
     settings are then overridden by any settings defined in the configuration
     file. Finally, the settings are overridden by any values provided as keyword
-    arguments.
+    arguments. By default, searches for a configuration file named "configuration.py"
+    at the root of the project. Use the `config` option to specify a different
+    configuration file path.
 
     preprocess(..., inputs, preprocessed)
     Specifies IO folders for the preprocessor. The "inputs" folder is the default
@@ -310,6 +316,7 @@ def preprocess(
     ----------
     Inputs:
         project: The path to the project folder
+        config: The path to the configuration file
         inputs: The path of the default folder used to locate input datasets
         preprocessed: The path of the folder in which preprocessed rasters are saved
         perimeter: A fire perimeter dataset
@@ -367,6 +374,7 @@ def assess(
     # Folders
     project: Pathlike = None,
     *,
+    config: Pathlike = None,
     preprocessed: Pathlike = None,
     assessment: Pathlike = None,
     # Required datasets
@@ -411,6 +419,7 @@ def assess(
     Implements a hazard assessment using preprocessed datasets
     ----------
     assess(project, ...)
+    assess(..., config)
     Runs an assessment for the indicated project folder. If project=None,
     interprets the current folder as the project folder.
 
@@ -433,7 +442,9 @@ def assess(
     Essentially, settings are first initialized to the wildcat defaults. These
     settings are then overridden by any settings defined in the configuration
     file. Finally, the settings are overridden by any values provided as keyword
-    arguments.
+    arguments. By default, searches for a configuration file named "configuration.py"
+    at the root of the project. Use the `config` option to specify a different
+    configuration file path.
 
     assess(..., preprocessed)
     assess(..., assessment)
@@ -533,6 +544,7 @@ def assess(
     ----------
     Inputs:
         project: The path to the project folder
+        config: The path to the configuration file
         preprocessed: The path to the folder holding preprocessed rasters
         assessment: The path to the folder where assessment results will be saved
         perimeter_p: Path to the preprocessed perimeter
@@ -586,15 +598,17 @@ def assess(
 
 
 def export(
+    # Paths
     project: Pathlike = None,
     *,
-    # IO folders
+    config: Pathlike = None,
     assessment: Pathlike = None,
     exports: Pathlike = None,
     # Output files
+    format: str = None,
+    export_crs: CRS = None,
     prefix: str = None,
     suffix: str = None,
-    format: str = None,
     # Properties
     properties: strs = None,
     exclude_properties: strs = None,
@@ -608,6 +622,7 @@ def export(
     Export assessment results to desired format(s)
     ----------
     export(project, ...)
+    export(..., config)
     Exports assessment results for the indicated project. If project=None, interprets
     the current folder as the project folder.
 
@@ -624,7 +639,9 @@ def export(
     Essentially, settings are first initialized to the wildcat defaults. These
     settings are then overridden by any settings defined in the configuration
     file. Finally, the settings are overridden by any values provided as keyword
-    arguments.
+    arguments. By default, searches for a configuration file named "configuration.py"
+    at the root of the project. Use the `config` option to specify a different
+    configuration file path.
 
     export(..., assessment)
     export(..., exports)
@@ -637,6 +654,17 @@ def export(
     basins, and outlets to this file format. Commonly used formats include
     "Shapefile" and "GeoJSON". See the documentation for a complete list of supported
     file formats.
+
+    export(..., export_crs)
+    Specifies the coordinate reference system (CRS) that the exported segment, basin,
+    and outlet geometries should use. The base geometries from the assessment results
+    will be reprojected into this CRS prior to export. Accepts a variety of CRS
+    indicators, including: EPSG codes, CRS names, well-known text, and PROJ4 parameter
+    strings. Consult the pyproj documentation details on supported inputs.
+
+    Alternatively, set this option to "base" to leave the geometries in the base
+    assessment CRS. In practice, this is the CRS of the preprocessed DEM used to derive
+    the stream segment network.
 
     export(..., prefix)
     export(..., suffix)
@@ -733,11 +761,12 @@ def export(
     export format. Verifying that new names are valid is left to the user.
     ----------
     Inputs:
-        project: The path to the project folder holding the configuration file
-            for the export
+        project: The path to the project folder
+        config: The path to the configuration file
         assessment: The path to the folder holding saved assessment results
         exports: The path to the folder in which to save exported files
         format: A string indicating the format of the exported files
+        export_crs: The CRS for the exported feature geometries
         prefix: A string prepended to the beginning of exported file names
         suffix: A string appended to the end of exported file names
         properties: A base list of properties that should be included in the

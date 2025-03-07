@@ -50,7 +50,7 @@ Examples::
 
     The path to the digital elevation model (DEM) raster dataset. This dataset sets the CRS, resolution, and alignment of the preprocessed rasters. Also used to :ref:`characterize the watershed <characterize>`, including determining flow directions.
 
-    The DEM must be georeferenced and we strongly recommend using a DEM with approximately 10 meter resolution. This is because wildcat's hazard assessment models were calibrated using data from a 10 meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
+    The DEM must be georeferenced and we strongly recommend using a DEM with approximately 10 meter resolution. This is because wildcat's hazard assessment models were calibrated using data from a 10 meter DEM. Read also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
 
     You can find links to 10-meter DEM datasets here: :ref:`DEM datasets <data-dem>`
 
@@ -179,7 +179,7 @@ Examples::
 
 .. admonition:: What's a KF-factor?
         
-    Kf factors are defined as saturated hydraulic conductivity of the fine soil (< 2mm) fraction in inches/hour. Essentially, this is a soil erodibility factor that represents both (1) the susceptibility of soil to erosion, and (2) the rate of runoff, for soil material with <2mm equivalent diameter. See Chapter 3 of `USDA Agricultural Handbook 703`_ for additional details on its definition and calculation.
+    Kf factors are defined as saturated hydraulic conductivity of the fine soil (< 2mm) fraction in inches/hour. Essentially, this is a soil erodibility factor that represents both (1) the susceptibility of soil to erosion, and (2) the rate of runoff, for soil material with <2mm equivalent diameter. Read Chapter 3 of `USDA Agricultural Handbook 703`_ for additional details on its definition and calculation.
 
 .. _USDA Agricultural Handbook 703: https://www.researchgate.net/profile/Pablo_Alvarez-Figueroa/post/soil_erosion/attachment/59d6460279197b80779a110f/AS:455706810818560@1485660378747/download/Renard_1997_+Predicting+soil+erosion+by+water_a+guide+to+conservation+planing+with+RUSLE.pdf
 

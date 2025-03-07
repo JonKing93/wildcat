@@ -5,9 +5,15 @@ Functions:
     assess  - Implements the "assess" command
 """
 
+from __future__ import annotations
+
+import typing
+
 from wildcat._commands.assess import _load, _model, _network, _save, _watershed
 from wildcat._utils import _find, _setup
-from wildcat.typing import Config
+
+if typing.TYPE_CHECKING:
+    from wildcat.typing import Config
 
 
 def assess(locals: Config) -> None:

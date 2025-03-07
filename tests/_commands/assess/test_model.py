@@ -60,7 +60,7 @@ class TestLikelihood:
             config["I15_mm_hr"], segments, rasters, m1_vars, logcheck.log
         )
         assert "likelihood" in m1_vars
-        assert m1_vars["likelihood"].shape == (8, 3)
+        assert m1_vars["likelihood"].shape == (8, 3, 1)
         expected = np.array(
             [
                 [
@@ -74,7 +74,7 @@ class TestLikelihood:
                     [0.11943936, 0.16942787, 0.23476014],
                 ]
             ]
-        )
+        ).reshape(8, 3, 1)
         assert np.allclose(m1_vars["likelihood"], expected)
         logcheck.check(
             [
@@ -91,7 +91,7 @@ class TestLikelihood:
         )
         assert "Terrain_M1" in properties
         assert "likelihood" in properties
-        assert properties["likelihood"].shape == (8, 3)
+        assert properties["likelihood"].shape == (8, 3, 1)
         expected = np.array(
             [
                 [
@@ -105,7 +105,7 @@ class TestLikelihood:
                     [0.11943936, 0.16942787, 0.23476014],
                 ]
             ]
-        )
+        ).reshape(8, 3, 1)
         assert np.allclose(properties["likelihood"], expected)
         logcheck.check(
             [
@@ -120,7 +120,7 @@ class TestLikelihood:
             config["I15_mm_hr"][0:1], segments, rasters, m1_vars, logcheck.log
         )
         assert "likelihood" in m1_vars
-        assert m1_vars["likelihood"].shape == (8, 1)
+        assert m1_vars["likelihood"].shape == (8, 1, 1)
         expected = np.array(
             [
                 [
@@ -134,7 +134,7 @@ class TestLikelihood:
                     [0.11943936],
                 ]
             ]
-        )
+        ).reshape(8, 1, 1)
         assert np.allclose(m1_vars["likelihood"], expected)
         logcheck.check(
             [
@@ -149,9 +149,9 @@ class TestVolume:
         properties = {}
         _model._volume(config, segments, rasters, properties, logcheck.log)
         assert list(properties.keys()) == ["Bmh_km2", "Relief_m", "V", "Vmin", "Vmax"]
-        assert properties["V"].shape == (8, 3)
-        assert properties["Vmin"].shape == (8, 3, 2)
-        assert properties["Vmax"].shape == (8, 3, 2)
+        assert properties["V"].shape == (8, 3, 1)
+        assert properties["Vmin"].shape == (8, 3, 1, 2)
+        assert properties["Vmax"].shape == (8, 3, 1, 2)
         print(properties)
         expected = {
             "Bmh_km2": [0.0004, 0.0004, 0.0019, 0.0009, 0.0028, 0.0001, 0.0001, 0.0002],
@@ -167,7 +167,7 @@ class TestVolume:
                     [49.7021013, 59.75065986, 70.57311124],
                     [63.04258504, 75.78826562, 89.51555871],
                 ]
-            ),
+            ).reshape(8, 3, 1),
             "Vmin": np.array(
                 [
                     [
@@ -211,7 +211,7 @@ class TestVolume:
                         [16.17981825, 11.65866764],
                     ],
                 ]
-            ),
+            ).reshape(8, 3, 1, 2),
             "Vmax": np.array(
                 [
                     [
@@ -255,7 +255,7 @@ class TestVolume:
                         [495.24878016, 687.30282911],
                     ],
                 ]
-            ),
+            ).reshape(8, 3, 1, 2),
         }
         for key, values in expected.items():
             assert np.allclose(properties[key], values)
@@ -277,9 +277,9 @@ class TestVolume:
         config["volume_CI"] = config["volume_CI"][0:1]
         _model._volume(config, segments, rasters, properties, logcheck.log)
         assert list(properties.keys()) == ["Bmh_km2", "Relief_m", "V", "Vmin", "Vmax"]
-        assert properties["V"].shape == (8, 1)
-        assert properties["Vmin"].shape == (8, 1, 1)
-        assert properties["Vmax"].shape == (8, 1, 1)
+        assert properties["V"].shape == (8, 1, 1)
+        assert properties["Vmin"].shape == (8, 1, 1, 1)
+        assert properties["Vmax"].shape == (8, 1, 1, 1)
 
         expected = {
             "Bmh_km2": [0.0004, 0.0004, 0.0019, 0.0009, 0.0028, 0.0001, 0.0001, 0.0002],
@@ -295,7 +295,7 @@ class TestVolume:
                     49.7021013,
                     63.04258504,
                 ]
-            ).reshape(8, 1),
+            ).reshape(8, 1, 1),
             "Vmin": np.array(
                 [
                     9.90159311,
@@ -307,7 +307,7 @@ class TestVolume:
                     8.98358874,
                     11.39486345,
                 ]
-            ).reshape(8, 1, 1),
+            ).reshape(8, 1, 1, 1),
             "Vmax": np.array(
                 [
                     303.07830611,
@@ -319,7 +319,7 @@ class TestVolume:
                     274.97906952,
                     348.78588473,
                 ]
-            ).reshape(8, 1, 1),
+            ).reshape(8, 1, 1, 1),
         }
         for key, values in expected.items():
             assert np.allclose(properties[key], values)
@@ -342,7 +342,7 @@ class TestHazard:
         assert "hazard" not in props
         _model._hazard(props, logcheck.log)
         assert "hazard" in props
-        assert props["hazard"].shape == (8, 3)
+        assert props["hazard"].shape == (8, 3, 1)
         expected = np.array(
             [
                 [1.0, 1.0, 1.0],
@@ -354,7 +354,7 @@ class TestHazard:
                 [1.0, 1.0, 1.0],
                 [1.0, 1.0, 1.0],
             ]
-        )
+        ).reshape(8, 3, 1)
         assert np.array_equal(props["hazard"], expected)
         logcheck.check([("INFO", "Classifying combined hazard")])
 
@@ -429,7 +429,7 @@ class TestI15Hazard:
                         [0.11943936, 0.16942787, 0.23476014],
                     ]
                 ]
-            ),
+            ).reshape(8, 3, 1),
             "Bmh_km2": [0.0004, 0.0004, 0.0019, 0.0009, 0.0028, 0.0001, 0.0001, 0.0002],
             "Relief_m": [64.0, 53.0, 115.0, 105.0, 128.0, 110.0, 123.0, 121.0],
             "V": np.array(
@@ -443,7 +443,7 @@ class TestI15Hazard:
                     [49.7021013, 59.75065986, 70.57311124],
                     [63.04258504, 75.78826562, 89.51555871],
                 ]
-            ),
+            ).reshape(8, 3, 1),
             "Vmin": np.array(
                 [
                     [
@@ -487,7 +487,7 @@ class TestI15Hazard:
                         [16.17981825, 11.65866764],
                     ],
                 ]
-            ),
+            ).reshape(8, 3, 1, 2),
             "Vmax": np.array(
                 [
                     [
@@ -531,7 +531,7 @@ class TestI15Hazard:
                         [495.24878016, 687.30282911],
                     ],
                 ]
-            ),
+            ).reshape(8, 3, 1, 2),
             "hazard": np.array(
                 [
                     [1.0, 1.0, 1.0],
@@ -543,7 +543,7 @@ class TestI15Hazard:
                     [1.0, 1.0, 1.0],
                     [1.0, 1.0, 1.0],
                 ]
-            ),
+            ).reshape(8, 3, 1),
         }
         for field, values in expected.items():
             assert np.allclose(properties[field], values)
@@ -564,16 +564,19 @@ class TestI15Hazard:
         )
 
 
-def check_thresholds(props, expected, shape=(8, 3, 2)):
+def check_thresholds(props, expected, shape=(8, 2, 3)):
     for field, values in expected.items():
         assert field in props
         assert props[field].shape == shape
+        print(props[field])
+        print("-----")
+        print(values)
         assert np.allclose(props[field], values)
 
 
 class TestThresholds:
     @pytest.mark.parametrize("field", ("durations", "probabilities"))
-    def test_missing(_, config, field, thresholds, logcheck):
+    def test_missing(_, config, field, logcheck):
         config[field] = []
         properties = {}
         _model.thresholds(config, None, None, properties, logcheck.log)

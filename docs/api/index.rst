@@ -1,6 +1,6 @@
 API
 ===
-A complete reference guide to running wildcat. These sections are mostly focused on documenting configuration options and overrides. For detailed information on a command's steps, please see the :doc:`Command Overviews </commands/index>`.
+A complete reference guide to running wildcat. These sections are mostly focused on documenting configuration options and overrides. For detailed information on a command's steps, please read the :doc:`Command Overviews </commands/index>`.
 
 ----
 
@@ -13,6 +13,9 @@ A complete reference guide to running wildcat. These sections are mostly focused
 :doc:`Python kwargs <python>`
     Documents running wildcat from a Python sessions. Function kwargs will override the config file when provided.
 
+:doc:`Custom Errors <errors>`
+    Custom errors implemented by wildcat.
+
 
 .. toctree::
     :hidden:
@@ -20,3 +23,4 @@ A complete reference guide to running wildcat. These sections are mostly focused
     configuration.py <config/index>
     Command Line <cli/index>
     Python <python>
+    Errors <errors>

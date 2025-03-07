@@ -111,7 +111,7 @@ DEM Resolution
 
 The preprocessor next checks that the DEM dataset has an allowed resolution. The allowed resolutions are determined by the :confval:`resolution_limits_m` setting, which defaults to resolutions from 6.5 to 11 meters. This range is selected to allow all DEM tiles from the USGS National Map within the continental US.
 
-In general, the DEM should have an approximately 10 meter resolution. This is because wildcat's assessment models were calibrated using data from a 10-meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
+In general, the DEM should have an approximately 10 meter resolution. This is because wildcat's assessment models were calibrated using data from a 10-meter DEM. Read also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
 
 
 

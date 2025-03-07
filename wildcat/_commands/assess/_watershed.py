@@ -8,11 +8,16 @@ Functions:]
     accumulation    - Computes flow accumulations
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 
 from pfdf import severity, watershed
 
-from wildcat.typing import Config, RasterDict
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing import Config, RasterDict
 
 
 def severity_masks(rasters: RasterDict, log: Logger) -> None:

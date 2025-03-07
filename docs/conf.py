@@ -21,7 +21,7 @@ html_css_files = ["copyright.css"]
 _pyproject = Path(__file__).parents[1] / "pyproject.toml"
 with open(_pyproject, "rb") as file:
     _pyproject = tomllib.load(file)
-release = _pyproject["tool"]["poetry"]["version"]
+release = _pyproject["project"]["version"]
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

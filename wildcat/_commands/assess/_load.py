@@ -5,12 +5,18 @@ Functions:
     datasets    - Loads preprocessed raster datasets
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 
 from pfdf.raster import Raster
 
 import wildcat._utils._paths.assess as _paths
-from wildcat.typing import PathDict, RasterDict
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing import PathDict, RasterDict
 
 
 def datasets(paths: PathDict, log: Logger) -> RasterDict:
