@@ -9,9 +9,14 @@ Functions:
     _rename         - Renaming options
 """
 
-from argparse import ArgumentParser
+from __future__ import annotations
+
+import typing
 
 from wildcat._cli._parsers._utils import create_subcommand, io_folders, logging, switch
+
+if typing.TYPE_CHECKING:
+    from argparse import ArgumentParser
 
 
 def parser(subparsers) -> None:
@@ -35,7 +40,8 @@ def _output_files(parser: ArgumentParser) -> None:
     parser = parser.add_argument_group("Output files")
     options = {
         "format": "The file format of exported files",
-        "prefix": "String preprended to the beginning of exported file names",
+        "crs": "The coordinate reference system of the exported files",
+        "prefix": "String prepended to the beginning of exported file names",
         "suffix": "String appended to the end of exported file names",
     }
     for name, description in options.items():

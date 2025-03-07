@@ -6,7 +6,7 @@ wildcat commands.
 ----------
 Contents:
     parse   - Function to parse configuration settings for a command
-    load    - Function to compile a config file and return its namespace 
+    load    - Function to compile a config file and return its namespace
     record  - Module with function to record configuration settings to file
     _parse  - Module implementing the configuration parser
 """

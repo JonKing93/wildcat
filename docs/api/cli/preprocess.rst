@@ -12,7 +12,7 @@ Synopsis
 Description
 -----------
 
-Reprojects and cleans input datasets in preparation for an assessment. Datasets are converted to rasters with the same CRS, bounds, alignment, and resolution. Also implements various data validation and cleaning routines. Please see the :doc:`Preprocess Overview </commands/preprocess>` for more details.
+Reprojects and cleans input datasets in preparation for an assessment. Datasets are converted to rasters with the same CRS, bounds, alignment, and resolution. Also implements various data validation and cleaning routines. Please read the :doc:`Preprocess Overview </commands/preprocess>` for more details.
 
 .. note::
     
@@ -24,12 +24,12 @@ Options
 
 .. program:: preprocess
 
-Folders
-+++++++
+Paths
++++++
 
 .. option:: project
 
-    Indicates the project folder in which to run the preprocessor. If not specified, interprets the current folder as the project folder. If the project folder contains a ``configuration.py`` file, then the file will be used to configure the preprocessor.
+    Indicates the project folder in which to run the preprocessor. If not specified, interprets the current folder as the project folder. The project folder is also the default location where the command will search for a configuration file.
 
     Example::
 
@@ -38,6 +38,16 @@ Folders
 
         # Preprocess the current folder
         wildcat preprocess
+
+
+.. option:: -c PATH, --config PATH
+
+    Specifies the path to the configuration file. If a relative path, then the path is interpreted relative to the project folder. Defaults to ``configuration.py``.
+
+    Example::
+
+        # Use an alternate config file
+        wildcat preprocess --config my-alternate-config.py
 
 
 .. option:: -i PATH, --inputs PATH
@@ -89,7 +99,7 @@ Example::
 
     The path to the digital elevation model (DEM) raster dataset. This dataset sets the CRS, resolution, and alignment of the preprocessed rasters. Also used to :ref:`characterize the watershed <characterize>`, including determining flow directions.
 
-    The DEM must be georeferenced and we strongly recommend using a DEM with 10 meter resolution (±3 meters). This is because wildcat's hazard assessment models were calibrated using data from a 10 meter DEM. See also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
+    The DEM must be georeferenced and we strongly recommend using a DEM with 10 meter resolution (±3 meters). This is because wildcat's hazard assessment models were calibrated using data from a 10 meter DEM. Read also `Smith et al., 2019 <https://esurf.copernicus.org/articles/7/475/2019/>`_ for a discussion of the effects of DEM resolution on topographic analysis.
 
     You can find links to 10-meter DEM datasets here: :ref:`DEM datasets <data-dem>`
 

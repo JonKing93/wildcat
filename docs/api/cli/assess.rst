@@ -12,7 +12,7 @@ Synopsis
 
 Description
 -----------
-Implements a hazard assessment using preprocessed input datasets. The major steps of the assessment are to characterize the watershed, design the stream segment network, run hazard assessment models, and save results to GeoJSON. . Please see the :doc:`Assess Overview </commands/assess>` for more details.
+Implements a hazard assessment using preprocessed input datasets. The major steps of the assessment are to characterize the watershed, design the stream segment network, run hazard assessment models, and save results to GeoJSON. . Please read the :doc:`Assess Overview </commands/assess>` for more details.
 
 .. note::
     
@@ -29,7 +29,7 @@ Folders
 
 .. option:: project
 
-    The project folder in which to run the assessment. If not provided, interprets the current folder as the project folder. If the project folder contains a ``configuration.py`` file, then the config file will be used to configure the assessment.
+    The project folder in which to run the assessment. If not provided, interprets the current folder as the project folder. The project folder is also the default location where the command will search for a configuration file.
 
     Examples::
 
@@ -38,6 +38,17 @@ Folders
 
         # Run assessment on current folder
         wildcat assess
+
+
+.. option:: -c PATH, --config PATH
+
+    Specifies the path to the configuration file. If a relative path, then the path is interpreted relative to the project folder. Defaults to ``configuration.py``.
+
+    Example::
+
+        # Use an alternate config file
+        wildcat assess --config my-alternate-config.py
+
 
 .. option:: -i PATH, --preprocessed PATH
 

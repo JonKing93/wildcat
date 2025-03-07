@@ -21,12 +21,17 @@ Functions:
     _parse_config_file  - Returns the configuration file namespace
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 from pathlib import Path
-from typing import Any
 
 from wildcat._utils._defaults import defaults
 from wildcat.errors import ConfigError
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from typing import Any
 
 
 def parse(config: dict[str, Any], log: Logger):
@@ -34,9 +39,10 @@ def parse(config: dict[str, Any], log: Logger):
     'config' input should be the local symbol table for the command (via a call
     to the built-in 'locals' function)"""
 
-    # Locate the project folder and load the config file namespace
+    # Locate the project folder. Determine the config file path and parse namespace
     config["project"] = _locate_project(config["project"], log)
-    config_file = _parse_config_file(config["project"], log)
+    config["config"] = _locate_config(config["project"], config["config"])
+    config_file = _parse_config_file(config["config"], log)
 
     # Parse settings from keyword args, config file, and default settings
     for name, value in config.items():
@@ -76,14 +82,40 @@ def _locate_project(project: Any, log: Logger) -> Path:
     return project
 
 
-def _parse_config_file(project: Path, log: Logger) -> dict:
+def _locate_config(project: Path, path: Any) -> Path:
+
+    # Use default path if unspecified
+    if path is None:
+        return project / "configuration.py"
+
+    # Convert user input to path
+    try:
+        path = Path(path)
+    except Exception as error:
+        raise TypeError(
+            "Could not convert the `config` input to a file path."
+        ) from error
+
+    # Absolute, or relative to project folder
+    if not path.is_absolute():
+        path = project / path
+
+    # Path must be an existing file
+    if not path.exists():
+        raise FileNotFoundError(f"The configuration file is missing:\nPath: {path}")
+    elif not path.is_file():
+        raise ValueError(f"The configuration path is not a file.\nPath: {path}")
+    return path
+
+
+def _parse_config_file(path: Path, log: Logger) -> dict:
     """Checks for a configuraton file. If it exists, runs the file and returns
     its namespace dict."""
 
     # Check for a configuration file. If it exists, return its namespace
-    path = project / "configuration.py"
     if path.exists():
         log.debug("    Reading configuration file")
+        log.debug(f"        {path}")
         return load(path)
 
     # If it doesn't exist, just return an empty namespace
@@ -93,7 +125,7 @@ def _parse_config_file(project: Path, log: Logger) -> dict:
 
 
 def load(path: Path) -> dict:
-    "Compiltes an existing config file and returns its namespace"
+    "Compiles an existing config file and returns its namespace"
 
     # Run the config file and return its namespace
     try:

@@ -13,11 +13,17 @@ Functions:
     _folder         - Resolves the path to a folder
 """
 
-from logging import Logger
-from pathlib import Path
+from __future__ import annotations
+
+import typing
 
 from wildcat._utils._defaults import defaults
-from wildcat.typing import IOFolders
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from pathlib import Path
+
+    from wildcat.typing import IOFolders
 
 
 def io_folders(

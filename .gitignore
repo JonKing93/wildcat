@@ -13,9 +13,5 @@ coverage.lcov
 .venv
 dist
 
-# Test data
-test-data
-download
-
 # Documentation builds
 public

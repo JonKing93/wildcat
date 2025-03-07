@@ -9,12 +9,18 @@ Functions:
     _resolved_paths - Resolves config paths and logs the locations
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 from pathlib import Path
 
 from wildcat._utils import _paths
 from wildcat._utils._find import _file, _folders
-from wildcat.typing import Config, IOFolders, PathDict
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing import Config, IOFolders, PathDict
 
 
 def io_folders(config: Config, inputs: str, outputs: str, log: Logger) -> IOFolders:

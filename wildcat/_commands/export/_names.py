@@ -7,7 +7,7 @@ This is particularly useful for result vectors, as the default naming scheme
 particularly human-readable. Wildcat implements a default renaming scheme for these
 dynamically named vectors, which is implemented by the "clean" function. This
 attempts to replace the indices in parameter names with simplified forms of the
-associated parameters. 
+associated parameters.
 
 Users can also supersede the default naming scheme using a renaming dict. This
 can be used to name result prefixes, parameter strings, and explicit property
@@ -29,13 +29,19 @@ Renaming:
     _rename_properties  - Renames explicitly listed properties
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 from re import search
-from typing import Optional
 
 from wildcat._commands.export._properties import collect
 from wildcat._utils import _parameters, _properties
-from wildcat.typing._export import Config, Parameters, PropNames
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from typing import Optional
+
+    from wildcat.typing._export import Config, Parameters, PropNames
 
 #####
 # Main

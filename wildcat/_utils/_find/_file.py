@@ -14,10 +14,15 @@ Functions:
     _scan_extensions    - Scans supported extensions when a file is missing
 """
 
-from pathlib import Path
+from __future__ import annotations
+
+import typing
 
 from wildcat._utils import _extensions
 from wildcat._utils._defaults import defaults
+
+if typing.TYPE_CHECKING:
+    from pathlib import Path
 
 
 def file(
@@ -44,7 +49,7 @@ def _resolve_path(folder: Path, path: Path, supports_features: bool) -> Path | N
         path = (folder / path).resolve()
 
     # Scan supported extensions if the Path does not exist
-    if not path.exists() or not path.is_file():
+    if not path.exists():
         supported = _extensions.raster()
         if supports_features:
             supported += _extensions.vector()
@@ -62,6 +67,6 @@ def _scan_extensions(path: Path, extensions: list[str]) -> Path | None:
         path = folder / f"{name}{ext}"
 
         # Stop if an existing file is located. Otherwise return None
-        if path.exists() and path.is_file():
+        if path.exists():
             return path
     return None

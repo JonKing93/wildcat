@@ -1,7 +1,7 @@
 export
 ======
 
-The ``export`` command converts saved assessment results from `GeoJSON <https://geojson.org/>`_ to :ref:`other GIS format <vector-formats>`. The command also includes options to select, organize, and rename data fields in the exported files. This page provides an overview of the command's steps, but see also the :doc:`Property Guide </guide/properties>` for detailed information on exporting data fields.
+The ``export`` command converts saved assessment results from `GeoJSON <https://geojson.org/>`_ to :ref:`other GIS formats <vector-formats>`. The command also includes options to (1) reproject results to a preferred CRS, and (2) select, organize, and rename data fields in the exported files. This page provides an overview of the command's steps, but read also the :doc:`Property Guide </guide/properties>` for detailed information on exporting data fields.
 
 
 Select Properties
@@ -41,6 +41,13 @@ Rename Properties
 *Related settings:* :confval:`rename`, :confval:`clean_names`
 
 Next, the routine renames data fields as appropriate. The command first applies a default renaming scheme to result fields, which you can disable by setting :confval:`clean_names` to ``False``. The command then applies any user-specified names to the exported fields. You can learn more about renaming options in the :ref:`Renaming Guide <rename>`.
+
+
+Reproject Results
+-----------------
+*Related settings:* :confval:`export_crs`
+
+The command then reprojects the exported segment, basin, and outlet geometries to the requested coordinate reference system (CRS). If you disable reprojection, then the exported geometries will remain in the base assessment CRS, which is the CRS of the preprocessed DEM.
 
 
 File Format

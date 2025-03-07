@@ -17,7 +17,7 @@ Subcommand modules:
 
 Utility modules:
     _descriptions   - Lengthy help text descriptions of subcommands and input files
-    _utils          - Utility functions used to build multiple subcommand parsers    - 
+    _utils          - Utility functions used to build multiple subcommand parsers    -
 """
 
 from argparse import ArgumentParser

@@ -10,6 +10,7 @@ Pathlike = str | Path
 scalar = int | float
 vector = scalar | Sequence[scalar]
 strs = str | list[str]
+CRS = str | int | Literal["base"]
 
 # User string options
 Check = Literal["error", "warn", "none"]

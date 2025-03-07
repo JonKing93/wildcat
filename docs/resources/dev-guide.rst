@@ -22,7 +22,7 @@ You can install poetry using::
 
     pip install poetry
 
-and see also the `poetry documentation <https://python-poetry.org/docs/#installation>`_ for alternative installation instructions.
+and read also the `poetry documentation <https://python-poetry.org/docs/#installation>`_ for alternative installation instructions.
 
 Next, clone your fork of the project and navigate to the cloned repository. Then, use::
 

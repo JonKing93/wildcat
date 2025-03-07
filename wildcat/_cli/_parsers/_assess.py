@@ -18,9 +18,14 @@ Option groups:
     _basins         - Options for locating basins
 """
 
-from argparse import ArgumentParser
+from __future__ import annotations
+
+import typing
 
 from wildcat._cli._parsers._utils import create_subcommand, io_folders, logging, switch
+
+if typing.TYPE_CHECKING:
+    from argparse import ArgumentParser
 
 
 def parser(subparsers) -> None:

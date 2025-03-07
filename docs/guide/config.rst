@@ -9,11 +9,11 @@ Each config file is unique to its associated project folder. This means that you
 
 .. note::
 
-    The ``configuration.py`` file is imported and executed when you run a wildcat command. Please :ref:`see below <execute-config>` for implications.
+    The ``configuration.py`` file is imported and executed when you run a wildcat command. Please :ref:`read below <execute-config>` for implications.
 
 .. tip::
 
-    See the :doc:`Config API </api/config/index>` for a complete guide to available config settings.
+    Read the :doc:`Config API </api/config/index>` for a complete guide to available config settings.
 
 
 Python Primer

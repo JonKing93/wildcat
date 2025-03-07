@@ -1052,6 +1052,7 @@ def check_config(folder, paths):
 
 
 def check_log(logcheck, paths):
+    config_path = paths["project"] / "configuration.py"
     logcheck.check(
         [
             ("INFO", "----- Assessment -----"),
@@ -1059,6 +1060,7 @@ def check_log(logcheck, paths):
             ("DEBUG", "    Locating project folder"),
             ("DEBUG", f"        {paths['project']}"),
             ("DEBUG", "    Reading configuration file"),
+            ("DEBUG", f"        {config_path}"),
             ("INFO", "Locating IO folders"),
             ("DEBUG", f"    preprocessed: {paths['preprocessed']}"),
             ("DEBUG", f"    assessment: {paths['assessment']}"),

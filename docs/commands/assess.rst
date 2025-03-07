@@ -468,7 +468,7 @@ Alternatively, you can attempt to speed up basin location by using multiple CPUs
 
 .. important::
 
-    You cannot use the parallelization option from an interactive Python session. However, you *can* use parallelization for Python scripts run from the command line. When this is the case, the Python script MUST be within a ``if __name__ == "__main__"`` code block. Failing to do this will cause an infinite loop that will crash wildcat. See the `pfdf docs <https://ghsc.code-pages.usgs.gov/lhp/pfdf/guide/segments/parallel.html#requirements>`_ for additional details.
+    You cannot use the parallelization option from an interactive Python session. However, you *can* use parallelization for Python scripts run from the command line. When this is the case, the Python script MUST be within a ``if __name__ == "__main__"`` code block. Failing to do this will cause an infinite loop that will crash wildcat. Consult the `pfdf docs <https://ghsc.code-pages.usgs.gov/lhp/pfdf/guide/segments/parallel.html#requirements>`_ for additional details.
 
 
 ----

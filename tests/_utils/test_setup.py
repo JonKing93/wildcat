@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
 
+from pyproj import CRS
+
 from wildcat._utils import _setup
 
 
@@ -13,12 +15,14 @@ def test(project, logcheck):
     locals = {
         # Folders
         "project": project,
+        "config": None,
         "assessment": None,
         "exports": None,
         # Output files
         "prefix": None,
         "suffix": "test",
         "format": "Shapefile",
+        "export_crs": 4326,
         # Properties
         "properties": ["test", "properties"],
         "exclude_properties": None,
@@ -33,12 +37,14 @@ def test(project, logcheck):
     assert config == {
         # Folders
         "project": project,
+        "config": project / "configuration.py",
         "assessment": Path("assessment"),
         "exports": Path("test_config_file"),
         # Output files
         "prefix": "",
         "suffix": "test",
         "format": "Shapefile",
+        "export_crs": CRS(4326),
         # Properties
         "properties": ["test", "properties"],
         "exclude_properties": [],
@@ -58,5 +64,6 @@ def test(project, logcheck):
             ("DEBUG", "    Locating project folder"),
             ("DEBUG", f"        {project}"),
             ("DEBUG", "    Reading configuration file"),
+            ("DEBUG", f"        {project / 'configuration.py'}"),
         ]
     )

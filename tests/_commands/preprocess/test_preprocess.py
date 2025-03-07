@@ -536,6 +536,7 @@ def check_config_constant(preprocessed, paths):
 
 
 def check_log(logcheck, paths):
+    config_path = paths["project"] / "configuration.py"
     logcheck.check(
         [
             ("INFO", "----- Preprocessing -----"),
@@ -543,6 +544,7 @@ def check_log(logcheck, paths):
             ("DEBUG", "    Locating project folder"),
             ("DEBUG", f"        {paths['project']}"),
             ("DEBUG", "    Reading configuration file"),
+            ("DEBUG", f"        {config_path}"),
             ("INFO", "Locating IO folders"),
             ("DEBUG", f"    inputs: {paths['inputs']}"),
             ("DEBUG", f"    preprocessed: {paths['preprocessed']}"),
@@ -611,6 +613,7 @@ def check_log(logcheck, paths):
 
 
 def check_log_constant(logcheck, paths):
+    config_path = paths["project"] / "configuration.py"
     logcheck.check(
         [
             ("INFO", "----- Preprocessing -----"),
@@ -618,6 +621,7 @@ def check_log_constant(logcheck, paths):
             ("DEBUG", "    Locating project folder"),
             ("DEBUG", f"        {paths['project']}"),
             ("DEBUG", "    Reading configuration file"),
+            ("DEBUG", f"        {config_path}"),
             ("INFO", "Locating IO folders"),
             ("DEBUG", f"    inputs: {paths['inputs']}"),
             ("DEBUG", f"    preprocessed: {paths['preprocessed']}"),

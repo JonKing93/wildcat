@@ -13,12 +13,17 @@ Utilities:
     _included       - Indicates whether segments intersect an included area
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 
 import numpy as np
 from pfdf.segments import Segments
 
-from wildcat.typing._assess import Config, PropertyDict, RasterDict
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing._assess import Config, PropertyDict, RasterDict
 
 
 def delineate(config: Config, rasters: RasterDict, log: Logger) -> Segments:
@@ -53,12 +58,12 @@ def delineate(config: Config, rasters: RasterDict, log: Logger) -> Segments:
 
 def _mask(
     rasters: RasterDict, name: str, log: Logger, description: str
-) -> np.ndarray | bool:
+) -> np.ndarray | np.bool:
     "Returns a value for an optional mask that can be used in logical expressions"
 
     # Just return False if the mask is not provided
     if name not in rasters:
-        return False
+        return np.bool(False)
 
     # Log and return mask
     log.debug(f"    Removing {description}")

@@ -9,6 +9,10 @@ Functions:
     export      - Checks the config settings for an export
 """
 
+from __future__ import annotations
+
+import typing
+
 from wildcat._utils._validate._core import (
     angle,
     boolean,
@@ -33,8 +37,10 @@ from wildcat._utils._validate._core import (
     strlist,
     vector,
 )
-from wildcat._utils._validate._export import file_format, filename, rename
-from wildcat.typing import Config
+from wildcat._utils._validate._export import crs, file_format, filename, rename
+
+if typing.TYPE_CHECKING:
+    from wildcat.typing import Config
 
 
 def _validate(config: Config, checks: dict) -> None:
@@ -60,6 +66,7 @@ def preprocess(config: Config) -> None:
     checks = {
         # Folders
         "project": path,
+        "config": path,
         "inputs": path,
         "preprocessed": path,
         # Required
@@ -111,6 +118,7 @@ def assess(config: Config) -> None:
     checks = {
         # Folders
         "project": path,
+        "config": path,
         "preprocessed": path,
         "assessment": path,
         # Required datasets
@@ -170,6 +178,7 @@ def export(config: Config) -> None:
     checks = {
         # Folders
         "project": path,
+        "config": path,
         "assessment": path,
         "exports": path,
         # Output files
@@ -184,5 +193,7 @@ def export(config: Config) -> None:
         "order_properties": boolean,
         "clean_names": boolean,
         "rename": rename,
+        # CRS
+        "export_crs": crs,
     }
     _validate(config, checks)

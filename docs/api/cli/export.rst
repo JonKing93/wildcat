@@ -12,7 +12,7 @@ Synopsis
 
 Description
 -----------
-Exports hazard assessment results to :ref:`GIS file formats <vector-formats>`. Includes options to select, order, and rename exported properies. Please see the :doc:`Property Guide </guide/properties>` and :doc:`Export Overview </commands/export>` for more details. 
+Exports hazard assessment results to :ref:`GIS file formats <vector-formats>`. Includes options to select, order, and rename exported properies. Please read the :doc:`Property Guide </guide/properties>` and :doc:`Export Overview </commands/export>` for more details. 
 
 .. note:: 
     
@@ -30,7 +30,7 @@ Folders in which to search for input files and save exported results.
 
 .. option:: project
 
-    The project folder in which to export results. If not provided, interprets the current folder as the project folder. If the project folder contains a ``configuration.py`` file, then the config file will be used to configure the export.
+    The project folder in which to export results. If not provided, interprets the current folder as the project folder. The project folder is also the default location where the command will search for a configuration file.
 
     Examples::
 
@@ -39,6 +39,16 @@ Folders in which to search for input files and save exported results.
 
         # Export project in current folder
         wildcat export
+
+
+.. option:: -c PATH, --config PATH
+
+    Specifies the path to the configuration file. If a relative path, then the path is interpreted relative to the project folder. Defaults to ``configuration.py``.
+
+    Example::
+
+        # Use an alternate config file
+        wildcat export --config my-alternate-config.py
 
 
 .. option:: -i PATH, --assessment PATH
@@ -79,6 +89,30 @@ Options affecting the names and formats of the exported files.
         wildcat export --format Shapefile
 
     *Overrides setting:* :confval:`format`
+
+
+.. option:: --crs CRS
+
+    The coordinate reference system (CRS) for the exported files. The segment, basin, and outlet geometries will be reprojected to this CRS prior to export.
+
+    The base geometries from the assessment results will be reprojected into this CRS prior to export. Accepts a variety of CRS indicators, including: EPSG codes, CRS names, well-known text, and PROJ4 parameter strings. Consult the `pyproj documentation <https://pyproj4.github.io/pyproj/stable/examples.html>`_ for more details on supported inputs.
+
+    Alternatively, set this option to ``base`` to leave the geometries in the base assessment CRS. In practice, this is the CRS of the preprocessed DEM used to derive the stream segment network.
+
+    Examples::
+
+        # EPSG codes
+        wildcat export --crs "EPSG:4326"
+        wildcat export --crs 4326
+
+        # CRS names
+        wildcat export --crs WGS84
+        wildcat export --crs "NAD83 / UTM zone 11N"
+
+        # Disable reprojection
+        wildcat export --crs base
+
+    *Overrides setting:* :confval:`export_crs`
 
 
 .. option:: --prefix PREFIX
@@ -178,7 +212,7 @@ Settings used to :ref:`rename <rename>` the exported properties.
 
     .. tip::
 
-        It's usually easier to use ``configuration.py`` to rename properties. Please see the :ref:`Renaming Guide <rename>` for more details.
+        It's usually easier to use ``configuration.py`` to rename properties. Please read the :ref:`Renaming Guide <rename>` for more details.
 
     Examples::
 
@@ -203,7 +237,7 @@ Settings used to :ref:`rename <rename>` the exported properties.
 
     .. tip::
 
-        It's usually easier to use ``configuration.py`` to rename properties. Please see the :ref:`Renaming Guide <rename>` for more details.
+        It's usually easier to use ``configuration.py`` to rename properties. Please read the :ref:`Renaming Guide <rename>` for more details.
 
     Examples:
 

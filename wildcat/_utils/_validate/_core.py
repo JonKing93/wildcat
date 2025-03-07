@@ -48,11 +48,16 @@ Misc:
     durations           - Checks a field is a vector of values equal to 15, 30, and/or 60
 """
 
+from __future__ import annotations
+
+import typing
 from math import isinf, isnan
 from pathlib import Path
-from typing import Any, Optional
 
-from wildcat.typing import Config
+if typing.TYPE_CHECKING:
+    from typing import Any, Optional
+
+    from wildcat.typing import Config
 
 #####
 # Utilities

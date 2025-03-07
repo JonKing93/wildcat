@@ -8,14 +8,21 @@ Functions:
     _strlist    - Checks a parameter value in a renaming dict is a list of strings
 """
 
+from __future__ import annotations
+
+import typing
 from string import ascii_letters, digits
-from typing import Any
 
 from pfdf.utils import driver
+from pyproj import CRS
 
 from wildcat._utils import _parameters
 from wildcat._utils._validate._core import aslist, optional_string
-from wildcat.typing import Config
+
+if typing.TYPE_CHECKING:
+    from typing import Any
+
+    from wildcat.typing import Config
 
 
 def filename(config: Config, name: str) -> None:
@@ -117,3 +124,24 @@ def _strlist(name: str, key: str, value: Any) -> list[str]:
                 f'be a string, but {name}["{key}"][{k}] is not.'
             )
     return value
+
+
+def crs(config: Config, name: str) -> None:
+    "Checks an input represents a pyproj.CRS"
+
+    # Allow None
+    crs = config[name]
+    if crs is None:
+        return
+
+    # Otherwise, require a CRS object
+    try:
+        crs = CRS(crs)
+    except Exception:
+        raise TypeError(
+            f"Could not convert {name} to a CRS. Supported values include EPSG codes, "
+            "CRS names, and PROJ4 codes. Refer to the pyproj docs for examples of "
+            "supported inputs:\n"
+            "https://pyproj4.github.io/pyproj/stable/examples.html"
+        ) from None
+    config[name] = crs

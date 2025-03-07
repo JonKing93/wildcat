@@ -32,11 +32,18 @@ Standardization:
     unique      - Returns unique properties in listed order
 """
 
-from logging import Logger
-from typing import Optional
+from __future__ import annotations
+
+import typing
 
 from wildcat._utils import _parameters, _properties
-from wildcat.typing import Config
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from typing import Optional
+
+    from wildcat.typing import Config
+
 
 #####
 # Main

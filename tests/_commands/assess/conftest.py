@@ -552,27 +552,16 @@ def likelihoods(config, m1_vars):
         Cs,
         props["Soil_M1"],
         keepdims=True,
-    ).reshape(-1, R15.size)
+    )
 
 
 @pytest.fixture
-def volumes(config, segments, volume_vars):
+def volumes(config, volume_vars):
     Bmh = volume_vars["Bmh_km2"]
     relief = volume_vars["Relief_m"]
     I15 = config["I15_mm_hr"]
     CI = config["volume_CI"]
-
-    shape = (segments.size, len(I15), len(CI))
-    V = np.empty(shape[0:-1], float)
-    Vmin = np.empty(shape, float)
-    Vmax = np.empty(shape, float)
-
-    for k, I in enumerate(I15):
-        volumes = g14.emergency(I, Bmh, relief, CI=CI, keepdims=True)
-        V[:, k] = volumes[0].reshape(-1)
-        Vmin[:, k, :] = volumes[1].reshape(-1, len(CI))
-        Vmax[:, k, :] = volumes[2].reshape(-1, len(CI))
-    return V, Vmin, Vmax
+    return g14.emergency(I15, Bmh, relief, CI=CI, keepdims=True)
 
 
 @pytest.fixture
@@ -642,7 +631,7 @@ def thresholds():
                     [25.00486855, 33.56270527],
                 ],
             ]
-        ),
+        ).transpose(0, 2, 1),
         "intensities": np.array(
             [
                 [
@@ -686,7 +675,7 @@ def thresholds():
                     [25.00486855, 33.56270527],
                 ],
             ]
-        ),
+        ).transpose(0, 2, 1),
     }
 
 

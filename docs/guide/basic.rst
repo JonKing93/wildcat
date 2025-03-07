@@ -317,7 +317,7 @@ Our final step is to run the :doc:`export command </commands/export>`:
             export("my-project")
 
 
-This will created an ``exports`` subfolder in our project with exported results and the usual config record. By default, the command will export results to Shapefile, but you can also export to :ref:`many other GIS formats <vector-formats>`. The command also includes a variety of options to help format exported data fields, which you can learn about on the :doc:`next page <properties>`.
+This will created an ``exports`` subfolder in our project with exported results and the usual config record. By default, the command will export results to Shapefile in WGS 84 (EPSG: 4326), but you can also export to many other :ref:`GIS formats <vector-formats>` and :ref:`coordinate reference systems <export-crs>`. The command also includes a variety of options to help format exported data fields, which you can learn about on the :doc:`next page <properties>`.
 
 Our final file tree will be::
 

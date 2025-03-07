@@ -15,14 +15,20 @@ Sections:
     _export         - Adds an export section
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 from pathlib import Path
-from typing import TextIO
 
 import wildcat._utils._defaults.defaults as _defaults
 from wildcat._utils import _paths
 from wildcat._utils._config import record
-from wildcat.typing import ConfigType
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from typing import TextIO
+
+    from wildcat.typing import ConfigType
 
 
 def write(project: Path, inputs: str, style: ConfigType, log: Logger) -> None:
@@ -247,7 +253,9 @@ def _export(file: TextIO, defaults: dict, isfull: bool) -> None:
 
     # Heading and output files
     _heading(file, "Export", ["Settings for exporting saved assessment results"])
-    record.section(file, "Output files", ["format", "prefix", "suffix"], defaults)
+    record.section(
+        file, "Output files", ["format", "export_crs", "prefix", "suffix"], defaults
+    )
 
     # Properties
     if isfull:

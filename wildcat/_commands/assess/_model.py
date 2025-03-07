@@ -12,14 +12,19 @@ Utilities:
     _hazard          - Classifies relative hazard
 """
 
-from logging import Logger
+from __future__ import annotations
 
-import numpy as np
+import typing
+
 from pfdf.models import c10, g14, s17
-from pfdf.segments import Segments
 from pfdf.utils import intensity
 
-from wildcat.typing._assess import Config, PropertyDict, RasterDict
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from pfdf.segments import Segments
+
+    from wildcat.typing._assess import Config, PropertyDict, RasterDict
 
 #####
 # Main Functions
@@ -144,7 +149,7 @@ def _likelihood(
         Cs,
         properties["Soil_M1"],
         keepdims=True,
-    ).reshape(-1, len(I15))
+    )
 
 
 def _volume(
@@ -169,19 +174,9 @@ def _volume(
     relief = segments.relief(rasters["relief"])
     relief = relief / dem_per_m
 
-    # Preallocate results for multiple CIs
+    # Run the model
     log.debug("    Running model")
-    shape = (segments.size, len(I15), len(CI))
-    V = np.empty(shape[0:-1], float)
-    Vmin = np.empty(shape, float)
-    Vmax = np.empty(shape, float)
-
-    # Run the model. Calculate all CIs for each I15 value
-    for k, I in enumerate(I15):
-        volumes = g14.emergency(I, Bmh_km2, relief, CI=CI, keepdims=True)
-        V[:, k] = volumes[0].reshape(-1)
-        Vmin[:, k, :] = volumes[1].reshape(-1, len(CI))
-        Vmax[:, k, :] = volumes[2].reshape(-1, len(CI))
+    V, Vmin, Vmax = g14.emergency(I15, Bmh_km2, relief, CI=CI, keepdims=True)
 
     # Collect model variables and outputs
     properties["Bmh_km2"] = Bmh_km2

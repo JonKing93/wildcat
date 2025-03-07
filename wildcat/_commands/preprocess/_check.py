@@ -11,12 +11,18 @@ Utilities:
     _check          - Logs a warning or raises and error if a condition is not met
 """
 
-from logging import Logger
+from __future__ import annotations
+
+import typing
 
 import numpy as np
-from pfdf.raster import Raster
 
-from wildcat.typing import Check, Config, RasterDict
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from pfdf.raster import Raster
+
+    from wildcat.typing import Check, Config, RasterDict
 
 
 def _check(check: Check, failed: bool, message: str, log: Logger) -> None:

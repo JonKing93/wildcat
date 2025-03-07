@@ -10,22 +10,29 @@ Utilities:
     _features           - Exports a collection of vector features to the indicated format
 """
 
-from logging import Logger
-from pathlib import Path
+from __future__ import annotations
+
+import typing
 
 import fiona
-from fiona.crs import CRS
 
 from wildcat._utils import _extensions
 from wildcat._utils._config import record
-from wildcat.typing._export import (
-    Config,
-    PropNames,
-    PropSchema,
-    Records,
-    Results,
-    Schema,
-)
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from pathlib import Path
+
+    from fiona.crs import CRS
+
+    from wildcat.typing._export import (
+        Config,
+        PropNames,
+        PropSchema,
+        Records,
+        Results,
+        Schema,
+    )
 
 
 def results(
@@ -104,9 +111,15 @@ def config(exports: Path, config: Config, log: Logger) -> None:
     log.debug("    Saving configuration.txt")
     path = exports / "configuration.txt"
 
+    # Finalize CRS
+    if config["export_crs"] is not None:
+        config["export_crs"] = config["export_crs"].name
+
     # Write each section
     with open(path, "w") as file:
         record.version(file, "Export configuration")
-        record.section(file, "Output files", ["prefix", "suffix", "format"], config)
+        record.section(
+            file, "Output files", ["format", "export_crs", "prefix", "suffix"], config
+        )
         record.section(file, "Properties", ["properties", "order_properties"], config)
         record.section(file, "Property names", ["clean_names", "rename"], config)

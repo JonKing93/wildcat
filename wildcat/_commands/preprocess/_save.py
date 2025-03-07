@@ -6,12 +6,18 @@ Functions:
     config  - Saves the configuration settings used to run the preprocessor
 """
 
-from logging import Logger
-from pathlib import Path
+from __future__ import annotations
+
+import typing
 
 import wildcat._utils._paths.preprocess as _paths
 from wildcat._utils._config import record
-from wildcat.typing import Config, PathDict, RasterDict
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from pathlib import Path
+
+    from wildcat.typing import Config, PathDict, RasterDict
 
 
 def rasters(preprocessed: Path, rasters: RasterDict, log: Logger) -> None:

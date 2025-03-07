@@ -11,16 +11,23 @@ Utilities:
     _add_folder         - Adds a folder argument to a parser
 """
 
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from __future__ import annotations
+
+import typing
+from argparse import RawDescriptionHelpFormatter
 from pathlib import Path
 
 from wildcat._cli._parsers import _descriptions
+
+if typing.TYPE_CHECKING:
+    from argparse import ArgumentParser
 
 
 def create_subcommand(
     subparsers,
     command: str,
     project_help: str = "The folder containing the configuration file for the command",
+    alternate_config: bool = True,
 ) -> ArgumentParser:
     """Creates a subcommand parser with the project folder as a positional argument.
     Also adds an error traceback option"""
@@ -42,13 +49,23 @@ def create_subcommand(
         help=project_help,
     )
 
-    # Add a traceback option and return the parser
+    # Add a traceback option
     parser.add_argument(
         "-t",
         "--show-traceback",
         action="store_true",
         help="Show the full traceback when an error occurs",
     )
+
+    # Add alternate config option
+    if alternate_config:
+        parser.add_argument(
+            "-c",
+            "--config",
+            metavar="PATH",
+            type=Path,
+            help="Specify an alternate configuration file",
+        )
     return parser
 
 

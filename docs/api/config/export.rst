@@ -30,6 +30,38 @@ These settings affect the format and names of the exported files.
 .. _format kwarg: ./../python.html#python-export
 
 
+.. _export-crs:
+
+.. confval:: export_crs
+    :type: ``str | int``
+    :default: ``"WGS 84"``
+
+    Specifies the coordinate reference system (CRS) that the exported segment, basin, and outlet geometries should use. The base geometries from the assessment results will be reprojected into this CRS prior to export. Accepts a variety of CRS indicators, including: EPSG codes, CRS names, well-known text, and PROJ4 parameter strings. Consult the `pyproj documentation <https://pyproj4.github.io/pyproj/stable/examples.html>`_ for more details on supported inputs.
+
+    Alternatively, set ``export_crs = "base"`` to leave the geometries in the base assessment CRS. In practice, this is the CRS of the preprocessed DEM used to derive the stream segment network.
+
+    Examples::
+
+        # EPSG codes (supports multiple formats)
+        export_crs = "EPSG: 4326"
+        export_crs = "4326"
+        export_crs = 4326
+
+        # CRS names
+        export_crs = "WGS 84"
+        export_crs = "NAD83 / UTM zone 11N"
+
+        # Disable reprojection
+        export_crs = "base"
+
+    *CLI option:* :option:`--crs <export --crs>`
+
+    *Python kwarg:* |export_crs kwarg|_
+
+.. |export_crs kwarg| replace:: ``export_crs``
+
+.. _export_crs kwarg: ./../python.html#python-export
+
 
 .. confval:: prefix
     :type: ``str``
@@ -197,7 +229,7 @@ Settings used to :ref:`rename <rename>` the exported properties.
     :type: ``dict``
     :default: ``{}``
 
-    A dict with custom renaming settings. The keys may include property names, hazard prefixes, or hazard parameter names. Please see the :ref:`Renaming Guide <rename>` for more details.
+    A dict with custom renaming settings. The keys may include property names, hazard prefixes, or hazard parameter names. Please read the :ref:`Renaming Guide <rename>` for more details.
 
     Example::
 

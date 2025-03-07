@@ -5,9 +5,15 @@ Functions:
     export  - Implements the "export" command
 """
 
-from wildcat._commands.export import _load, _names, _properties, _save
+from __future__ import annotations
+
+import typing
+
+from wildcat._commands.export import _load, _names, _properties, _reproject, _save
 from wildcat._utils import _find, _setup
-from wildcat.typing import Config
+
+if typing.TYPE_CHECKING:
+    from wildcat.typing import Config
 
 
 def export(locals: Config) -> None:
@@ -28,5 +34,6 @@ def export(locals: Config) -> None:
 
     # Load the assessment results, then export to desired format
     results = _load.results(assessment, log)
+    results = _reproject.results(results, config, log)
     _save.results(exports, config, results, names, log)
     _save.config(exports, config, log)

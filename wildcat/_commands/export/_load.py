@@ -14,15 +14,24 @@ Utilities:
     _features   - Optionally loads basins or outlets
 """
 
-from logging import Logger
-from pathlib import Path
+from __future__ import annotations
+
+import typing
 
 import fiona
-import fiona.model
 
 from wildcat._utils import _config, _parameters, _validate
 from wildcat.errors import ConfigRecordError
-from wildcat.typing._export import CRS, Config, Records, Results, Schema
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+    from pathlib import Path
+
+    import fiona.model
+
+    from wildcat.typing._export import CRS, Config, Records, Results, Schema
+
+    FionaFeatures = list[fiona.model.Feature]
 
 
 def parameters(assessment: Path, log: Logger) -> Config:
@@ -80,7 +89,7 @@ def results(assessment: Path, log: Logger) -> Results:
     return crs, schema, segments, basins, outlets
 
 
-def _geojson(records: list[fiona.model.Feature]) -> list[dict]:
+def _geojson(records: FionaFeatures) -> list[dict]:
     "Converts fiona records to geojson-like dicts"
     return [record.__geo_interface__ for record in records]
 

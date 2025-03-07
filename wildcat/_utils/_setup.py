@@ -5,10 +5,17 @@ Function:
     command - Initializes logger. Parses and validates config settings
 """
 
-from logging import Logger, getLogger
+from __future__ import annotations
+
+import typing
+from logging import getLogger
 
 from wildcat._utils import _config, _validate
-from wildcat.typing import Config
+
+if typing.TYPE_CHECKING:
+    from logging import Logger
+
+    from wildcat.typing import Config
 
 
 def command(command: str, heading: str, locals: Config) -> tuple[Config, Logger]:

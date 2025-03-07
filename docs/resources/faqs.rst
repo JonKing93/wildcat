@@ -6,6 +6,8 @@ FAQs / Troubleshooting
 * :ref:`faq-kf-field`
 * :ref:`faq-missing-dataset`
 * :ref:`faq-modify-network`
+* :ref:`faq-os-errors`
+* :ref:`faq-dep-errors`
 
 ----
 
@@ -50,7 +52,7 @@ would also preprocess the demo project.
 
 kf is a vector feature file, so kf_field cannot be None
 -------------------------------------------------------
-This error will occur if you build the KF-factor dataset from a Polygon feature file, but forget to provide the associated :confval:`kf_field` setting. This setting should be a string indicating the data field in the Polygon file that holds the KF-factor data. For example, if you are using KF-factor data from the `STATSGO dataset <https://www.sciencebase.gov/catalog/item/631405c5d34e36012efa3187>`_, then the :confval:`kf_field` setting should be set to ``KFFACT``::
+This error will occur if you build the KF-factor dataset from a Polygon feature file, but forget to provide the associated :confval:`kf_field` setting. This setting should be a string indicating the data field in the Polygon file that holds the KF-factor data. For example, if you are using KF-factor data from the `STATSGO Shapefile archive <https://www.sciencebase.gov/catalog/item/631405c5d34e36012efa3187>`_, then the :confval:`kf_field` setting should be set to ``KFFACT``::
 
     # In configuration.py
     kf = r"path/to/my-statsgo-dataset.shp"
@@ -90,3 +92,25 @@ Sometimes, you may wish to modify the stream network for an assessment. Perhaps 
 The :confval:`remove_ids` setting allows you to remove specific segments from the final network by listing their IDs. This is useful when you have a limited number of problem segments that you want to remove. This setting is implemented *after* network delineation, so the network will not change aside from the removal of the segments. Note that altering network delineation will also alter the IDs, so it's best to only use :confval:`remove_ids` once you've finalized the other assessment settings.
 
 The :confval:`excluded` setting allows you block the network from undesired areas. This input is a set of Polygon features, and stream segments will never be drawn in the polygons. This option can be useful when you want to prevent the network from intersecting certain topographic features. This setting will alter network delineation, so the shape of the network may change after applying an exclusion mask. Note that an exclusion mask only affects the locations of the stream segments; basins are not affected, so an excluded area may still appear in a basin if the area drains into a segment further downstream.
+
+
+----
+
+.. _faq-os-errors:
+
+Arcane errors referencing the operating system
+----------------------------------------------
+
+This may indicate that another geospatial software tool is interfering with wildcat's backend. Try installing wildcat :ref:`in a clean virtual environment <install-environment>`.
+
+
+----
+
+.. _faq-dep-errors:
+
+Errors originating from pysheds or another dependency
+-----------------------------------------------------
+
+This may indicate that a dependency library has issued a new release that breaks backwards compatibility. Try :ref:`installing wildcat from lock <install-lock>`.
+
+
