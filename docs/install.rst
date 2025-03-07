@@ -22,11 +22,11 @@ We **strongly recommend** installing wildcat in a clean virtual environment. Thi
 
 For example, after installing miniforge, you can create a new python environment using::
 
-    mamba create -n pfdf python=3.12 --yes
+    mamba create -n wildcat python=3.12 --yes
 
 and then activate the environment with::
 
-    mamba activate pfdf
+    mamba activate wildcat
 
 .. _miniforge: https://github.com/conda-forge/miniforge
 .. _conda: https://anaconda.org/anaconda/conda
@@ -50,13 +50,13 @@ Building from Lock
 ------------------
 In rare cases, wildcat may break due to changes in a dependency library. For example, when a dependency releases a new version that breaks backwards compatibility. If this is the case, you can use `poetry <https://python-poetry.org/>`_ to install wildcat from known working dependencies. This method requires you `install poetry <https://python-poetry.org/docs/#installation>`_ in addition to the usual prerequisites.
 
-To use this method, you should first clone the pfdf repository at the desired release. For example, if you have `git <https://git-scm.com/>`_ installed, then you can clone the 1.1.0 release to the current directory using::
+To use this method, you should first clone the wildcat repository at the desired release. For example, if you have `git <https://git-scm.com/>`_ installed, then you can clone the 1.1.0 release to the current directory using::
 
-    git clone https://code.usgs.gov/ghsc/lhp/pfdf.git --branch 1.1.0
+    git clone https://code.usgs.gov/ghsc/lhp/wildcat.git --branch 1.1.0
 
-Next, use poetry to install pfdf from the ``poetry.lock`` file::
+Next, use poetry to install wildcat from the ``poetry.lock`` file::
 
     poetry install
 
-The ``poetry.lock`` file records the dependencies used to test pfdf, so represents a collection of known-working dependencies.
+The ``poetry.lock`` file records the dependencies used to test wildcat, so represents a collection of known-working dependencies.
 
